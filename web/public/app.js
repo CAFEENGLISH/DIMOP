@@ -10,12 +10,102 @@ let streaming = false;
 
 // --- Init ---
 document.addEventListener('DOMContentLoaded', async () => {
+  initSteps();
   await loadKnowledge();
   await loadDocs();
   initNav();
   initChat();
   initMobileMenu();
 });
+
+// --- Interactive Steps ---
+const STEPS_DATA = {
+  1: {
+    title: 'Regisztráció',
+    html: `<strong>Regisztrálj a kkvdigital.dkf.hu oldalon</strong> - ez az alap mindenhez!<br>
+    <a href="https://kkvdigital.dkf.hu/regisztracio" target="_blank">→ kkvdigital.dkf.hu/regisztracio</a><br><br>
+    Email + jelszó + céges adatok (adószám, cégnév, székhely).<br>
+    Email megerősítés után <strong>~24 órát kell várni</strong> az ITDR rendszer hozzáféréshez.`
+  },
+  2: {
+    title: 'DFK igénylés',
+    html: `<strong>Digitális Fejlesztési Koncepció</strong> - 12M Ft-nál <strong>KÖTELEZŐ!</strong><br><br>
+    Hívd az MKIK ügyfélszolgálatot (hétköznap 9-12), töltsd ki a Kérelmi nyilatkozatot.<br>
+    Egy IT szakértő díjmentesen elkészíti a céged digitális fejlesztési tervét.<br>
+    <a href="https://vallalkozzdigitalisan.mkik.hu/ugyfelszolgalataink" target="_blank">→ MKIK ügyfélszolgálat</a><br>
+    <em>Indítsd el MOST - időbe telik!</em>`
+  },
+  3: {
+    title: 'Digitalizációs szintfelmérő',
+    html: `<strong>26 kérdéses online kérdőív</strong> a kkvdigital.dkf.hu-n.<br><br>
+    Kitöltés után <strong>2 db igazolást</strong> kapsz (digitális szint + Közösségi mutató).<br>
+    Mindkettőt <strong>cégszerűen hitelesíteni</strong> kell!<br><br>
+    <strong>Max. 60 nappal a benyújtás előtt</strong> töltheted ki (ne korábban!).<br>
+    <a href="https://kkvdigital.dkf.hu" target="_blank">→ kkvdigital.dkf.hu</a> |
+    <a href="https://kkvdigital.dkf.hu/assets/pdf/Minta_kerdoiv.pdf" target="_blank">Minta kérdőív</a>`
+  },
+  4: {
+    title: 'Árkalkuláció készítése',
+    html: `<strong>Szállító és szoftver kiválasztás</strong> az MKIK akkreditált katalógusából.<br><br>
+    Belépés → Pályázati árkalkulációk → Új árkalkuláció → DIMOP Plusz-1.2.6/B-26<br>
+    Szoftver részterületek + szállító kiválasztása → <strong>PDF letöltés</strong> (aláírás nélkül hiteles!)<br>
+    <strong>60 napig érvényes.</strong><br>
+    <a href="https://vallalkozzdigitalisan.mkik.hu/palyazati_arajanlatok.html" target="_blank">→ Árkalkuláció készítés</a>`
+  },
+  5: {
+    title: 'Nyilatkozatok kitöltése',
+    html: `<strong>KKV minősítés nyilatkozat</strong> - 5a (komplex) vagy 5b (egyszerűsített) sablon<br>
+    <strong>De minimis nyilatkozat</strong> - 6. melléklet sablon, cégszerűen aláírva<br><br>
+    <em>A sablonok a PÁLYÁZATI KIIRAS mappában találhatók.</em>`
+  },
+  6: {
+    title: 'Pályázat benyújtása',
+    html: `<strong>Benyújtási időszak: 2026.03.31 - 06.30</strong><br><br>
+    <a href="https://www.palyazat.gov.hu" target="_blank">→ palyazat.gov.hu</a> → EPTK belépés → Online kitöltő<br>
+    Csatolandó: 2 db igazolás + árkalkuláció PDF + nyilatkozatok + DFK<br>
+    Hitelesítés: e-aláírás vagy <a href="https://epapir.gov.hu" target="_blank">ePapír</a><br><br>
+    <strong>Az első 24 órában lezárhatják ha a keret 130%-a betelik!</strong>`
+  },
+  7: {
+    title: 'Projekt megvalósítás',
+    html: `<strong>Ha nyertél - max. 24 hónap</strong><br><br>
+    90 napon belül: kapcsolatfelvétel MKIK-kal a Jelentés ütemtervéért<br>
+    Fejlesztési célok megvalósítása a vállalt célok szerint<br>
+    Kimeneti szintfelmérés (újra kkvdigital.dkf.hu)<br>
+    Záró beszámoló benyújtása (fizikai befejezés + 60 nap)<br>
+    <strong>Fenntartási kötelezettség: 3 év</strong>`
+  }
+};
+
+function initSteps() {
+  const steps = $$('.step');
+  const detail = $('#stepDetail');
+  const detailInner = $('#stepDetailInner');
+  let activeStep = null;
+
+  steps.forEach(step => {
+    step.addEventListener('click', () => {
+      const num = parseInt(step.dataset.step);
+      const data = STEPS_DATA[num];
+
+      if (activeStep === num) {
+        // Toggle off
+        detail.classList.remove('open');
+        step.classList.remove('active');
+        activeStep = null;
+        return;
+      }
+
+      // Set active
+      steps.forEach(s => s.classList.remove('active'));
+      step.classList.add('active');
+      activeStep = num;
+
+      detailInner.innerHTML = `<strong>${num}. ${data.title}</strong><br><br>${data.html}`;
+      detail.classList.add('open');
+    });
+  });
+}
 
 // --- Knowledge base ---
 async function loadKnowledge() {
