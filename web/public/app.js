@@ -20,9 +20,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 // --- Knowledge base ---
 async function loadKnowledge() {
   try {
-    const res = await fetch('/api/knowledge');
-    const { content } = await res.json();
-    renderMarkdown(content);
+    // Use injected data (Netlify build) or API fallback (local dev)
+    if (window.__KNOWLEDGE__) {
+      renderMarkdown(window.__KNOWLEDGE__);
+    } else {
+      const res = await fetch('/api/knowledge');
+      const { content } = await res.json();
+      renderMarkdown(content);
+    }
   } catch (err) {
     $('#article').innerHTML = '<p style="color:red">Hiba a tudásbázis betöltésekor.</p>';
   } finally {
@@ -96,8 +101,8 @@ function initNav() {
 // --- Documents ---
 async function loadDocs() {
   try {
-    const res = await fetch('/api/docs');
-    const docs = await res.json();
+    // Use injected data (Netlify build) or API fallback (local dev)
+    const docs = window.__DOCS__ || await (await fetch('/api/docs')).json();
     const container = $('#docsList');
     container.innerHTML = '';
 
