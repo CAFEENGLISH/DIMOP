@@ -1,0 +1,17 @@
+{
+  "name": "dimop-tudasbazis",
+  "version": "1.0.0",
+  "description": "DIMOP Plusz pályázati tudásbázis weboldal AI chat-tel",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0"
+  }
+}

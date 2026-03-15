@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DIMOP Plusz-1.2.6/B-26 - Pályázati Tudásbázis</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-left">
+        <div class="logo">DIMOP<span>+</span></div>
+        <div class="header-text">
+          <h1>Pályázati Tudásbázis</h1>
+          <p>DIMOP Plusz-1.2.6/B-26 &mdash; KKV-k digitális transzformációja</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <span class="badge">12M Ft</span>
+        <span class="badge badge-green">Vissza nem térítendő</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Menü bezárása">&times;</button>
+        <span>Tartalomjegyzék</span>
+      </div>
+      <ul id="navList"></ul>
+      <div class="sidebar-docs">
+        <h3>Dokumentumok</h3>
+        <div id="docsList"></div>
+      </div>
+    </nav>
+
+    <!-- Mobile menu button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menü megnyitása">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+
+    <!-- Main content -->
+    <main class="content" id="content">
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Tudásbázis betöltése...</p>
+      </div>
+      <article id="article"></article>
+    </main>
+  </div>
+
+  <!-- Chat bubble -->
+  <button class="chat-bubble" id="chatBubble" aria-label="AI Asszisztens megnyitása">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span class="chat-badge">AI</span>
+  </button>
+
+  <!-- Chat panel -->
+  <div class="chat-panel" id="chatPanel">
+    <div class="chat-header">
+      <div>
+        <strong>DIMOP AI Asszisztens</strong>
+        <small>Kérdezz bármit a pályázatról!</small>
+      </div>
+      <button class="chat-close" id="chatClose" aria-label="Chat bezárása">&times;</button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-msg assistant">
+        <div class="chat-msg-content">
+          Szia! A DIMOP Plusz pályázati asszisztens vagyok. Kérdezz bármit a pályázattal kapcsolatban!
+        </div>
+      </div>
+      <div class="quick-questions">
+        <button class="quick-q" data-q="Ki pályázhat erre a pályázatra?">Ki pályázhat?</button>
+        <button class="quick-q" data-q="Milyen dokumentumokat kell csatolni a pályázathoz?">Milyen dokumentumok kellenek?</button>
+        <button class="quick-q" data-q="Hogyan történik a finanszírozás 12M Ft esetén?">Finanszírozás</button>
+        <button class="quick-q" data-q="Mik a pályázat lépései időrendi sorrendben?">Lépések sorrendje</button>
+      </div>
+    </div>
+    <form class="chat-input" id="chatForm">
+      <input type="text" id="chatInput" placeholder="Írd be a kérdésed..." autocomplete="off">
+      <button type="submit" id="chatSend" aria-label="Küldés">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </form>
+  </div>
+
+  <!-- Overlay for mobile sidebar -->
+  <div class="overlay" id="overlay"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>
