@@ -107,10 +107,11 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: var
 .chat-header small { display: block; font-size: 12px; opacity: .8; }
 .chat-close { background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; opacity: .8; }
 .chat-close:hover { opacity: 1; }
-.chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.chat-messages { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .chat-msg { display: flex; }
 .chat-msg.user { justify-content: flex-end; }
-.chat-msg-content { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 14px; line-height: 1.5; }
+.chat-msg-content { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 14px; line-height: 1.5; overflow-wrap: break-word; word-break: break-word; overflow: hidden; }
+.chat-msg { min-width: 0; max-width: 100%; }
 .chat-msg.assistant .chat-msg-content { background: var(--gray-100); color: var(--gray-900); border-bottom-left-radius: 4px; }
 .chat-msg.user .chat-msg-content { background: var(--blue); color: #fff; border-bottom-right-radius: 4px; }
 .chat-msg-content p { margin-bottom: 8px; }
