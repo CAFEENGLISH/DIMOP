@@ -30,36 +30,43 @@
     <div class="steps-track">
       <div class="step active" data-step="1">
         <div class="step-num">1</div>
+        <button class="step-play" data-step="1" aria-label="Prezentáció">▶</button>
         <div class="step-label">Regisztráció</div>
       </div>
       <div class="step-line"></div>
       <div class="step" data-step="2">
         <div class="step-num">2</div>
+        <button class="step-play" data-step="2" aria-label="Prezentáció">▶</button>
         <div class="step-label">DFK igénylés</div>
       </div>
       <div class="step-line"></div>
       <div class="step" data-step="3">
         <div class="step-num">3</div>
+        <button class="step-play" data-step="3" aria-label="Prezentáció">▶</button>
         <div class="step-label">Szintfelmérő</div>
       </div>
       <div class="step-line"></div>
       <div class="step" data-step="4">
         <div class="step-num">4</div>
+        <button class="step-play" data-step="4" aria-label="Prezentáció">▶</button>
         <div class="step-label">Árkalkuláció</div>
       </div>
       <div class="step-line"></div>
       <div class="step" data-step="5">
         <div class="step-num">5</div>
+        <button class="step-play" data-step="5" aria-label="Prezentáció">▶</button>
         <div class="step-label">Nyilatkozatok</div>
       </div>
       <div class="step-line"></div>
       <div class="step" data-step="6">
         <div class="step-num">6</div>
+        <button class="step-play" data-step="6" aria-label="Prezentáció">▶</button>
         <div class="step-label">Benyújtás</div>
       </div>
       <div class="step-line"></div>
       <div class="step" data-step="7">
         <div class="step-num">7</div>
+        <button class="step-play" data-step="7" aria-label="Prezentáció">▶</button>
         <div class="step-label">Megvalósítás</div>
       </div>
     </div>
@@ -133,6 +140,15 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
       </button>
     </form>
+  </div>
+
+  <!-- Slideshow -->
+  <div class="slideshow" id="slideshow">
+    <button class="slide-close" id="slideClose">&times;</button>
+    <div class="slide-counter" id="slideCounter"></div>
+    <button class="slide-nav slide-prev" id="slidePrev">&#8249;</button>
+    <button class="slide-nav slide-next" id="slideNext">&#8250;</button>
+    <div class="slide-content" id="slideContent"></div>
   </div>
 
   <!-- Overlay for mobile sidebar -->

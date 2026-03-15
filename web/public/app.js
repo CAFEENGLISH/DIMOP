@@ -77,6 +77,170 @@ const STEPS_DATA = {
   }
 };
 
+// --- Slideshow Data ---
+const SLIDES = {
+  1: [
+    { icon: '🔐', title: '1. Regisztráció', subtitle: 'Ez az alap mindenhez!', body: `<ul>
+      <li>Menj a <a href="https://kkvdigital.dkf.hu/regisztracio" target="_blank">kkvdigital.dkf.hu/regisztracio</a> oldalra</li>
+      <li>Add meg: <strong>email cím + jelszó</strong></li>
+      <li>Személyes adatok: név, telefonszám</li>
+      <li>Vállalkozási adatok: <strong>adószám, cégnév, székhely</strong></li>
+      </ul>` },
+    { icon: '📧', title: 'Email megerősítés', subtitle: 'Ellenőrizd a spam mappát is!', body: `<ul>
+      <li>A regisztráció után email megerősítés szükséges</li>
+      <li><strong>Ellenőrizd a spam/levélszemét mappát!</strong></li>
+      </ul>
+      <div class="highlight">⏳ Az ITDR rendszerbe csak <strong>~24 óra múlva</strong> tudsz belépni!<br>Utána működik az MKIK oldal is.</div>` },
+  ],
+  2: [
+    { icon: '📋', title: '2. DFK igénylés', subtitle: 'Digitális Fejlesztési Koncepció', body: `<ul>
+      <li>12M Ft-os projektnél <strong>KÖTELEZŐ!</strong></li>
+      <li>Egy IT szakértő díjmentesen elkészíti a céged digitális fejlesztési tervét</li>
+      <li>Az MKIK (Modern Vállalkozások Programja) keretében</li>
+      </ul>
+      <div class="highlight">⚡ Indítsd el MOST - időbe telik a konzultáció!</div>` },
+    { icon: '📞', title: 'Hogyan igényeld?', subtitle: 'MKIK ügyfélszolgálat', body: `<ul>
+      <li>Hívd a területileg illetékes <a href="https://vallalkozzdigitalisan.mkik.hu/ugyfelszolgalataink" target="_blank">MKIK ügyfélszolgálatot</a></li>
+      <li>Hétköznap <strong>9:00-12:00</strong> között</li>
+      <li>Töltsd ki a <strong>Kérelmi és Hozzájárulási nyilatkozat</strong> sablont</li>
+      <li>A tanácsadó felveszi veled a kapcsolatot</li>
+      </ul>` },
+  ],
+  3: [
+    { icon: '📊', title: '3. Szintfelmérő', subtitle: '26 kérdéses online kérdőív', body: `<ul>
+      <li>A <a href="https://kkvdigital.dkf.hu" target="_blank">kkvdigital.dkf.hu</a> oldalon</li>
+      <li>Vizsgált területek: internet, technológia, szoftverek, IKT biztonság, e-kereskedelem</li>
+      <li>Bármikor kiléphetsz és folytathatod</li>
+      </ul>
+      <div class="highlight">⚠️ <strong>Max. 60 nappal</strong> a benyújtás előtt töltheted ki!</div>` },
+    { icon: '📄', title: '2 db igazolás', subtitle: 'Mindkettőt cégszerűen hitelesíteni kell!', body: `<ul>
+      <li><strong>Igazolás a digitális intenzitási szintről</strong></li>
+      <li><strong>Igazolás a Közösségi mutató szerinti szintről</strong></li>
+      <li>Mindkettő <strong>KÖTELEZŐ</strong> melléklet a pályázathoz</li>
+      <li><a href="https://kkvdigital.dkf.hu/assets/pdf/Minta_kerdoiv.pdf" target="_blank">→ Minta kérdőív</a> (előre megnézheted)</li>
+      </ul>` },
+  ],
+  4: [
+    { icon: '🛒', title: '4. Árkalkuláció', subtitle: 'Szállító és szoftver kiválasztás', body: `<ul>
+      <li>Belépés: <a href="https://vallalkozzdigitalisan.mkik.hu" target="_blank">vallalkozzdigitalisan.mkik.hu</a></li>
+      <li>Menü → <strong>Pályázati árkalkulációk</strong> → Új árkalkuláció</li>
+      <li>Pályázat: <strong>DIMOP Plusz-1.2.6/B-26</strong></li>
+      <li>Projekt adatok: időtartam, létszám, felhasználószám</li>
+      </ul>` },
+    { icon: '💻', title: 'Szoftver kiválasztás', subtitle: 'Akkreditált katalógusból', body: `<ul>
+      <li>Szoftver részterületek kiválasztása (ERP, CRM, weboldal stb.)</li>
+      <li>Akkreditált <strong>szállító/szoftver</strong> kiválasztása az adatbázisból</li>
+      <li>Egy szállítótól is megvehetsz mindent!</li>
+      <li>Ha a szállítód terméke nincs fent → jelezd neki, töltse fel!</li>
+      </ul>` },
+    { icon: '📑', title: 'PDF letöltés', subtitle: '60 napig érvényes', body: `<ul>
+      <li>Véglegesítés → <strong>PDF automatikusan letöltődik</strong></li>
+      <li><strong>Aláírás és bélyegző nélkül is hiteles!</strong></li>
+      <li>A szállító 7 napon belül visszautasíthatja</li>
+      <li>Ne készíts újat ha nem találod - a fiókból töltsd le!</li>
+      </ul>
+      <div class="highlight"><a href="https://vallalkozzdigitalisan.mkik.hu/dl/pdf/D126_-_arkalkulacio_keszites_-_ugyfelguide.pdf" target="_blank">📖 Részletes útmutató PDF</a></div>` },
+  ],
+  5: [
+    { icon: '✍️', title: '5. Nyilatkozatok', subtitle: 'Kitöltendő dokumentumok', body: `<ul>
+      <li><strong>KKV minősítés nyilatkozat</strong><br>5a (komplex) VAGY 5b (egyszerűsített) sablon</li>
+      <li><strong>De minimis nyilatkozat</strong><br>6. melléklet sablon, cégszerűen aláírva</li>
+      </ul>` },
+    { icon: '📝', title: 'Melyik KKV sablon kell?', subtitle: 'Komplex vs. Egyszerűsített', body: `<ul>
+      <li><strong>Komplex (5a)</strong> - ha a tulajdonos nem természetes személy, vagy más vállalkozásban is van befolyása</li>
+      <li><strong>Egyszerűsített (5b)</strong> - ha a fentiek nem állnak fenn<br>(pl. EV, vagy Bt. természetes személy tulajdonosokkal)</li>
+      </ul>` },
+  ],
+  6: [
+    { icon: '🚀', title: '6. Benyújtás', subtitle: '2026.03.31 - 06.30', body: `<ul>
+      <li><a href="https://www.palyazat.gov.hu" target="_blank">palyazat.gov.hu</a> → EPTK belépés</li>
+      <li>Online kitöltő program kitöltése</li>
+      <li>Hitelesítés: <strong>e-aláírás</strong> vagy <a href="https://epapir.gov.hu" target="_blank">ePapír</a></li>
+      </ul>
+      <div class="highlight">⚠️ Az <strong>első 24 órában lezárhatják</strong> ha a keret 130%-a betelik!</div>` },
+    { icon: '📎', title: 'Csatolandó dokumentumok', subtitle: 'Ellenőrizd mielőtt benyújtod!', body: `<ul>
+      <li>✅ 2 db digitális szint igazolás (cégszerűen hitelesítve)</li>
+      <li>✅ Árkalkuláció PDF</li>
+      <li>✅ KKV minősítés nyilatkozat</li>
+      <li>✅ De minimis nyilatkozat</li>
+      <li>✅ DFK (ha van, pdf-ben)</li>
+      </ul>` },
+  ],
+  7: [
+    { icon: '🏗️', title: '7. Megvalósítás', subtitle: 'Ha nyertél - max. 24 hónap', body: `<ul>
+      <li><strong>90 napon belül</strong>: kapcsolatfelvétel MKIK-kal a Jelentés ütemtervéért</li>
+      <li>Fejlesztési célok megvalósítása</li>
+      <li>Szoftverek bevezetése, eszközök beszerzése</li>
+      </ul>` },
+    { icon: '💰', title: 'Pénzügyek', subtitle: 'Utófinanszírozás!', body: `<ul>
+      <li>Előleg: max. <strong>3M Ft</strong> (25%)</li>
+      <li>TE fizetsz a szállítónak előre</li>
+      <li>Max. <strong>2 kifizetési kérelem</strong> (1 időközi + 1 záró)</li>
+      <li>Előleggel <strong>12 hónapon belül 60%-ban</strong> el kell számolni!</li>
+      </ul>` },
+    { icon: '📈', title: 'Projekt zárás', subtitle: '3 év fenntartás!', body: `<ul>
+      <li>Kimeneti szintfelmérés (újra kkvdigital.dkf.hu)</li>
+      <li>Szakmai Jelentés elkészíttetése</li>
+      <li>Záró beszámoló (fizikai befejezés + 60 nap)</li>
+      <li><strong>Fenntartási kötelezettség: 3 év</strong></li>
+      </ul>` },
+  ],
+};
+
+// --- Slideshow Logic ---
+let currentSlides = [];
+let currentSlideIdx = 0;
+
+function openSlideshow(stepNum) {
+  currentSlides = SLIDES[stepNum] || [];
+  if (!currentSlides.length) return;
+  currentSlideIdx = 0;
+  renderSlide();
+  $('#slideshow').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSlideshow() {
+  $('#slideshow').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function renderSlide() {
+  const slide = currentSlides[currentSlideIdx];
+  $('#slideContent').innerHTML = `
+    <div class="slide-icon">${slide.icon}</div>
+    <h1>${slide.title}</h1>
+    <h2>${slide.subtitle}</h2>
+    <div class="slide-body">${slide.body}</div>
+  `;
+  $('#slideCounter').textContent = `${currentSlideIdx + 1} / ${currentSlides.length}`;
+  $('#slidePrev').disabled = currentSlideIdx === 0;
+  $('#slideNext').disabled = currentSlideIdx === currentSlides.length - 1;
+}
+
+function initSlideshow() {
+  // Play buttons
+  $$('.step-play').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openSlideshow(parseInt(btn.dataset.step));
+    });
+  });
+
+  // Navigation
+  $('#slideClose').addEventListener('click', closeSlideshow);
+  $('#slidePrev').addEventListener('click', () => { if (currentSlideIdx > 0) { currentSlideIdx--; renderSlide(); } });
+  $('#slideNext').addEventListener('click', () => { if (currentSlideIdx < currentSlides.length - 1) { currentSlideIdx++; renderSlide(); } });
+
+  // Keyboard
+  document.addEventListener('keydown', (e) => {
+    if (!$('#slideshow').classList.contains('open')) return;
+    if (e.key === 'Escape') closeSlideshow();
+    if (e.key === 'ArrowLeft' && currentSlideIdx > 0) { currentSlideIdx--; renderSlide(); }
+    if (e.key === 'ArrowRight' && currentSlideIdx < currentSlides.length - 1) { currentSlideIdx++; renderSlide(); }
+  });
+}
+
 function initSteps() {
   const steps = $$('.step');
   const detail = $('#stepDetail');
@@ -105,6 +269,8 @@ function initSteps() {
       detail.classList.add('open');
     });
   });
+
+  initSlideshow();
 }
 
 // --- Knowledge base ---
