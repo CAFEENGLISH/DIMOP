@@ -1,8 +1,9 @@
 import { readFileSync, readdirSync, statSync, writeFileSync, existsSync } from 'fs';
 import { join, resolve, extname } from 'path';
-import { execSync } from 'child_process';
+
 import mammoth from 'mammoth';
 import XLSX from 'xlsx';
+import pdfParse from 'pdf-parse';
 
 const ROOT = resolve(import.meta.dirname, '..');
 const CACHE_FILE = join(import.meta.dirname, 'knowledge-cache.json');
@@ -27,24 +28,12 @@ function collectFiles(dir, files = []) {
   return files;
 }
 
-// --- Extract text from PDF using pdfplumber ---
-function extractPdf(filePath) {
+// --- Extract text from PDF ---
+async function extractPdf(filePath) {
   try {
-    const pyScript = join(import.meta.dirname, '_extract_pdf.py');
-    writeFileSync(pyScript, `import pdfplumber, sys, json
-pdf = pdfplumber.open(sys.argv[1])
-pages = []
-for p in pdf.pages:
-    t = p.extract_text()
-    if t:
-        pages.append(t)
-print(json.dumps("\\n\\n".join(pages)))
-`);
-    const result = execSync(`python3 "${pyScript}" "${filePath}"`, {
-      maxBuffer: 50 * 1024 * 1024,
-      timeout: 60000,
-    });
-    return JSON.parse(result.toString());
+    const buffer = readFileSync(filePath);
+    const data = await pdfParse(buffer);
+    return data.text;
   } catch (err) {
     console.error(`  PDF extract error (${filePath}):`, err.message);
     return '';
@@ -110,7 +99,7 @@ export async function extractAll() {
     } else {
       console.log(`  Kinyerés: ${file.name} (${file.ext})`);
       switch (file.ext) {
-        case '.pdf': text = extractPdf(file.path); break;
+        case '.pdf': text = await extractPdf(file.path); break;
         case '.docx': text = await extractDocx(file.path); break;
         case '.xlsx': text = extractXlsx(file.path); break;
         case '.md': case '.txt': text = extractText(file.path); break;
@@ -146,7 +135,6 @@ export async function buildFullKnowledge() {
   const docs = await extractAll();
 
   const sections = docs.map(doc => {
-    const label = doc.name.replace(/\.[^.]+$/, '').replace(/-/g, ' ');
     return `\n${'='.repeat(60)}\nDOKUMENTUM: ${doc.name}\nÚtvonal: ${doc.path}\n${'='.repeat(60)}\n\n${doc.text}`;
   });
 
