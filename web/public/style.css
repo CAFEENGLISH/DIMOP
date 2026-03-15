@@ -56,9 +56,11 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: var
 .step-detail-inner a { color: var(--accent); text-decoration: none; }
 .step-detail-inner a:hover { text-decoration: underline; }
 
-/* === Step Play Button === */
-.step-play { position: absolute; top: -4px; right: -8px; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); color: #fff; border: 2px solid #fff; font-size: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; line-height: 1; transition: all .2s; box-shadow: 0 1px 3px rgba(0,0,0,.2); z-index: 2; }
-.step-play:hover { background: var(--blue-dark); transform: scale(1.3); }
+/* === PPT Button === */
+.ppt-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; background: var(--blue); color: #fff; border: none; border-radius: 10px; padding: 6px 14px; cursor: pointer; transition: all .2s; flex-shrink: 0; margin-left: 4px; }
+.ppt-btn:hover { background: var(--blue-dark); transform: scale(1.05); box-shadow: 0 4px 12px rgba(0,51,153,.3); }
+.ppt-icon { font-size: 16px; }
+.ppt-label { font-size: 10px; font-weight: 600; white-space: nowrap; }
 
 /* === Slideshow === */
 .slideshow { display: none; position: fixed; inset: 0; z-index: 500; background: rgba(0,10,40,.95); flex-direction: column; align-items: center; justify-content: center; }

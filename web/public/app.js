@@ -191,8 +191,12 @@ const SLIDES = {
 let currentSlides = [];
 let currentSlideIdx = 0;
 
-function openSlideshow(stepNum) {
-  currentSlides = SLIDES[stepNum] || [];
+function openSlideshow() {
+  // Concatenate all slides from all steps in order
+  currentSlides = [];
+  for (let i = 1; i <= 7; i++) {
+    if (SLIDES[i]) currentSlides.push(...SLIDES[i]);
+  }
   if (!currentSlides.length) return;
   currentSlideIdx = 0;
   renderSlide();
@@ -219,12 +223,10 @@ function renderSlide() {
 }
 
 function initSlideshow() {
-  // Play buttons
-  $$('.step-play').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      openSlideshow(parseInt(btn.dataset.step));
-    });
+  // Single PPT button
+  $('#pptBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    openSlideshow();
   });
 
   // Navigation
