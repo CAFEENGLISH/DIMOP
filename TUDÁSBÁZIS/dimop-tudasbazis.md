@@ -10,6 +10,7 @@
 
 | Lépés | Weboldal | Mit csinálsz itt | Mikor |
 |:-----:|----------|------------------|-------|
+| **0** | https://vallalkozzdigitalisan.mkik.hu/erdekel_a_program | **Program áttekintés** - MKIK "Érdekel a program" oldal, csatlakozás ügyfelként vagy IT szállítóként, árkalkuláció útmutató | Első tájékozódás |
 | **1** | https://kkvdigital.dkf.hu/regisztracio | **Regisztráció** - ügyfélfiók létrehozása (email + céges adatok) | **MOST** |
 | **2** | https://vallalkozzdigitalisan.mkik.hu/ugyfelszolgalataink | **DFK igénylés** - MKIK ügyfélszolgálat hívása, Kérelmi nyilatkozat kitöltése → IT szakértő tervet készít a cégednek (díjmentes, de 12M Ft-nál **KÖTELEZŐ**) | MOST (időbe telik!) |
 | **3** | https://kkvdigital.dkf.hu | **Szintfelmérő kitöltése** - 26 kérdés → 2 db igazolás letöltése + cégszerű hitelesítés | Max. 60 nappal benyújtás előtt |
