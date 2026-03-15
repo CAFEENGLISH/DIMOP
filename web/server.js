@@ -154,7 +154,7 @@ ${fullKnowledgeText}`;
     res.setHeader('Connection', 'keep-alive');
 
     const stream = await client.messages.stream({
-      model: 'claude-sonnet-4-5-20250929',
+      model: 'claude-sonnet-4-6',
       max_tokens: 2048,
       system: systemPrompt,
       messages: messages.map(m => ({ role: m.role, content: m.content })),
