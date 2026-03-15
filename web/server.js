@@ -2,9 +2,10 @@ import 'dotenv/config';
 import express from 'express';
 import { fileURLToPath } from 'url';
 import { dirname, join, resolve } from 'path';
-import { readFileSync, readdirSync, statSync } from 'fs';
+import { readFileSync, readdirSync, statSync, watch } from 'fs';
 import Anthropic from '@anthropic-ai/sdk';
 import rateLimit from 'express-rate-limit';
+import { buildFullKnowledge } from './extract-knowledge.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -16,15 +17,55 @@ const PORT = process.env.PORT || 3456;
 app.use(express.json());
 app.use(express.static(join(__dirname, 'public')));
 
-// --- Knowledge base ---
-function loadKnowledge() {
+// --- Full knowledge (all documents) ---
+let fullKnowledgeText = '';
+
+async function refreshKnowledge() {
+  console.log('\n  Tudásbázis frissítése...');
+  try {
+    const { fullText, docCount, totalChars } = await buildFullKnowledge();
+    fullKnowledgeText = fullText;
+    console.log(`  Kész: ${docCount} dokumentum, ${totalChars.toLocaleString()} karakter\n`);
+  } catch (err) {
+    console.error('  Hiba a tudásbázis frissítésekor:', err.message);
+  }
+}
+
+// --- File watcher ---
+function watchFolders() {
+  const dirsToWatch = [
+    join(ROOT, 'PÁLYÁZATI KIIRAS'),
+    join(ROOT, 'TUDÁSBÁZIS'),
+    join(ROOT, 'NYILATKOZATOK'),
+    join(ROOT, 'SABLON KITÖLTÉSEK'),
+    join(ROOT, 'BENYÚJTÁS'),
+  ];
+
+  let debounce = null;
+  for (const dir of dirsToWatch) {
+    try {
+      watch(dir, { recursive: true }, (eventType, filename) => {
+        if (!filename || filename.startsWith('.')) return;
+        clearTimeout(debounce);
+        debounce = setTimeout(() => {
+          console.log(`  Változás észlelve: ${filename} (${eventType})`);
+          refreshKnowledge();
+        }, 2000);
+      });
+    } catch {}
+  }
+  console.log('  Mappafigyelő aktív - változásokat automatikusan frissíti\n');
+}
+
+// --- Knowledge base (markdown only, for the webpage) ---
+function loadKnowledgeMd() {
   const mdPath = join(ROOT, 'TUDÁSBÁZIS', 'dimop-tudasbazis.md');
   return readFileSync(mdPath, 'utf-8');
 }
 
 app.get('/api/knowledge', (_req, res) => {
   try {
-    res.json({ content: loadKnowledge() });
+    res.json({ content: loadKnowledgeMd() });
   } catch (err) {
     res.status(500).json({ error: 'Nem sikerült betölteni a tudásbázist.' });
   }
@@ -92,19 +133,19 @@ app.post('/api/chat', chatLimiter, async (req, res) => {
     return res.status(400).json({ error: 'Hibás kérés.' });
   }
 
-  const knowledge = loadKnowledge();
   const systemPrompt = `Te a DIMOP Plusz-1.2.6/B-26 pályázati asszisztens vagy. A feladatod, hogy segítsd a felhasználókat a pályázattal kapcsolatos kérdésekben.
 
 SZABÁLYOK:
 - Válaszolj MINDIG magyarul
-- Csak a tudásbázis alapján válaszolj - ne találj ki információt
+- Csak az alábbi dokumentumok alapján válaszolj - ne találj ki információt
 - Ha nem tudod a választ, mondd el őszintén
 - Legyél tömör és pontos
 - Használj markdown formázást a válaszokban (táblázatok, listák, félkövér)
 - Ha összegekről kérdenek, mindig add meg a pontos számokat
+- Hivatkozz a forrás dokumentumra ha releváns (pl. "A felhívás 2.3.1. pontja szerint...")
 
-TUDÁSBÁZIS:
-${knowledge}`;
+AZ ÖSSZES PÁLYÁZATI DOKUMENTUM TELJES SZÖVEGE:
+${fullKnowledgeText}`;
 
   try {
     const client = new Anthropic({ apiKey });
@@ -137,7 +178,13 @@ ${knowledge}`;
 });
 
 // --- Start ---
-app.listen(PORT, () => {
-  console.log(`\n  DIMOP Tudásbázis fut: http://localhost:${PORT}\n`);
-  console.log(`  AI Chat: ${process.env.ANTHROPIC_API_KEY ? 'AKTÍV' : 'INAKTÍV (nincs ANTHROPIC_API_KEY a .env-ben)'}\n`);
-});
+async function start() {
+  await refreshKnowledge();
+  watchFolders();
+  app.listen(PORT, () => {
+    console.log(`  DIMOP Tudásbázis fut: http://localhost:${PORT}`);
+    console.log(`  AI Chat: ${process.env.ANTHROPIC_API_KEY ? 'AKTÍV' : 'INAKTÍV (nincs ANTHROPIC_API_KEY a .env-ben)'}\n`);
+  });
+}
+
+start();

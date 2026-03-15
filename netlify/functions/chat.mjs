@@ -5,19 +5,28 @@ import { fileURLToPath } from 'url';
 
 let knowledgeCache = null;
 
-function getKnowledge() {
+function getFullKnowledge() {
   if (knowledgeCache) return knowledgeCache;
   try {
     const __dirname = dirname(fileURLToPath(import.meta.url));
-    const kbPath = join(__dirname, '..', '..', 'TUDÁSBÁZIS', 'dimop-tudasbazis.md');
-    knowledgeCache = readFileSync(kbPath, 'utf-8');
+    // Try full-knowledge.json first (built by build.js)
+    const fkPath = join(__dirname, '..', '..', 'dist', 'full-knowledge.json');
+    const data = JSON.parse(readFileSync(fkPath, 'utf-8'));
+    knowledgeCache = data.fullText;
   } catch {
-    knowledgeCache = '';
+    try {
+      // Fallback to just the markdown
+      const __dirname = dirname(fileURLToPath(import.meta.url));
+      const kbPath = join(__dirname, '..', '..', 'TUDÁSBÁZIS', 'dimop-tudasbazis.md');
+      knowledgeCache = readFileSync(kbPath, 'utf-8');
+    } catch {
+      knowledgeCache = '';
+    }
   }
   return knowledgeCache;
 }
 
-export default async (req, context) => {
+export default async (req) => {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     return new Response(JSON.stringify({ error: 'AI chat nincs konfigurálva.' }), {
@@ -51,18 +60,19 @@ export default async (req, context) => {
     });
   }
 
-  const knowledge = getKnowledge();
+  const knowledge = getFullKnowledge();
   const systemPrompt = `Te a DIMOP Plusz-1.2.6/B-26 pályázati asszisztens vagy. A feladatod, hogy segítsd a felhasználókat a pályázattal kapcsolatos kérdésekben.
 
 SZABÁLYOK:
 - Válaszolj MINDIG magyarul
-- Csak a tudásbázis alapján válaszolj - ne találj ki információt
+- Csak az alábbi dokumentumok alapján válaszolj - ne találj ki információt
 - Ha nem tudod a választ, mondd el őszintén
 - Legyél tömör és pontos
 - Használj markdown formázást a válaszokban (táblázatok, listák, félkövér)
 - Ha összegekről kérdenek, mindig add meg a pontos számokat
+- Hivatkozz a forrás dokumentumra ha releváns (pl. "A felhívás 2.3.1. pontja szerint...")
 
-TUDÁSBÁZIS:
+AZ ÖSSZES PÁLYÁZATI DOKUMENTUM TELJES SZÖVEGE:
 ${knowledge}`;
 
   try {
