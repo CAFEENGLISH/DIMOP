@@ -83,21 +83,17 @@
 
 ### Hogyan jut el hozzád a pénz?
 
-```
-Nyertél → Támogatói Okirat → Előleg (max 3M Ft)
-    ↓
-TE fizetsz a szállítónak (utófinanszírozás!)
-    ↓
-Időközi kifizetési kérelem → IH visszatéríti a támogatást
-    ↓
-Projekt befejezés → Záró kifizetési kérelem → maradék összeg
-```
-
-1. **Támogatói Okirat** megérkezik (ha nyertél)
-2. **Előleg igénylése** - max. 3M Ft kifizetik neked
-3. **Te előre fizetsz** - szoftvereket, eszközöket te vásárolod meg a saját pénzedből
-4. **Időközi kifizetési kérelem** (1 db) - benyújtod a dokumentumokat, IH visszatéríti a támogatást
-5. **Záró kifizetési kérelem** (1 db) - projekt végén, a maradék összeg
+| Lépés | Mi történik |
+|:-----:|-------------|
+| 1 | **Nyertél** → Támogatói Okirat megérkezik |
+| ↓ | |
+| 2 | **Előleg igénylése** → max. 3M Ft kifizetik neked |
+| ↓ | |
+| 3 | **TE fizetsz a szállítónak** (utófinanszírozás! - saját pénzedből) |
+| ↓ | |
+| 4 | **Időközi kifizetési kérelem** (1 db) → IH visszatéríti a támogatást |
+| ↓ | |
+| 5 | **Projekt befejezés → Záró kifizetési kérelem** → maradék összeg |
 
 ### Kulcs szabályok
 
