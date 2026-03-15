@@ -75,7 +75,7 @@ ${knowledge}`;
     (async () => {
       try {
         const stream = await client.messages.stream({
-          model: 'claude-sonnet-4-6-20250514',
+          model: 'claude-sonnet-4-5-20250929',
           max_tokens: 2048,
           system: systemPrompt,
           messages: messages.map(m => ({ role: m.role, content: m.content })),
