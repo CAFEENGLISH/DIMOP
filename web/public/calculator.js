@@ -104,8 +104,8 @@ const DEVICES = [
 // --- Calculator State ---
 const calcState = {
   months: 18,
-  headcount: 5,
-  users: 5,
+  headcount: 1,
+  users: 1,
   vatMode: 'netto', // 'netto' or 'brutto'
   selectedGoals: {},   // { goalId: { enabled: true, components: { compIdx: { enabled, qty } } } }
   deviceQty: {},       // { deviceId: qty }
@@ -137,11 +137,11 @@ function buildCalculatorHTML() {
       </div>
       <div class="calc-setting">
         <label>Létszám (helyszínen)</label>
-        <input type="number" id="calcHeadcount" min="1" max="50" value="5" class="calc-num">
+        <input type="number" id="calcHeadcount" min="1" max="50" value="1" class="calc-num">
       </div>
       <div class="calc-setting">
         <label>Felhasználószám</label>
-        <input type="number" id="calcUsers" min="1" max="50" value="5" class="calc-num">
+        <input type="number" id="calcUsers" min="1" max="50" value="1" class="calc-num">
       </div>
       <div class="calc-setting">
         <label>ÁFA státusz</label>
@@ -335,10 +335,10 @@ function buildDevicesHTML() {
 }
 
 function getDefaultQty(comp) {
-  if (comp.perPerson) return 5;
-  if (comp.perHour) return 10;
-  if (comp.perDevice) return 5;
-  if (comp.perUser) return 5;
+  if (comp.perPerson) return 1;
+  if (comp.perHour) return 1;
+  if (comp.perDevice) return 1;
+  if (comp.perUser) return 1;
   return 1;
 }
 
