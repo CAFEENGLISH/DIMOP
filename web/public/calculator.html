@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Költségkalkulátor - DIMOP Plusz-1.2.6/B-26</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧮</text></svg>">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-left">
+        <a href="/" class="back-btn" aria-label="Vissza a tudásbázisra">&#8249;</a>
+        <div class="logo">DIMOP<span>+</span></div>
+        <div class="header-text">
+          <h1>Költségkalkulátor</h1>
+          <p>DIMOP Plusz-1.2.6/B-26 &mdash; Interaktív projekt költségbecslés</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <span class="badge">12M Ft</span>
+        <span class="badge badge-green">Vissza nem térítendő</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Calculator content -->
+  <main class="calc-page">
+    <section id="calculatorSection"></section>
+  </main>
+
+  <script src="/calculator.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => { initCalculator(); });
+  </script>
+</body>
+</html>

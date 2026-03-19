@@ -84,7 +84,7 @@
       </div>
       <ul id="navList"></ul>
       <div class="sidebar-calc">
-        <a href="#kalkulator" class="sidebar-calc-btn" onclick="document.getElementById('kalkulator')?.scrollIntoView({behavior:'smooth'});document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('active');return false;">
+        <a href="/calculator.html" class="sidebar-calc-btn">
           <span class="calc-icon">🧮</span> Költségkalkulátor
         </a>
       </div>
@@ -106,7 +106,6 @@
         <p>Tudásbázis betöltése...</p>
       </div>
       <article id="article"></article>
-      <section id="calculatorSection"></section>
     </main>
   </div>
 
@@ -159,7 +158,6 @@
   <div class="overlay" id="overlay"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="/calculator.js"></script>
   <script src="/app.js"></script>
 </body>
 </html>

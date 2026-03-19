@@ -208,6 +208,12 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: var
   .header-text p { display: none; }
 }
 
+/* === Calculator Page === */
+.back-btn { color: #fff; text-decoration: none; font-size: 32px; font-weight: 300; line-height: 1; margin-right: 8px; opacity: .7; transition: opacity .2s; }
+.back-btn:hover { opacity: 1; }
+.calc-page { max-width: 960px; margin: 0 auto; padding: 24px 32px 120px; }
+@media (max-width: 768px) { .calc-page { padding: 16px 12px 120px; } }
+
 /* === Calculator === */
 .sidebar-calc { padding: 12px 16px; border-top: 1px solid var(--gray-200); }
 .sidebar-calc-btn { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--blue); color: #fff; text-decoration: none; border-radius: var(--radius); font-weight: 600; font-size: 14px; transition: background .2s; }
