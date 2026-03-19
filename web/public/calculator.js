@@ -211,11 +211,11 @@ function buildCalculatorHTML() {
       </div>
       <div class="calc-score-row">
         <span class="calc-score-num">7.</span>
-        <span class="calc-score-name">Területi dimenzió</span>
+        <span class="calc-score-name">Területi dimenzió <button class="calc-map-btn" onclick="openRegionMap()">Térkép</button></span>
         <span class="calc-score-how">
           <select id="calcRegion" class="calc-select-sm">
-            <option value="other">Közép-/Nyugat-Dunántúl</option>
-            <option value="priority">Észak-Alföld / Észak-Mo. / Dél-Dunántúl / Dél-Alföld</option>
+            <option value="other">Közép-/Nyugat-Dunántúl (0 pont)</option>
+            <option value="priority">Észak-Alföld / Észak-Mo. / Dél-Dunántúl / Dél-Alföld (+2 pont)</option>
           </select>
         </span>
         <span class="calc-score-val" id="scoreRegion">0p</span>
@@ -916,6 +916,113 @@ function deleteCalcNamed() {
     localStorage.setItem(SAVES_KEY, JSON.stringify(saves));
     refreshSavesList();
   }
+}
+
+// --- Region Map ---
+function openRegionMap() {
+  // Remove existing modal if any
+  document.getElementById('regionMapModal')?.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'regionMapModal';
+  modal.className = 'region-modal-overlay';
+  modal.innerHTML = `
+    <div class="region-modal">
+      <div class="region-modal-header">
+        <h3>Magyarország régiói - DIMOP Plusz területi besorolás</h3>
+        <button class="region-modal-close" onclick="document.getElementById('regionMapModal').remove()">&times;</button>
+      </div>
+      <div class="region-modal-body">
+        <svg viewBox="0 0 800 500" class="region-map-svg">
+          <!-- Nyugat-Dunántúl -->
+          <path d="M80,140 L140,100 L180,120 L200,180 L220,220 L200,300 L160,340 L120,350 L60,300 L50,220 L60,180 Z" class="region-neutral" data-region="nyugat">
+            <title>Nyugat-Dunántúl: Győr, Szombathely, Zalaegerszeg (0 pont, de pályázhat)</title>
+          </path>
+          <text x="130" y="230" class="region-label">Nyugat-</text><text x="120" y="248" class="region-label">Dunántúl</text>
+
+          <!-- Közép-Dunántúl -->
+          <path d="M180,120 L260,100 L310,130 L330,170 L310,220 L280,260 L240,290 L200,300 L220,220 L200,180 Z" class="region-neutral" data-region="kozep-dt">
+            <title>Közép-Dunántúl: Székesfehérvár, Veszprém, Tatabánya (0 pont, de pályázhat)</title>
+          </path>
+          <text x="230" y="190" class="region-label">Közép-</text><text x="220" y="208" class="region-label">Dunántúl</text>
+
+          <!-- Dél-Dunántúl -->
+          <path d="M120,350 L160,340 L200,300 L240,290 L280,260 L310,300 L320,360 L300,420 L240,450 L180,440 L130,410 L100,370 Z" class="region-priority" data-region="del-dt">
+            <title>Dél-Dunántúl: Pécs, Kaposvár, Szekszárd (+2 pont)</title>
+          </path>
+          <text x="200" y="370" class="region-label">Dél-</text><text x="190" y="388" class="region-label">Dunántúl</text>
+
+          <!-- Budapest / Közép-Mo -->
+          <path d="M310,130 L370,110 L400,140 L390,180 L360,200 L330,170 Z" class="region-blocked" data-region="budapest">
+            <title>Budapest / Közép-Magyarország: NEM pályázhat!</title>
+          </path>
+          <text x="340" y="160" class="region-label-sm">BP</text>
+
+          <!-- Észak-Magyarország -->
+          <path d="M310,130 L370,110 L420,60 L500,50 L560,80 L540,140 L480,170 L420,180 L390,180 L400,140 Z" class="region-priority" data-region="eszak-mo">
+            <title>Észak-Magyarország: Miskolc, Eger, Salgótarján (+2 pont)</title>
+          </path>
+          <text x="430" y="110" class="region-label">Észak-</text><text x="410" y="128" class="region-label">Magyarország</text>
+
+          <!-- Észak-Alföld -->
+          <path d="M540,140 L560,80 L640,60 L720,90 L740,160 L720,230 L660,260 L580,250 L520,220 L480,170 Z" class="region-priority" data-region="eszak-alfold">
+            <title>Észak-Alföld: Debrecen, Nyíregyháza, Szolnok (+2 pont)</title>
+          </path>
+          <text x="590" y="160" class="region-label">Észak-</text><text x="590" y="178" class="region-label">Alföld</text>
+
+          <!-- Dél-Alföld -->
+          <path d="M310,300 L360,200 L390,180 L420,180 L480,170 L520,220 L580,250 L660,260 L680,320 L660,400 L580,440 L480,450 L400,430 L340,400 L320,360 Z" class="region-priority" data-region="del-alfold">
+            <title>Dél-Alföld: Szeged, Kecskemét, Békéscsaba (+2 pont)</title>
+          </path>
+          <text x="470" y="330" class="region-label">Dél-Alföld</text>
+
+          <!-- City dots -->
+          <circle cx="115" cy="170" r="4" fill="#fff" stroke="#333" stroke-width="1.5"/><text x="125" y="175" class="city-label">Győr</text>
+          <circle cx="100" cy="290" r="4" fill="#fff" stroke="#333" stroke-width="1.5"/><text x="70" y="286" class="city-label">Szombathely</text>
+          <circle cx="150" cy="330" r="4" fill="#fff" stroke="#333" stroke-width="1.5"/><text x="108" y="346" class="city-label">Zalaegerszeg</text>
+          <circle cx="250" cy="160" r="4" fill="#fff" stroke="#333" stroke-width="1.5"/><text x="195" y="157" class="city-label">Veszprém</text>
+          <circle cx="290" cy="180" r="4" fill="#fff" stroke="#333" stroke-width="1.5"/><text x="218" y="178" class="city-label">Székesfehérvár</text>
+          <circle cx="230" cy="380" r="4" fill="#fff" stroke="#333" stroke-width="1.5"/><text x="240" y="384" class="city-label">Pécs</text>
+          <circle cx="195" cy="360" r="4" fill="#fff" stroke="#333" stroke-width="1.5"/><text x="150" y="370" class="city-label">Kaposvár</text>
+          <circle cx="300" cy="340" r="4" fill="#fff" stroke="#333" stroke-width="1.5"/><text x="310" y="344" class="city-label">Szekszárd</text>
+          <circle cx="360" cy="155" r="3" fill="#fff" stroke="#c00" stroke-width="2"/><text x="350" y="148" class="city-label" style="fill:#c00;font-weight:700">Budapest</text>
+          <circle cx="440" cy="100" r="4" fill="#fff" stroke="#333" stroke-width="1.5"/><text x="450" y="96" class="city-label">Eger</text>
+          <circle cx="520" cy="100" r="4" fill="#fff" stroke="#333" stroke-width="1.5"/><text x="530" y="96" class="city-label">Miskolc</text>
+          <circle cx="660" cy="140" r="4" fill="#fff" stroke="#333" stroke-width="1.5"/><text x="665" y="155" class="city-label">Debrecen</text>
+          <circle cx="710" cy="110" r="4" fill="#fff" stroke="#333" stroke-width="1.5"/><text x="680" y="100" class="city-label">Nyíregyháza</text>
+          <circle cx="490" cy="220" r="4" fill="#fff" stroke="#333" stroke-width="1.5"/><text x="500" y="224" class="city-label">Szolnok</text>
+          <circle cx="440" cy="350" r="4" fill="#fff" stroke="#333" stroke-width="1.5"/><text x="450" y="354" class="city-label">Kecskemét</text>
+          <circle cx="530" cy="400" r="4" fill="#fff" stroke="#333" stroke-width="1.5"/><text x="540" y="404" class="city-label">Szeged</text>
+          <circle cx="640" cy="350" r="4" fill="#fff" stroke="#333" stroke-width="1.5"/><text x="650" y="354" class="city-label">Békéscsaba</text>
+        </svg>
+
+        <div class="region-legend">
+          <div class="region-legend-item"><span class="region-dot region-dot-priority"></span> <strong>Kiemelt régió (+2 pont)</strong></div>
+          <div class="region-legend-item"><span class="region-dot region-dot-neutral"></span> Pályázhat (0 pont)</div>
+          <div class="region-legend-item"><span class="region-dot region-dot-blocked"></span> NEM pályázhat</div>
+        </div>
+
+        <div class="region-details">
+          <div class="region-col">
+            <h4 style="color:var(--green)">Kiemelt régiók (+2 pont)</h4>
+            <p><strong>Észak-Alföld:</strong> Debrecen, Nyíregyháza, Szolnok, Jászberény, Hajdúszoboszló</p>
+            <p><strong>Észak-Magyarország:</strong> Miskolc, Eger, Salgótarján, Gyöngyös, Kazincbarcika</p>
+            <p><strong>Dél-Dunántúl:</strong> Pécs, Kaposvár, Szekszárd, Mohács, Komló</p>
+            <p><strong>Dél-Alföld:</strong> Szeged, Kecskemét, Békéscsaba, Hódmezővásárhely, Baja</p>
+          </div>
+          <div class="region-col">
+            <h4 style="color:var(--gray-700)">Egyéb régiók (0 pont, de pályázhat)</h4>
+            <p><strong>Közép-Dunántúl:</strong> Székesfehérvár, Veszprém, Tatabánya, Dunaújváros</p>
+            <p><strong>Nyugat-Dunántúl:</strong> Győr, Szombathely, Zalaegerszeg, Sopron, Nagykanizsa</p>
+            <h4 style="color:var(--red);margin-top:12px">NEM pályázhat</h4>
+            <p><strong>Budapest / Közép-Magyarország</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
 }
 
 // --- Helpers ---
