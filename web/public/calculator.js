@@ -200,20 +200,18 @@ function buildGoalsHTML() {
       ${!isFlat && !disabled && goal.components ? `
         <div class="calc-components" data-components="${num}">
           <table class="calc-comp-table">
-            <thead><tr><th></th><th>Összetevő</th><th>Egységár</th><th>Mennyiség</th><th>Összeg</th></tr></thead>
+            <thead><tr><th></th><th>Összetevő</th><th>Egységár</th><th>Fő/Db</th><th>Hónap</th><th>Összeg</th></tr></thead>
             <tbody>
               ${goal.components.map((c, ci) => `
                 <tr class="calc-comp-row" data-goal="${num}" data-comp="${ci}">
                   <td><input type="checkbox" class="calc-comp-check" data-goal="${num}" data-comp="${ci}" ${c.required ? 'checked disabled' : ''}></td>
                   <td>
                     <strong>${c.name}</strong> ${c.required ? '<span class="tag tag-sm tag-blue">Kötelező</span>' : '<span class="tag tag-sm tag-gray">Választható</span>'}
-                    <br><small class="text-muted">${c.unit}</small>
                     ${c.bonusPoints ? `<span class="tag tag-sm tag-blue">+${c.bonusPoints.points} pont (${c.bonusPoints.type})</span>` : ''}
                   </td>
                   <td class="text-right calc-unit-price" data-goal="${num}" data-comp="${ci}">${fmt(c.netto)}</td>
-                  <td>
-                    ${c.once ? '<span class="text-muted">1×</span>' : `<input type="number" class="calc-qty" data-goal="${num}" data-comp="${ci}" min="0" max="${c.maxQty || 999}" value="${getDefaultQty(c)}">`}
-                  </td>
+                  <td>${buildQtyField(c, num, ci)}</td>
+                  <td>${buildMonthField(c, num, ci)}</td>
                   <td class="text-right calc-comp-total" data-goal="${num}" data-comp="${ci}">0 Ft</td>
                 </tr>
               `).join('')}
@@ -247,16 +245,44 @@ function getDefaultQty(comp) {
   if (comp.perPerson) return 5;
   if (comp.perHour) return 10;
   if (comp.perDevice) return 5;
+  if (comp.perUser) return 5;
   return 1;
+}
+
+function buildQtyField(c, goalId, compIdx) {
+  if (c.once) return '<span class="text-muted">1×</span>';
+  if (c.perUser || c.perPerson || c.perDevice || c.perHour) {
+    const label = c.perHour ? 'óra' : (c.perDevice ? 'db' : 'fő');
+    const defaultVal = getDefaultQty(c);
+    return `<input type="number" class="calc-qty" data-goal="${goalId}" data-comp="${compIdx}" data-field="qty" min="0" max="${c.maxQty || 999}" value="${defaultVal}"><small class="text-muted">${label}</small>`;
+  }
+  // Only perMonth, no per-unit dimension
+  return '<span class="text-muted">—</span>';
+}
+
+function buildMonthField(c, goalId, compIdx) {
+  if (c.once) return '<span class="text-muted">—</span>';
+  if (c.perMonth) {
+    return `<input type="number" class="calc-month-input" data-goal="${goalId}" data-comp="${compIdx}" data-field="months" min="1" max="24" value="${calcState.months}"><small class="text-muted">hó</small>`;
+  }
+  return '<span class="text-muted">—</span>';
 }
 
 // --- Bind Events ---
 function bindCalculatorEvents() {
-  // Month slider
+  // Month slider - also updates all month input fields that haven't been manually edited
   const monthSlider = document.getElementById('calcMonths');
   monthSlider.addEventListener('input', () => {
+    const oldMonths = calcState.months;
     calcState.months = parseInt(monthSlider.value);
     document.getElementById('calcMonthsVal').textContent = calcState.months + ' hó';
+    // Update month inputs that still have the old default value
+    document.querySelectorAll('.calc-month-input').forEach(inp => {
+      if (parseInt(inp.value) === oldMonths || !inp.dataset.manuallyEdited) {
+        inp.value = calcState.months;
+        delete inp.dataset.manuallyEdited;
+      }
+    });
     recalculate();
   });
 
@@ -305,12 +331,18 @@ function bindCalculatorEvents() {
     });
   });
 
-  // Component checkboxes & quantities
+  // Component checkboxes & quantities & month inputs
   document.querySelectorAll('.calc-comp-check').forEach(cb => {
     cb.addEventListener('change', () => recalculate());
   });
   document.querySelectorAll('.calc-qty').forEach(input => {
     input.addEventListener('input', () => recalculate());
+  });
+  document.querySelectorAll('.calc-month-input').forEach(input => {
+    input.addEventListener('input', () => {
+      input.dataset.manuallyEdited = 'true';
+      recalculate();
+    });
   });
 }
 
@@ -363,6 +395,7 @@ function recalculate() {
     goal.components.forEach((comp, ci) => {
       const compCheck = document.querySelector(`.calc-comp-check[data-goal="${num}"][data-comp="${ci}"]`);
       const qtyInput = document.querySelector(`.calc-qty[data-goal="${num}"][data-comp="${ci}"]`);
+      const monthInput = document.querySelector(`.calc-month-input[data-goal="${num}"][data-comp="${ci}"]`);
       const totalEl = document.querySelector(`.calc-comp-total[data-goal="${num}"][data-comp="${ci}"]`);
 
       if (!compCheck || !compCheck.checked) {
@@ -371,21 +404,25 @@ function recalculate() {
       }
 
       const unitPrice = mode === 'netto' ? comp.netto : comp.brutto;
-      let qty = 1;
+      let compTotal;
 
       if (comp.once) {
-        qty = 1;
-      } else if (qtyInput) {
-        qty = parseInt(qtyInput.value) || 0;
+        compTotal = unitPrice;
+      } else {
+        const qty = qtyInput ? (parseInt(qtyInput.value) || 0) : 1;
+        const mths = monthInput ? (parseInt(monthInput.value) || 0) : 1;
+
+        if (comp.perMonth && (comp.perUser || comp.perPerson || comp.perDevice)) {
+          // egységár × fő/db × hónap
+          compTotal = unitPrice * qty * mths;
+        } else if (comp.perMonth) {
+          // egységár × hónap (nincs fő/db dimenzió)
+          compTotal = unitPrice * mths;
+        } else {
+          // egységár × fő/db/óra (nincs hónap)
+          compTotal = unitPrice * qty;
+        }
       }
-
-      let multiplier = 1;
-      if (comp.perMonth && comp.perUser) multiplier = months * users;
-      else if (comp.perMonth && comp.perDevice) multiplier = months;
-      else if (comp.perMonth) multiplier = months;
-      else if (comp.perUser) multiplier = users;
-
-      const compTotal = comp.once ? unitPrice : unitPrice * qty * multiplier;
 
       if (totalEl) totalEl.textContent = fmt(compTotal);
       goalTotal += compTotal;
