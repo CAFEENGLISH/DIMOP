@@ -292,9 +292,16 @@ function bindCalculatorEvents() {
     recalculate();
   });
 
-  // Users
+  // Users - also update qty fields for perUser components
   document.getElementById('calcUsers').addEventListener('input', (e) => {
+    const oldUsers = calcState.users;
     calcState.users = parseInt(e.target.value) || 1;
+    // Update qty inputs that still have the old default
+    document.querySelectorAll('.calc-qty').forEach(inp => {
+      if (parseInt(inp.value) === oldUsers && !inp.dataset.manuallyEdited) {
+        inp.value = calcState.users;
+      }
+    });
     recalculate();
   });
 
@@ -336,7 +343,10 @@ function bindCalculatorEvents() {
     cb.addEventListener('change', () => recalculate());
   });
   document.querySelectorAll('.calc-qty').forEach(input => {
-    input.addEventListener('input', () => recalculate());
+    input.addEventListener('input', () => {
+      input.dataset.manuallyEdited = 'true';
+      recalculate();
+    });
   });
   document.querySelectorAll('.calc-month-input').forEach(input => {
     input.addEventListener('input', () => {
