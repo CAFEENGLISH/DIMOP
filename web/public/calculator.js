@@ -150,6 +150,24 @@ function buildCalculatorHTML() {
           <button class="calc-toggle-btn" data-vat="brutto">Bruttó</button>
         </div>
       </div>
+      <div class="calc-setting">
+        <label>Digitális szint vállalás</label>
+        <select id="calcDigLevel" class="calc-select">
+          <option value="low">Alacsony (6-11 pont) — kötelező</option>
+          <option value="high">Magas (12-17 pont) — +2 pont</option>
+        </select>
+      </div>
+      <div class="calc-setting">
+        <label>Régió</label>
+        <select id="calcRegion" class="calc-select">
+          <option value="other">Közép-/Nyugat-Dunántúl</option>
+          <option value="priority">Észak-Alföld / Észak-Mo. / Dél-Dunántúl / Dél-Alföld — +2 pont</option>
+        </select>
+      </div>
+      <div class="calc-setting">
+        <label>DFK (Digitális Fejlesztési Koncepció)</label>
+        <label class="calc-checkbox-label"><input type="checkbox" id="calcDFK" checked> Van vagy vállalom — +2 pont</label>
+      </div>
     </div>
 
     <!-- Warnings -->
@@ -311,6 +329,11 @@ function bindCalculatorEvents() {
     });
     recalculate();
   });
+
+  // Scoring inputs
+  document.getElementById('calcDigLevel').addEventListener('change', () => recalculate());
+  document.getElementById('calcRegion').addEventListener('change', () => recalculate());
+  document.getElementById('calcDFK').addEventListener('change', () => recalculate());
 
   // VAT toggle
   document.querySelectorAll('.calc-toggle-btn').forEach(btn => {
@@ -533,6 +556,24 @@ function recalculate() {
     warnings.push({ type: 'warn', text: `Összköltség ${fmt(totalCost)} meghaladja a max. EU elszámolható ${fmt(maxEuCost)}-t.` });
   }
 
+  // Calculate total evaluation score (8.2. pont)
+  const digLevel = document.getElementById('calcDigLevel')?.value;
+  const region = document.getElementById('calcRegion')?.value;
+  const hasDFK = document.getElementById('calcDFK')?.checked;
+
+  // 6. Digitális szint vállalás: alacsony=2, magas=4
+  const digPoints = digLevel === 'high' ? 4 : 2;
+  // 7. Területi dimenzió: kiemelt régiók=2
+  const regionPoints = region === 'priority' ? 2 : 0;
+  // 8. DFK: +2
+  const dfkPoints = hasDFK ? 2 : 0;
+
+  const totalPoints = bonusPoints + digPoints + regionPoints + dfkPoints;
+
+  if (totalPoints < 2 && totalCost > 0) {
+    warnings.push({ type: 'error', text: `Értékelési pontszám: ${totalPoints} — minimum 2 pont kell!` });
+  }
+
   // Render warnings
   const warningsEl = document.getElementById('calcWarnings');
   warningsEl.innerHTML = warnings.map(w =>
@@ -568,10 +609,15 @@ function recalculate() {
         <span>Előleg (max. 25%)</span>
         <span class="calc-summary-val">${fmt(advance)}</span>
       </div>
-      ${bonusPoints > 0 ? `<div class="calc-summary-row calc-summary-bonus">
-        <span>Értékelési többletpontok</span>
-        <span class="calc-summary-val">+${bonusPoints} pont</span>
-      </div>` : ''}
+      <div class="calc-summary-row calc-summary-bonus" style="grid-column:1/-1;border-top:1px solid var(--gray-200);padding-top:8px;margin-top:4px">
+        <span><strong>Értékelési pontszám: ${totalPoints}/12</strong></span>
+        <span class="calc-summary-val" style="font-size:13px;font-weight:400">
+          Szint ${digPoints}p
+          ${bonusPoints > 0 ? ` + Szakmai ${bonusPoints}p` : ''}
+          ${regionPoints > 0 ? ' + Régió 2p' : ''}
+          ${dfkPoints > 0 ? ' + DFK 2p' : ''}
+        </span>
+      </div>
     </div>
   `;
 }

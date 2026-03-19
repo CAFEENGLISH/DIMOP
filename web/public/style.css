@@ -230,6 +230,8 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: var
 .calc-toggle { display: flex; gap: 4px; }
 .calc-toggle-btn { padding: 6px 14px; border: 1px solid var(--gray-300); background: #fff; border-radius: 6px; font-size: 13px; cursor: pointer; transition: all .15s; }
 .calc-toggle-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+.calc-select { width: 100%; padding: 6px 10px; border: 1px solid var(--gray-300); border-radius: 6px; font-size: 13px; background: #fff; }
+.calc-checkbox-label { font-weight: 400 !important; cursor: pointer; display: flex !important; align-items: center; gap: 6px; }
 
 .calc-warnings { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
 .calc-warn { padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 500; }
