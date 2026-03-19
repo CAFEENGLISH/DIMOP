@@ -207,6 +207,13 @@ function buildCalculatorHTML() {
         </span>
         <span class="calc-score-val" id="scoreDigLevel">2p</span>
       </div>
+      <div class="calc-score-hint" id="digLevelHint" style="display:none">
+        <strong>Magas intenzitás (12-17 pont):</strong> A projekt végére legalább 12 digitális pontot kell elérned (nem csak 6-ot).
+        Ez <strong>+2 extra értékelési pontot</strong> ad, de cserébe:<br>
+        - <strong>Digitális Fejlesztési Stratégia (DFS)</strong> készítése kötelező (a DKF Kft.-vel, díjmentes)<br>
+        - A záró Jelentést kizárólag a <strong>DKF Kft.</strong> készítheti (nem MKIK, nem könyvvizsgáló)<br>
+        - Több fejlesztési célt kell megvalósítani a magasabb pontszámhoz
+      </div>
       <div class="calc-score-row">
         <span class="calc-score-num">7.</span>
         <span class="calc-score-name">Területi dimenzió</span>
@@ -639,6 +646,8 @@ function recalculate() {
   scoreEl('scoreKiber', kiberPoints);
   scoreEl('scoreMI', miPoints);
   scoreEl('scoreDigLevel', digPoints);
+  const hintEl = document.getElementById('digLevelHint');
+  if (hintEl) hintEl.style.display = digLevel === 'high' ? 'block' : 'none';
   scoreEl('scoreRegion', regionPoints);
   scoreEl('scoreDFK', dfkPoints);
 
