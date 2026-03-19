@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beszállítói útmutató - DIMOP Plusz-1.2.6/B-26</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏢</text></svg>">
+  <style>
+    .supplier-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; padding: 16px; background: #fff; border-radius: 8px; border: 1px solid var(--gray-200); }
+    .supplier-nav a { padding: 6px 14px; background: var(--blue-light); color: var(--blue); border-radius: 20px; text-decoration: none; font-size: 13px; font-weight: 500; transition: all .15s; }
+    .supplier-nav a:hover { background: var(--blue); color: #fff; }
+    .sup-section { background: #fff; border-radius: 8px; border: 1px solid var(--gray-200); padding: 24px; margin-bottom: 20px; }
+    .sup-section h2 { font-size: 20px; color: var(--blue-dark); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--blue-light); scroll-margin-top: 90px; }
+    .sup-section h3 { font-size: 16px; color: var(--gray-900); margin: 16px 0 8px; }
+    .sup-section p { margin-bottom: 10px; font-size: 14px; line-height: 1.7; }
+    .sup-section ul { margin: 8px 0 16px 20px; font-size: 14px; line-height: 1.7; }
+    .sup-section li { margin-bottom: 4px; }
+    .sup-section a { color: var(--accent); text-decoration: none; }
+    .sup-section a:hover { text-decoration: underline; }
+    .sup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin: 16px 0; }
+    .sup-card { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 8px; padding: 16px; }
+    .sup-card h4 { font-size: 14px; color: var(--blue); margin-bottom: 8px; }
+    .sup-card ul { margin: 0 0 0 16px; font-size: 13px; }
+    .sup-step { display: flex; gap: 16px; align-items: flex-start; padding: 14px; background: var(--gray-50); border-radius: 8px; margin-bottom: 8px; }
+    .sup-step-num { width: 32px; height: 32px; border-radius: 50%; background: var(--blue); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+    .sup-step-text { flex: 1; font-size: 14px; line-height: 1.6; }
+    .sup-highlight { background: #fff8f0; border-left: 4px solid var(--orange); padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 12px 0; font-size: 14px; }
+    .sup-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0; }
+    .sup-table th { background: var(--blue); color: #fff; padding: 8px 12px; text-align: left; font-weight: 600; }
+    .sup-table td { padding: 8px 12px; border-bottom: 1px solid var(--gray-200); }
+    .sup-table tbody tr:hover { background: var(--blue-light); }
+    .sup-contact { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+    .sup-contact-card { background: var(--blue-light); border-radius: 8px; padding: 16px; }
+    .sup-contact-card strong { color: var(--blue-dark); display: block; margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-left">
+        <a href="/" class="back-btn" aria-label="Vissza a tudásbázisra">&#8249;</a>
+        <div class="logo">DIMOP<span>+</span></div>
+        <div class="header-text">
+          <h1>Beszállítói útmutató</h1>
+          <p>SZVR Akkreditáció &mdash; Modern Vállalkozások Programja 2.0</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <span class="badge">Beszállítóknak</span>
+        <span class="badge badge-green">Akkreditáció</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="calc-page">
+    <!-- Quick Nav -->
+    <nav class="supplier-nav">
+      <a href="#miert">Miért érdemes?</a>
+      <a href="#feltetelek">Feltételek</a>
+      <a href="#regisztracio">Regisztráció</a>
+      <a href="#termekek">Termék feltöltés</a>
+      <a href="#kategoriak">Termékkategóriák</a>
+      <a href="#voucher">Voucher rendszer</a>
+      <a href="#kapcsolat">Kapcsolat</a>
+    </nav>
+
+    <!-- 1. Miért érdemes -->
+    <div class="sup-section" id="miert">
+      <h2>Miért érdemes beszállítóként csatlakozni?</h2>
+      <p>A <strong>Modern Vállalkozások Programja (MVP 2.0)</strong> virtuális piacként és szakértői platformként működik. Jelenleg <strong>több mint 16 000 KKV</strong> csatlakozott ügyfélként.</p>
+      <div class="sup-grid">
+        <div class="sup-card">
+          <h4>Piacra jutás</h4>
+          <ul>
+            <li>Országos tanácsadói hálózat ajánlja a termékeidet</li>
+            <li>Termékkatalógusban megjelenés</li>
+            <li>Rendezvényeken bemutatkozási lehetőség</li>
+          </ul>
+        </div>
+        <div class="sup-card">
+          <h4>Finanszírozás megoldva</h4>
+          <ul>
+            <li>Az ügyfél pályázati támogatásból fizet</li>
+            <li>Akár 90% vissza nem térítendő támogatás</li>
+            <li>Kevesebb fizetési kockázat</li>
+          </ul>
+        </div>
+        <div class="sup-card">
+          <h4>Minőségi szűrés</h4>
+          <ul>
+            <li>Akkreditáció = minőségi garancia</li>
+            <li>Háromtagú Minősítő Testület bírálja el</li>
+            <li>Csak ellenőrzött termékek kerülnek a katalógusba</li>
+          </ul>
+        </div>
+      </div>
+      <p><a href="https://vallalkozzdigitalisan.mkik.hu/miert_csatlakozz" target="_blank">Bővebben a Program előnyeiről →</a></p>
+    </div>
+
+    <!-- 2. Feltételek -->
+    <div class="sup-section" id="feltetelek">
+      <h2>Szállítói csatlakozási feltételek</h2>
+
+      <h3>Alapfeltételek</h3>
+      <ul>
+        <li><strong>Min. 1 lezárt naptári év</strong> (365 nap) az akkreditáció évét megelőzően</li>
+        <li><strong>Min. 3 fő</strong> átlagos statisztikai állományi létszám (konzorciummal is teljesíthető)</li>
+        <li>A termékkel kapcsolatos feladatokhoz <strong>min. 3 fő alkalmazott</strong> igazolható kompetenciákkal:
+          <ul>
+            <li>Fejlesztés</li>
+            <li>Terméktámogatás</li>
+            <li>Ügyfélkezelés</li>
+          </ul>
+        </li>
+        <li>Utolsó 3 lezárt év adózás előtti eredménye <strong>max. 1 esetben</strong> lehet negatív</li>
+        <li>Saját tőke az utolsó 2 lezárt üzleti évben <strong>max. 1 esetben</strong> lehet negatív</li>
+      </ul>
+
+      <h3>Termék feltöltéshez</h3>
+      <ul>
+        <li><strong>Termékcsoportonként 3 db referencia</strong></li>
+        <li><strong>1 db esettanulmány</strong> a termék bevezetésével kapcsolatban</li>
+      </ul>
+
+      <h3>Szükséges dokumentumok</h3>
+      <ul>
+        <li>Teljességi nyilatkozat (cégszerűen aláírva)</li>
+        <li>Aláírási címpéldány (szkennelve - EV-nál nem szükséges)</li>
+        <li>Referencia nyilatkozat</li>
+      </ul>
+
+      <h3>Kötelező vállalások</h3>
+      <ul>
+        <li>Ügyfélkérdésekre <strong>3 munkanapon belül</strong> ingyenesen válaszolni</li>
+        <li>Saját honlapon <strong>landing page</strong> működtetése (céges adatok, szolgáltatások, MVP logó, link a vallalkozzdigitalisan.hu-ra)</li>
+        <li>Felkérés esetén max. <strong>3 rendezvényen</strong> előadóként részt venni</li>
+        <li><strong>20 munkanapon belül</strong> adatszolgáltatási kötelezettségnek eleget tenni</li>
+      </ul>
+
+      <div class="sup-highlight">
+        <strong>Fontos:</strong> A Program termékek nélkül, csak előadóként is elérhető. Emailezz: <a href="mailto:szvrsupport@ginop-mkik.hu">szvrsupport@ginop-mkik.hu</a>
+      </div>
+    </div>
+
+    <!-- 3. Regisztráció -->
+    <div class="sup-section" id="regisztracio">
+      <h2>Regisztráció lépésről lépésre</h2>
+
+      <div class="sup-step">
+        <div class="sup-step-num">1</div>
+        <div class="sup-step-text">Menj a <a href="https://vallalkozzdigitalisan.mkik.hu" target="_blank">vallalkozzdigitalisan.mkik.hu</a> oldalra és kattints a <strong>REGISZTRÁCIÓ</strong> gombra (jobb felső sarok).</div>
+      </div>
+      <div class="sup-step">
+        <div class="sup-step-num">2</div>
+        <div class="sup-step-text">Kattints a <strong>"Szeretnék minősített MVP SZÁLLÍTÓ lenni"</strong> gombra.</div>
+      </div>
+      <div class="sup-step">
+        <div class="sup-step-num">3</div>
+        <div class="sup-step-text">Olvasd el és <strong>fogadd el az adatkezelési nyilatkozatot</strong>.</div>
+      </div>
+      <div class="sup-step">
+        <div class="sup-step-num">4</div>
+        <div class="sup-step-text">Töltsd ki a <strong>regisztrációs űrlapot</strong>: cégnév, kapcsolattartó adatok (email, név, beosztás, telefon), jelszó. Több kapcsolattartó is regisztrálható!</div>
+      </div>
+      <div class="sup-step">
+        <div class="sup-step-num">5</div>
+        <div class="sup-step-text">Kattints a <strong>Regisztráció</strong> gombra → automatikus belépés az ügyfélfiókba.</div>
+      </div>
+      <div class="sup-step">
+        <div class="sup-step-num">6</div>
+        <div class="sup-step-text">Töltsd ki az <strong>adatlapot</strong> (céges adatok, tevékenységek), majd az oldal alján kattints a <strong>"Beküldés"</strong> gombra.</div>
+      </div>
+      <div class="sup-step">
+        <div class="sup-step-num">7</div>
+        <div class="sup-step-text">Töltsd fel a <strong>dokumentumokat</strong>: teljességi nyilatkozat, aláírási címpéldány, referencia nyilatkozat.</div>
+      </div>
+      <div class="sup-step">
+        <div class="sup-step-num">8</div>
+        <div class="sup-step-text">Várd meg a <strong>Minősítő Testület jóváhagyását</strong> (email értesítés érkezik). Ezután indulhat a termékfeltöltés!</div>
+      </div>
+
+      <div class="sup-highlight">
+        <strong>Ha már ügyfél vagy a Programban:</strong> Ugyanazzal az email címmel regisztrálj szállítóként is. A rendszer automatikusan összeköti a két fiókot. A "Fiókjaim" gombbal válthatsz közöttük.
+      </div>
+
+      <div class="sup-highlight">
+        <strong>Nem sikerül a regisztráció?</strong> Lehetséges okok: az email cím már használt, létező adószám/cégjegyzékszám, szüneteltetett tevékenység. Segítség: <a href="mailto:szvrsupport@ginop-mkik.hu">szvrsupport@ginop-mkik.hu</a>
+      </div>
+    </div>
+
+    <!-- 4. Termék feltöltés -->
+    <div class="sup-section" id="termekek">
+      <h2>Termék/szolgáltatás regisztrálása</h2>
+      <p>A jóváhagyott szállítói fiókban: <strong>Új termék felvitele</strong> menüpont.</p>
+
+      <h3>Kitöltendő adatok</h3>
+      <table class="sup-table">
+        <thead><tr><th>Adat</th><th>Leírás</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Termék név</strong></td><td>Max. 50 karakter, fantázianév. Pályázati terméknél "termékcsomag" célravezetőbb.</td></tr>
+          <tr><td><strong>Pályázati megfeleltetés</strong></td><td>Jelöld be ha a DIMOP pályázathoz kapcsolódik</td></tr>
+          <tr><td><strong>Termékkategória</strong></td><td>Üzleti szoftver / Egyéb szoftver / Szolgáltatások / Hardver / Kombinált</td></tr>
+          <tr><td><strong>Termék eredete</strong></td><td>Saját fejlesztés vagy továbbértékesített</td></tr>
+          <tr><td><strong>Telepítési hely</strong></td><td>Felhő (cloud) / Helyben telepített / Hibrid</td></tr>
+          <tr><td><strong>Email + weboldal</strong></td><td>Termékhez tartozó info email + bemutató weboldal + demó link</td></tr>
+          <tr><td><strong>Rövid bemutató</strong></td><td>Max. 400 karakter - ez jelenik meg a katalógusban</td></tr>
+          <tr><td><strong>Részletes bemutató</strong></td><td>Max. 3000 karakter</td></tr>
+          <tr><td><strong>Célcsoport</strong></td><td>Cégméret + ágazat szerinti megjelölés</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Díjak és kedvezmények</h3>
+      <table class="sup-table">
+        <thead><tr><th>Adat</th><th>Leírás</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Alapár</strong></td><td>Nettó HUF + mennyiségi egység</td></tr>
+          <tr><td><strong>Méretfüggő ár</strong></td><td>Ha mennyiségtől függ az ár</td></tr>
+          <tr><td><strong>Árkedvezmény</strong></td><td>Ha adsz, min. 5% - max. 100%</td></tr>
+          <tr><td><strong>Egyéb kedvezmény</strong></td><td>Próbaidő, extra szolgáltatás, stb.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Kötelező mellékletek</h3>
+      <ul>
+        <li><strong>Termék logó</strong> (szolgáltatásnál céges logó elfogadott)</li>
+        <li><strong>Min. 2 db képernyőkép/illusztráció</strong> (jpg/png)</li>
+        <li><strong>Min. 1 db dokumentum</strong> (termékismertető, használati útmutató)</li>
+        <li><strong>3 db referencia nyilatkozat</strong> (letölthető sablon alapján)</li>
+        <li><strong>1 db esettanulmány</strong></li>
+      </ul>
+
+      <div class="sup-highlight">
+        <strong>A kedvezményt kizárólag a Programon keresztül kell biztosítani!</strong> A kedvezményes időszak lejártával a kapcsolat piaci alapon folytatódik.
+      </div>
+    </div>
+
+    <!-- 5. Termékkategóriák -->
+    <div class="sup-section" id="kategoriak">
+      <h2>Termékkategóriák és követelmények</h2>
+      <p>Minden pályázathoz kapcsolódó szoftver/szolgáltatás esetén <strong>kötelező alapkövetelmények</strong>:</p>
+      <ul>
+        <li>Fenntarthatóság (min. 1 éves támogatás/követési szerződés)</li>
+        <li>Kézikönyv (elektronikus vagy papír)</li>
+        <li>Képzés</li>
+        <li>Távoli elérés (nem publikus)</li>
+        <li>Hibabejelentés lehetősége</li>
+      </ul>
+
+      <h3>Szoftver kategóriák részletes követelményei</h3>
+      <div class="sup-grid">
+        <div class="sup-card">
+          <h4>CRM (Ügyfélkapcsolat-kezelés)</h4>
+          <ul>
+            <li>Ügyfél törzsadatok</li>
+            <li>Eseménytár</li>
+            <li>Front office min. 2 csatorna</li>
+            <li>Kampánymenedzsment</li>
+            <li>Értékesítési folyamat</li>
+            <li>Kedvezmény- és reklamációkezelés</li>
+          </ul>
+        </div>
+        <div class="sup-card">
+          <h4>ERP / Gyártástámogatás</h4>
+          <ul>
+            <li>Szükségletszámítás</li>
+            <li>Beszerzési előrejelzések</li>
+            <li>Készletszint figyelés</li>
+            <li>Gyártási rendelések, ütemezés</li>
+            <li>Minőségellenőrzés</li>
+            <li>Selejtkezelés, receptúra</li>
+          </ul>
+        </div>
+        <div class="sup-card">
+          <h4>HR menedzsment</h4>
+          <ul>
+            <li>Munkakörök nyilvántartása</li>
+            <li>Dolgozói alapadatok</li>
+            <li>Munkaszerződések kezelése</li>
+            <li>Cafeteria</li>
+          </ul>
+        </div>
+        <div class="sup-card">
+          <h4>Pénzügy és számvitel</h4>
+          <ul>
+            <li>Eszköznyilvántartás</li>
+            <li>Szállítói-vevői számlák</li>
+            <li>Főkönyvi/adóanalitikák</li>
+            <li>Beszámolók</li>
+            <li>Bank- és pénztárkezelés</li>
+          </ul>
+        </div>
+        <div class="sup-card">
+          <h4>Beszerzés és készletgazdálkodás</h4>
+          <ul>
+            <li>Cikktörzs, besorolás</li>
+            <li>Készletszint, rendelés</li>
+            <li>Leltározás</li>
+            <li>Több raktár kezelése</li>
+            <li>INTRASTAT adatszolgáltatás</li>
+          </ul>
+        </div>
+        <div class="sup-card">
+          <h4>Kontrolling / VIR</h4>
+          <ul>
+            <li>Adatbányászat</li>
+            <li>Riportkészítés, lekérdezések</li>
+            <li>Definiálható mutatószámok</li>
+            <li>Modellkészítés</li>
+            <li>24 órán belüli adatbetöltés</li>
+          </ul>
+        </div>
+        <div class="sup-card">
+          <h4>Webáruház / E-kereskedelem</h4>
+          <ul>
+            <li>Terméktörzs, kosárfunkció</li>
+            <li>Min. 2 szállítási + 2 fizetési mód</li>
+            <li>Rendeléskövetés</li>
+            <li>Helpdesk, tartalommenedzsment</li>
+            <li>HTTPS tanúsítvány</li>
+          </ul>
+        </div>
+        <div class="sup-card">
+          <h4>Elektronikus iratkezelés</h4>
+          <ul>
+            <li>Iktatás, szignálás</li>
+            <li>Határidőkezelés</li>
+            <li>Iratdigitalizálás</li>
+            <li>Életciklus követés</li>
+            <li>Jogosultságkezelés</li>
+          </ul>
+        </div>
+        <div class="sup-card">
+          <h4>Munkafolyamat-irányítás</h4>
+          <ul>
+            <li>Folyamatok definiálása</li>
+            <li>Folyamattérkép</li>
+            <li>Feladatkiosztás, státusz</li>
+            <li>Irodai alkalmazások integráció</li>
+          </ul>
+        </div>
+        <div class="sup-card">
+          <h4>Táv- és csoportmunka</h4>
+          <ul>
+            <li>Biztonságos távoli kapcsolat</li>
+            <li>Osztott információs bázisok</li>
+            <li>Online üzenetküldés</li>
+            <li>Feladatkiosztás, határidők</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>További kategóriák</h3>
+      <p>Szolgáltatás menedzsment, Tudásmenedzsment, Térinformatika (GIS), Termékazonosítás (RFID), Mobil háttéralkalmazás, Vállalati portál, Elektronikus fizetés, Egyéb szoftverek, Szolgáltatások (internet, domain, marketing, tanácsadás), Hardver.</p>
+    </div>
+
+    <!-- 6. Voucher rendszer -->
+    <div class="sup-section" id="voucher">
+      <h2>Voucher rendszer - Értékesítés folyamata</h2>
+
+      <div class="sup-step">
+        <div class="sup-step-num">1</div>
+        <div class="sup-step-text"><strong>Ügyfél igényel:</strong> A KKV a vallalkozzdigitalisan.hu-n a termékednél rákattint az "Igénylem a vouchert" gombra.</div>
+      </div>
+      <div class="sup-step">
+        <div class="sup-step-num">2</div>
+        <div class="sup-step-text"><strong>Értesítés:</strong> A beszállítói fiókodba + emailben kapsz értesítést az igénylőről, a termékről és a voucher kódról.</div>
+      </div>
+      <div class="sup-step">
+        <div class="sup-step-num">3</div>
+        <div class="sup-step-text"><strong>Kapcsolatfelvétel:</strong> Telefonon vedd fel a kapcsolatot az ügyféllel minél előbb!</div>
+      </div>
+      <div class="sup-step">
+        <div class="sup-step-num">4</div>
+        <div class="sup-step-text"><strong>Visszaigazolás (30 napon belül):</strong> Jelöld be a státuszt:
+          <br>✅ Ügylet létrejött → dátum + igazoló dokumentum + célterület megadása
+          <br>❌ Nem sikerült értékesíteni → megjegyzés
+          <br>⏳ Pályázatra vár → ha az ügyfél a pályázat eredményére vár (6 hónapig érvényes)
+        </div>
+      </div>
+
+      <div class="sup-highlight">
+        <strong>Voucher kódok:</strong> A rendszer automatikusan generál egyedi kódot minden igényléshez. Ha saját kódot szeretnél, azt a regisztráció során a minta file-lal töltheted fel.
+      </div>
+
+      <h3>Termék státuszok a fiókban</h3>
+      <table class="sup-table">
+        <thead><tr><th>Ikon</th><th>Jelentés</th></tr></thead>
+        <tbody>
+          <tr><td style="color:var(--green);font-size:18px">✅</td><td>Termék értékesítve</td></tr>
+          <tr><td style="color:var(--red);font-size:18px">❌</td><td>Nem sikerült értékesíteni</td></tr>
+          <tr><td style="color:var(--orange);font-size:18px">⏳</td><td>Pályázatra vár</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Termék inaktiválás</h3>
+      <p>Ha egy terméket ki akarsz vonni: az ügyfélfiókban kezdeményezd. <strong>60 napos türelmi idő</strong> van, utána inaktívvá válik. Meglévő ügyletekhez a terméktámogatást továbbra is biztosítanod kell!</p>
+    </div>
+
+    <!-- 7. Kapcsolat -->
+    <div class="sup-section" id="kapcsolat">
+      <h2>Elérhetőségek és segítség</h2>
+      <div class="sup-contact">
+        <div class="sup-contact-card">
+          <strong>SZVR support</strong>
+          <a href="mailto:szvrsupport@ginop-mkik.hu">szvrsupport@ginop-mkik.hu</a><br>
+          Adatmódosítás, hiánypótlás, technikai problémák
+        </div>
+        <div class="sup-contact-card">
+          <strong>SZVR általános</strong>
+          <a href="mailto:szvr@ginop-mkik.hu">szvr@ginop-mkik.hu</a><br>
+          Regisztrációs kérdések, általános információ
+        </div>
+        <div class="sup-contact-card">
+          <strong>Weboldal</strong>
+          <a href="https://vallalkozzdigitalisan.mkik.hu" target="_blank">vallalkozzdigitalisan.mkik.hu</a><br>
+          Online chat (bal alsó sarok)
+        </div>
+        <div class="sup-contact-card">
+          <strong>Hasznos linkek</strong>
+          <a href="https://vallalkozzdigitalisan.mkik.hu/miert_csatlakozz" target="_blank">Miért csatlakozz?</a><br>
+          <a href="https://vallalkozzdigitalisan.mkik.hu/termekek" target="_blank">Termékkatalógus</a><br>
+          <a href="https://kkvdigital.dkf.hu/regisztracio" target="_blank">KKV Digital regisztráció</a>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
