@@ -157,6 +157,7 @@ function buildCalculatorHTML() {
 
     <!-- Goals -->
     <h3>Fejlesztési célok</h3>
+    <p class="calc-hint" style="margin-bottom:12px">ℹ️ Az 1-2. cél (internet, alkalmazotti hozzáférés) átalánya már beépítve az egységköltségekbe.</p>
     <div class="calc-goals" id="calcGoals">
       ${buildGoalsHTML()}
     </div>
@@ -176,6 +177,7 @@ function buildGoalsHTML() {
   let html = '';
   for (const [id, goal] of Object.entries(GOALS)) {
     const num = parseInt(id);
+    if (goal.flat) continue; // 1-2. cél átalány, nem jelenik meg
     const disabled = !goal.supported;
     const isFlat = goal.flat;
 
