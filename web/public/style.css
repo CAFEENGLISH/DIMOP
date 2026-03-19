@@ -284,6 +284,17 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: var
 .calc-device-table td { padding: 10px 12px; border-bottom: 1px solid var(--gray-100); }
 .calc-hint { font-weight: 400; font-size: 13px; color: var(--gray-500); }
 
+.calc-scoring { background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius); overflow: hidden; margin-bottom: 24px; }
+.calc-score-row { display: grid; grid-template-columns: 30px 1fr 1.2fr 60px; gap: 8px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--gray-100); }
+.calc-score-row:hover { background: var(--gray-50); }
+.calc-score-num { font-weight: 700; color: var(--blue); font-size: 13px; }
+.calc-score-name { font-weight: 600; font-size: 14px; }
+.calc-score-how { font-size: 12px; color: var(--gray-500); }
+.calc-score-val { font-weight: 700; font-size: 14px; text-align: right; }
+.calc-score-total { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #d4edda; font-size: 15px; }
+.calc-score-total-val { font-weight: 700; font-size: 18px; color: var(--green); }
+.calc-select-sm { padding: 4px 8px; border: 1px solid var(--gray-300); border-radius: 4px; font-size: 12px; background: #fff; max-width: 100%; }
+
 .calc-summary { position: sticky; bottom: 0; z-index: 10; margin: 0 -40px; padding: 0 40px; }
 .calc-summary-inner { background: #fff; border-top: 2px solid var(--blue); border-radius: var(--radius) var(--radius) 0 0; padding: 16px 24px; box-shadow: 0 -4px 12px rgba(0,0,0,.08); display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px 24px; }
 .calc-summary-inner.has-errors { border-top-color: var(--red); }

@@ -150,24 +150,6 @@ function buildCalculatorHTML() {
           <button class="calc-toggle-btn" data-vat="brutto">Bruttó</button>
         </div>
       </div>
-      <div class="calc-setting">
-        <label>Digitális szint vállalás</label>
-        <select id="calcDigLevel" class="calc-select">
-          <option value="low">Alacsony (6-11 pont) — kötelező</option>
-          <option value="high">Magas (12-17 pont) — +2 pont</option>
-        </select>
-      </div>
-      <div class="calc-setting">
-        <label>Régió</label>
-        <select id="calcRegion" class="calc-select">
-          <option value="other">Közép-/Nyugat-Dunántúl</option>
-          <option value="priority">Észak-Alföld / Észak-Mo. / Dél-Dunántúl / Dél-Alföld — +2 pont</option>
-        </select>
-      </div>
-      <div class="calc-setting">
-        <label>DFK (Digitális Fejlesztési Koncepció)</label>
-        <label class="calc-checkbox-label"><input type="checkbox" id="calcDFK" checked> Van vagy vállalom — +2 pont</label>
-      </div>
     </div>
 
     <!-- Save/Load -->
@@ -197,6 +179,57 @@ function buildCalculatorHTML() {
     <h3>Eszközök <span class="calc-hint">(min 15% - max 30% az összköltségből)</span></h3>
     <div class="calc-devices" id="calcDevices">
       ${buildDevicesHTML()}
+    </div>
+
+    <!-- Scoring -->
+    <h3>Értékelési szempontok <span class="calc-hint">(max. 12 pont, min. 2 kell)</span></h3>
+    <div class="calc-scoring">
+      <div class="calc-score-row">
+        <span class="calc-score-num">4.</span>
+        <span class="calc-score-name">Kibervédelmi intézkedések</span>
+        <span class="calc-score-how">Automatikus: 8. fejlesztési cél bejelölve</span>
+        <span class="calc-score-val" id="scoreKiber">—</span>
+      </div>
+      <div class="calc-score-row">
+        <span class="calc-score-num">5.</span>
+        <span class="calc-score-name">Mesterséges intelligencia alkalmazás</span>
+        <span class="calc-score-how">Automatikus: 13. cél MI összetevője bejelölve</span>
+        <span class="calc-score-val" id="scoreMI">—</span>
+      </div>
+      <div class="calc-score-row">
+        <span class="calc-score-num">6.</span>
+        <span class="calc-score-name">Digitális szint vállalás</span>
+        <span class="calc-score-how">
+          <select id="calcDigLevel" class="calc-select-sm">
+            <option value="low">Alacsony intenzitás (kötelező)</option>
+            <option value="high">Magas intenzitás (+2 extra pont)</option>
+          </select>
+        </span>
+        <span class="calc-score-val" id="scoreDigLevel">2p</span>
+      </div>
+      <div class="calc-score-row">
+        <span class="calc-score-num">7.</span>
+        <span class="calc-score-name">Területi dimenzió</span>
+        <span class="calc-score-how">
+          <select id="calcRegion" class="calc-select-sm">
+            <option value="other">Közép-/Nyugat-Dunántúl</option>
+            <option value="priority">Észak-Alföld / Észak-Mo. / Dél-Dunántúl / Dél-Alföld</option>
+          </select>
+        </span>
+        <span class="calc-score-val" id="scoreRegion">0p</span>
+      </div>
+      <div class="calc-score-row">
+        <span class="calc-score-num">8.</span>
+        <span class="calc-score-name">Digitális Fejlesztési Koncepció</span>
+        <span class="calc-score-how">
+          <label class="calc-checkbox-label"><input type="checkbox" id="calcDFK" checked> Van vagy vállalom</label>
+        </span>
+        <span class="calc-score-val" id="scoreDFK">2p</span>
+      </div>
+      <div class="calc-score-total" id="scoreTotalRow">
+        <span><strong>Összesen</strong></span>
+        <span id="scoreTotalVal" class="calc-score-total-val">0/12 pont</span>
+      </div>
     </div>
 
     <!-- Summary -->
@@ -583,14 +616,39 @@ function recalculate() {
   const region = document.getElementById('calcRegion')?.value;
   const hasDFK = document.getElementById('calcDFK')?.checked;
 
-  // 6. Digitális szint vállalás: alacsony=2, magas=4
   const digPoints = digLevel === 'high' ? 4 : 2;
-  // 7. Területi dimenzió: kiemelt régiók=2
   const regionPoints = region === 'priority' ? 2 : 0;
-  // 8. DFK: +2
   const dfkPoints = hasDFK ? 2 : 0;
+  // bonusPoints already has kibervédelem + MI from component checks
+  // Split bonusPoints into kiber and MI for display
+  const goal8checked = document.querySelector('.calc-goal-check[data-goal="8"]')?.checked;
+  const mi13checked = document.querySelector('.calc-comp-check[data-goal="13"][data-comp="3"]')?.checked;
+  const kiberPoints = goal8checked ? 2 : 0;
+  const miPoints = mi13checked ? 2 : 0;
 
-  const totalPoints = bonusPoints + digPoints + regionPoints + dfkPoints;
+  const totalPoints = kiberPoints + miPoints + digPoints + regionPoints + dfkPoints;
+
+  // Update scoring section visuals
+  const scoreEl = (id, pts, max) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = pts > 0 ? `+${pts}p` : '0p';
+    el.style.color = pts > 0 ? 'var(--green)' : 'var(--gray-500)';
+    el.style.fontWeight = pts > 0 ? '700' : '400';
+  };
+  scoreEl('scoreKiber', kiberPoints);
+  scoreEl('scoreMI', miPoints);
+  scoreEl('scoreDigLevel', digPoints);
+  scoreEl('scoreRegion', regionPoints);
+  scoreEl('scoreDFK', dfkPoints);
+
+  const totalValEl = document.getElementById('scoreTotalVal');
+  if (totalValEl) {
+    totalValEl.textContent = `${totalPoints}/12 pont`;
+    totalValEl.style.color = totalPoints >= 2 ? 'var(--green)' : 'var(--red)';
+  }
+  const totalRowEl = document.getElementById('scoreTotalRow');
+  if (totalRowEl) totalRowEl.style.background = totalPoints >= 2 ? '#d4edda' : '#fde8e8';
 
   if (totalPoints < 2 && totalCost > 0) {
     warnings.push({ type: 'error', text: `Értékelési pontszám: ${totalPoints} — minimum 2 pont kell!` });
@@ -605,6 +663,10 @@ function recalculate() {
   // Render summary
   const summaryEl = document.getElementById('calcSummary');
   const hasErrors = warnings.some(w => w.type === 'error');
+  const maxSupport = 12000000;
+  const remaining = maxSupport - support;
+  const usedPct = maxSupport > 0 ? Math.min(support / maxSupport * 100, 100) : 0;
+
   summaryEl.innerHTML = `
     <div class="calc-summary-inner ${hasErrors ? 'has-errors' : ''}">
       <div class="calc-summary-row">
@@ -631,14 +693,12 @@ function recalculate() {
         <span>Előleg (max. 25%)</span>
         <span class="calc-summary-val">${fmt(advance)}</span>
       </div>
-      <div class="calc-summary-row calc-summary-bonus" style="grid-column:1/-1;border-top:1px solid var(--gray-200);padding-top:8px;margin-top:4px">
-        <span><strong>Értékelési pontszám: ${totalPoints}/12</strong></span>
-        <span class="calc-summary-val" style="font-size:13px;font-weight:400">
-          Szint ${digPoints}p
-          ${bonusPoints > 0 ? ` + Szakmai ${bonusPoints}p` : ''}
-          ${regionPoints > 0 ? ' + Régió 2p' : ''}
-          ${dfkPoints > 0 ? ' + DFK 2p' : ''}
-        </span>
+      <div class="calc-summary-row" style="grid-column:1/-1;border-top:1px solid var(--gray-200);padding-top:8px;margin-top:4px">
+        <span>Szabad keret a max. 12M Ft-ból</span>
+        <span class="calc-summary-val" style="color:${remaining > 0 ? 'var(--green)' : 'var(--red)'}">${remaining >= 0 ? fmt(remaining) : 'Túllépve!'}</span>
+      </div>
+      <div style="grid-column:1/-1;height:8px;background:var(--gray-200);border-radius:4px;overflow:hidden">
+        <div style="height:100%;width:${usedPct}%;background:${usedPct >= 100 ? 'var(--red)' : 'var(--blue)'};border-radius:4px;transition:width .3s"></div>
       </div>
     </div>
   `;
