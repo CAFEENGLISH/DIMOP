@@ -238,6 +238,13 @@ function buildDevicesHTML() {
         </tr>
       `).join('')}
     </tbody>
+    <tfoot>
+      <tr style="font-weight:700;border-top:2px solid var(--gray-300)">
+        <td colspan="3">Eszközök összesen</td>
+        <td class="text-right" id="devicesTotalFooter">0 Ft</td>
+        <td class="text-right" id="devicesRatioFooter"></td>
+      </tr>
+    </tfoot>
   </table>`;
 }
 
@@ -463,8 +470,23 @@ function recalculate() {
     devicesTotal += total;
   });
 
-  // Totals
+  // Update device footer
   const totalCost = goalsTotal + devicesTotal;
+  const devicePctVal = totalCost > 0 ? (devicesTotal / totalCost * 100) : 0;
+  const dtf = document.getElementById('devicesTotalFooter');
+  const drf = document.getElementById('devicesRatioFooter');
+  if (dtf) dtf.textContent = fmt(devicesTotal);
+  if (drf) {
+    if (devicesTotal === 0) {
+      drf.innerHTML = '';
+    } else if (devicePctVal >= 15 && devicePctVal <= 30) {
+      drf.innerHTML = `<span style="color:var(--green)">✅ ${devicePctVal.toFixed(1)}%</span>`;
+    } else {
+      drf.innerHTML = `<span style="color:var(--red)">❌ ${devicePctVal.toFixed(1)}% (kell: 15-30%)</span>`;
+    }
+  }
+
+  // Totals
   const maxEuCost = 13333333;
   const euCost = Math.min(totalCost, maxEuCost);
   const support = Math.min(Math.floor(euCost * 0.9), 12000000);
