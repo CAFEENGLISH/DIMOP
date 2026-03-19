@@ -228,6 +228,17 @@ function buildCalculatorHTML() {
         </span>
         <span class="calc-score-val" id="scoreDFK">2p</span>
       </div>
+      <div class="calc-score-hint" id="dfkHint">
+        <strong>Mi a DFK?</strong> Egy IT szakértő által készített, testreszabott digitális fejlesztési terv a cégednek.<br><br>
+        <strong>Mikor kötelező?</strong> Ha a projekt EU elszámolható összköltsége eléri a <strong>6 000 000 Ft</strong>-ot (12M projektnél mindig!).<br>
+        <strong>Ha nem éri el a 6M Ft-ot:</strong> önkéntes, de <strong>+2 értékelési pont</strong> jár érte.<br><br>
+        <strong>Hogyan igényeld:</strong><br>
+        1. Regisztrálj: <a href="https://kkvdigital.dkf.hu/regisztracio" target="_blank">kkvdigital.dkf.hu/regisztracio</a><br>
+        2. Hívd az MKIK ügyfélszolgálatot (hétköznap 9-12): <a href="https://vallalkozzdigitalisan.mkik.hu/ugyfelszolgalataink" target="_blank">vallalkozzdigitalisan.mkik.hu</a><br>
+        3. Töltsd ki a Kérelmi és Hozzájárulási nyilatkozatot<br>
+        4. A tanácsadó konzultáció keretében elkészíti — <strong>díjmentes!</strong><br><br>
+        <strong>Ha benyújtáskor nincs kész:</strong> vállalhatod, hogy a projekt végéig elkészül — ez is elfogadott.
+      </div>
       <div class="calc-score-total" id="scoreTotalRow">
         <span><strong>Összesen</strong></span>
         <span id="scoreTotalVal" class="calc-score-total-val">0/12 pont</span>
@@ -654,6 +665,8 @@ function recalculate() {
   if (hintEl) hintEl.style.display = digLevel === 'high' ? 'block' : 'none';
   scoreEl('scoreRegion', regionPoints);
   scoreEl('scoreDFK', dfkPoints);
+  const dfkHintEl = document.getElementById('dfkHint');
+  if (dfkHintEl) dfkHintEl.style.display = hasDFK ? 'block' : 'none';
 
   const totalValEl = document.getElementById('scoreTotalVal');
   if (totalValEl) {
