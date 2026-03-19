@@ -152,17 +152,12 @@ function buildCalculatorHTML() {
       </div>
     </div>
 
-    <!-- Save/Load -->
+    <!-- Load bar (top) -->
     <div class="calc-save-bar">
-      <div class="calc-save-left">
-        <input type="text" id="calcSaveName" placeholder="Kalkuláció neve..." class="calc-save-input">
-        <button id="calcSaveBtn" class="calc-btn calc-btn-primary">Mentés</button>
-      </div>
-      <div class="calc-save-right">
-        <select id="calcLoadSelect" class="calc-select"><option value="">— Mentett kalkulációk —</option></select>
-        <button id="calcLoadBtn" class="calc-btn">Betöltés</button>
-        <button id="calcDeleteBtn" class="calc-btn calc-btn-danger">Törlés</button>
-      </div>
+      <span class="calc-save-label">Mentett kalkuláció betöltése:</span>
+      <select id="calcLoadSelect" class="calc-select" style="flex:1;max-width:350px"><option value="">— Válassz —</option></select>
+      <button id="calcLoadBtn" class="calc-btn">Betöltés</button>
+      <button id="calcDeleteBtn" class="calc-btn calc-btn-danger">Törlés</button>
     </div>
 
     <!-- Warnings -->
@@ -237,6 +232,15 @@ function buildCalculatorHTML() {
         <span><strong>Összesen</strong></span>
         <span id="scoreTotalVal" class="calc-score-total-val">0/12 pont</span>
       </div>
+    </div>
+
+    <!-- Save bar (bottom) -->
+    <div class="calc-save-bar" style="margin-top:24px">
+      <span class="calc-save-label">Kalkuláció mentése:</span>
+      <input type="text" id="calcSaveName" placeholder="Új kalkuláció neve..." class="calc-save-input">
+      <span class="text-muted" style="font-size:12px">vagy felülírás:</span>
+      <select id="calcSaveOverwrite" class="calc-select" style="max-width:250px"><option value="">— Új mentés —</option></select>
+      <button id="calcSaveBtn" class="calc-btn calc-btn-primary">Mentés</button>
     </div>
 
     <!-- Summary -->
@@ -842,34 +846,52 @@ function getSaves() {
 }
 
 function refreshSavesList() {
-  const select = document.getElementById('calcLoadSelect');
-  if (!select) return;
   const saves = getSaves();
-  select.innerHTML = '<option value="">— Mentett kalkulációk (' + saves.length + ') —</option>';
-  saves.forEach((s, i) => {
-    select.innerHTML += `<option value="${i}">${s.name} (${s.date})</option>`;
-  });
+
+  // Load dropdown (top)
+  const loadSelect = document.getElementById('calcLoadSelect');
+  if (loadSelect) {
+    loadSelect.innerHTML = `<option value="">— Válassz (${saves.length} mentés) —</option>`;
+    saves.forEach((s, i) => { loadSelect.innerHTML += `<option value="${i}">${s.name} (${s.date})</option>`; });
+  }
+
+  // Overwrite dropdown (bottom)
+  const overwriteSelect = document.getElementById('calcSaveOverwrite');
+  if (overwriteSelect) {
+    overwriteSelect.innerHTML = '<option value="">— Új mentés —</option>';
+    saves.forEach((s, i) => { overwriteSelect.innerHTML += `<option value="${i}">${s.name}</option>`; });
+  }
 }
 
 function saveCalcNamed() {
   const nameInput = document.getElementById('calcSaveName');
-  const name = nameInput?.value.trim();
-  if (!name) { nameInput?.focus(); return; }
-
+  const overwriteSelect = document.getElementById('calcSaveOverwrite');
+  const overwriteIdx = parseInt(overwriteSelect?.value);
   const saves = getSaves();
-  // Overwrite if same name exists
-  const existingIdx = saves.findIndex(s => s.name === name);
-  const entry = { name, date: new Date().toLocaleDateString('hu-HU'), state: getCalcState() };
-  if (existingIdx >= 0) {
-    saves[existingIdx] = entry;
+
+  let name;
+  if (!isNaN(overwriteIdx) && saves[overwriteIdx]) {
+    // Overwrite existing
+    name = saves[overwriteIdx].name;
+    saves[overwriteIdx] = { name, date: new Date().toLocaleDateString('hu-HU'), state: getCalcState() };
   } else {
-    saves.push(entry);
+    // New save
+    name = nameInput?.value.trim();
+    if (!name) { nameInput?.focus(); return; }
+    const existingIdx = saves.findIndex(s => s.name === name);
+    const entry = { name, date: new Date().toLocaleDateString('hu-HU'), state: getCalcState() };
+    if (existingIdx >= 0) {
+      saves[existingIdx] = entry;
+    } else {
+      saves.push(entry);
+    }
   }
 
   try {
     localStorage.setItem(SAVES_KEY, JSON.stringify(saves));
     refreshSavesList();
-    nameInput.value = '';
+    if (nameInput) nameInput.value = '';
+    if (overwriteSelect) overwriteSelect.value = '';
   } catch {}
 }
 

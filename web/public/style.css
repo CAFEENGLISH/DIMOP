@@ -233,8 +233,8 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: var
 .calc-select { width: 100%; padding: 6px 10px; border: 1px solid var(--gray-300); border-radius: 6px; font-size: 13px; background: #fff; }
 .calc-checkbox-label { font-weight: 400 !important; cursor: pointer; display: flex !important; align-items: center; gap: 6px; }
 
-.calc-save-bar { display: flex; justify-content: space-between; gap: 12px; background: #fff; padding: 14px 16px; border-radius: var(--radius); border: 1px solid var(--gray-200); margin-bottom: 16px; flex-wrap: wrap; }
-.calc-save-left, .calc-save-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.calc-save-bar { display: flex; align-items: center; gap: 10px; background: #fff; padding: 12px 16px; border-radius: var(--radius); border: 1px solid var(--gray-200); margin-bottom: 16px; flex-wrap: wrap; }
+.calc-save-label { font-size: 13px; font-weight: 600; color: var(--gray-700); white-space: nowrap; }
 .calc-save-input { padding: 6px 12px; border: 1px solid var(--gray-300); border-radius: 6px; font-size: 13px; min-width: 180px; }
 .calc-btn { padding: 6px 14px; border: 1px solid var(--gray-300); background: #fff; border-radius: 6px; font-size: 13px; cursor: pointer; font-weight: 500; transition: all .15s; }
 .calc-btn:hover { background: var(--gray-100); }
