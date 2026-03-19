@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initNav();
   initChat();
   initMobileMenu();
+  initCalculator();
 });
 
 // --- Interactive Steps ---
