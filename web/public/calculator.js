@@ -170,6 +170,19 @@ function buildCalculatorHTML() {
       </div>
     </div>
 
+    <!-- Save/Load -->
+    <div class="calc-save-bar">
+      <div class="calc-save-left">
+        <input type="text" id="calcSaveName" placeholder="Kalkuláció neve..." class="calc-save-input">
+        <button id="calcSaveBtn" class="calc-btn calc-btn-primary">Mentés</button>
+      </div>
+      <div class="calc-save-right">
+        <select id="calcLoadSelect" class="calc-select"><option value="">— Mentett kalkulációk —</option></select>
+        <button id="calcLoadBtn" class="calc-btn">Betöltés</button>
+        <button id="calcDeleteBtn" class="calc-btn calc-btn-danger">Törlés</button>
+      </div>
+    </div>
+
     <!-- Warnings -->
     <div id="calcWarnings" class="calc-warnings"></div>
 
@@ -384,6 +397,15 @@ function bindCalculatorEvents() {
       recalculate();
     });
   });
+
+  // Save/Load buttons
+  document.getElementById('calcSaveBtn').addEventListener('click', saveCalcNamed);
+  document.getElementById('calcLoadBtn').addEventListener('click', loadCalcNamed);
+  document.getElementById('calcDeleteBtn').addEventListener('click', deleteCalcNamed);
+  refreshSavesList();
+
+  // Restore autosave
+  restoreAutoSave();
 }
 
 // --- Price Display Update ---
@@ -620,6 +642,189 @@ function recalculate() {
       </div>
     </div>
   `;
+
+  // Auto-save after every recalculation
+  autoSave();
+}
+
+// --- State Serialize/Restore ---
+const AUTOSAVE_KEY = 'dimop-calc-autosave';
+const SAVES_KEY = 'dimop-calc-saves';
+
+function getCalcState() {
+  const state = {
+    months: parseInt(document.getElementById('calcMonths')?.value) || 18,
+    headcount: parseInt(document.getElementById('calcHeadcount')?.value) || 5,
+    users: parseInt(document.getElementById('calcUsers')?.value) || 5,
+    vatMode: calcState.vatMode,
+    digLevel: document.getElementById('calcDigLevel')?.value || 'low',
+    region: document.getElementById('calcRegion')?.value || 'other',
+    dfk: document.getElementById('calcDFK')?.checked ?? true,
+    goals: {},
+    devices: {},
+  };
+
+  // Goals + components
+  document.querySelectorAll('.calc-goal-check').forEach(cb => {
+    const gid = cb.dataset.goal;
+    if (!cb.checked) return;
+    const comps = {};
+    document.querySelectorAll(`.calc-comp-check[data-goal="${gid}"]`).forEach(cc => {
+      const ci = cc.dataset.comp;
+      const qtyEl = document.querySelector(`.calc-qty[data-goal="${gid}"][data-comp="${ci}"]`);
+      const monthEl = document.querySelector(`.calc-month-input[data-goal="${gid}"][data-comp="${ci}"]`);
+      comps[ci] = {
+        checked: cc.checked,
+        qty: qtyEl ? parseInt(qtyEl.value) || 0 : null,
+        months: monthEl ? parseInt(monthEl.value) || 0 : null,
+      };
+    });
+    state.goals[gid] = { enabled: true, comps };
+  });
+
+  // Devices
+  DEVICES.forEach(d => {
+    const qtyEl = document.querySelector(`.calc-qty[data-device="${d.id}"]`);
+    const qty = parseInt(qtyEl?.value) || 0;
+    if (qty > 0) state.devices[d.id] = qty;
+  });
+
+  return state;
+}
+
+function applyCalcState(state) {
+  if (!state) return;
+
+  // Header settings
+  const monthSlider = document.getElementById('calcMonths');
+  if (monthSlider) { monthSlider.value = state.months || 18; calcState.months = state.months || 18; }
+  const monthsVal = document.getElementById('calcMonthsVal');
+  if (monthsVal) monthsVal.textContent = (state.months || 18) + ' hó';
+
+  const hc = document.getElementById('calcHeadcount');
+  if (hc) { hc.value = state.headcount || 5; calcState.headcount = state.headcount || 5; }
+
+  const us = document.getElementById('calcUsers');
+  if (us) { us.value = state.users || 5; calcState.users = state.users || 5; }
+
+  // VAT
+  if (state.vatMode) {
+    calcState.vatMode = state.vatMode;
+    document.querySelectorAll('.calc-toggle-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.vat === state.vatMode);
+    });
+    updatePriceDisplay();
+  }
+
+  // Scoring
+  const dl = document.getElementById('calcDigLevel');
+  if (dl && state.digLevel) dl.value = state.digLevel;
+  const rg = document.getElementById('calcRegion');
+  if (rg && state.region) rg.value = state.region;
+  const dfk = document.getElementById('calcDFK');
+  if (dfk && state.dfk !== undefined) dfk.checked = state.dfk;
+
+  // Goals
+  document.querySelectorAll('.calc-goal-check').forEach(cb => {
+    const gid = cb.dataset.goal;
+    const goalState = state.goals?.[gid];
+    cb.checked = !!goalState?.enabled;
+    const compsDiv = document.querySelector(`[data-components="${gid}"]`);
+    if (compsDiv) compsDiv.style.display = cb.checked ? 'block' : 'none';
+
+    if (goalState?.comps) {
+      Object.entries(goalState.comps).forEach(([ci, cs]) => {
+        const cc = document.querySelector(`.calc-comp-check[data-goal="${gid}"][data-comp="${ci}"]`);
+        if (cc && !cc.disabled) cc.checked = cs.checked;
+        const qtyEl = document.querySelector(`.calc-qty[data-goal="${gid}"][data-comp="${ci}"]`);
+        if (qtyEl && cs.qty !== null) qtyEl.value = cs.qty;
+        const monthEl = document.querySelector(`.calc-month-input[data-goal="${gid}"][data-comp="${ci}"]`);
+        if (monthEl && cs.months !== null) monthEl.value = cs.months;
+      });
+    }
+  });
+
+  // Devices
+  DEVICES.forEach(d => {
+    const qtyEl = document.querySelector(`.calc-qty[data-device="${d.id}"]`);
+    if (qtyEl) qtyEl.value = state.devices?.[d.id] || 0;
+  });
+
+  recalculate();
+}
+
+// --- Auto-save ---
+function autoSave() {
+  try {
+    localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(getCalcState()));
+  } catch {}
+}
+
+function restoreAutoSave() {
+  try {
+    const saved = localStorage.getItem(AUTOSAVE_KEY);
+    if (saved) applyCalcState(JSON.parse(saved));
+  } catch {}
+}
+
+// --- Named saves ---
+function getSaves() {
+  try { return JSON.parse(localStorage.getItem(SAVES_KEY) || '[]'); } catch { return []; }
+}
+
+function refreshSavesList() {
+  const select = document.getElementById('calcLoadSelect');
+  if (!select) return;
+  const saves = getSaves();
+  select.innerHTML = '<option value="">— Mentett kalkulációk (' + saves.length + ') —</option>';
+  saves.forEach((s, i) => {
+    select.innerHTML += `<option value="${i}">${s.name} (${s.date})</option>`;
+  });
+}
+
+function saveCalcNamed() {
+  const nameInput = document.getElementById('calcSaveName');
+  const name = nameInput?.value.trim();
+  if (!name) { nameInput?.focus(); return; }
+
+  const saves = getSaves();
+  // Overwrite if same name exists
+  const existingIdx = saves.findIndex(s => s.name === name);
+  const entry = { name, date: new Date().toLocaleDateString('hu-HU'), state: getCalcState() };
+  if (existingIdx >= 0) {
+    saves[existingIdx] = entry;
+  } else {
+    saves.push(entry);
+  }
+
+  try {
+    localStorage.setItem(SAVES_KEY, JSON.stringify(saves));
+    refreshSavesList();
+    nameInput.value = '';
+  } catch {}
+}
+
+function loadCalcNamed() {
+  const select = document.getElementById('calcLoadSelect');
+  const idx = parseInt(select?.value);
+  if (isNaN(idx)) return;
+  const saves = getSaves();
+  if (saves[idx]) {
+    applyCalcState(saves[idx].state);
+    document.getElementById('calcSaveName').value = saves[idx].name;
+  }
+}
+
+function deleteCalcNamed() {
+  const select = document.getElementById('calcLoadSelect');
+  const idx = parseInt(select?.value);
+  if (isNaN(idx)) return;
+  const saves = getSaves();
+  if (saves[idx] && confirm(`Törlöd: "${saves[idx].name}"?`)) {
+    saves.splice(idx, 1);
+    localStorage.setItem(SAVES_KEY, JSON.stringify(saves));
+    refreshSavesList();
+  }
 }
 
 // --- Helpers ---
