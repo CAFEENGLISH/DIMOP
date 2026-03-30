@@ -460,6 +460,73 @@ A `PÁLYÁZATI KIIRAS/` mappában található dokumentumok:
 
 ---
 
+## ePapír hitelesítés - lépésről lépésre (DIMOP Plusz)
+
+> Ez a szekció a 12 oldalas hivatalos útmutató lényegét foglalja össze. A benyújtás pillanatában kövesd ezeket a lépéseket!
+
+### Mikor kell ePapír?
+Ha **NEM** rendelkezel minősített e-aláírással (pl. nincs e-Személyi kártyás aláírásod), akkor az ePapír szolgáltatással kell hitelesítened a nyilatkozatot. Ez **ingyenes**.
+
+### Előfeltételek
+- **Ügyfélkapu+** VAGY **DÁP (Digitális Állampolgárság)** azonosító
+- Ügyfélkapu+ igénylés: https://ugyfelkapu.gov.hu/
+- DÁP info: https://dap.gov.hu/
+
+### A hitelesítés lépései
+
+**1. EPTK-n véglegesítsd a pályázatot**
+- www.palyazat.gov.hu → EPTK felület
+- Kitöltő program → véglegesítés → a program generál egy **Nyilatkozat** PDF-et
+- **Töltsd le a Nyilatkozatot a gépedre!**
+
+**2. Lépj be az ePapír-ba**
+- https://epapir.gov.hu
+- Bejelentkezés: Ügyfélkapu+ vagy DÁP alkalmazás
+
+**3. Új levél írása - pontosan ezeket töltsd ki:**
+
+| Mező | Érték |
+|------|-------|
+| **Témacsoport** | `Egyes európai uniós alapokból származó támogatások felhasználása` |
+| **Ügytípus** | `Nyilatkozat beküldése a támogatási kérelem benyújtásához` |
+| **Címzett** | `Energiaügyi Minisztérium – Digitális Megújulás Operatív Program Irányító Hatóság` |
+| **Levél tárgya** | `Nyilatkozat a DIMOP Plusz-1.2.6/B-26 kódszámú felhívásra benyújtandó támogatási kérelemhez` |
+| **Levél szövege** | Ugyanaz mint a tárgy |
+| **Hivatkozási szám** | Hagyd üresen! |
+
+> **FONTOS:** A címzett DIMOP Plusz esetén az **Energiaügyi Minisztérium**, NEM a Nemzeti Fejlesztési Központ!
+
+**4. Nyilatkozat feltöltése és hitelesítése**
+- Kattints: "Tovább a csatolmányokhoz"
+- Húzd be vagy tallózd ki a letöltött Nyilatkozat PDF-et
+- Kattints a **"Hitelesítés"** gombra (FEDOR szolgáltatás)
+- Sikeres hitelesítés → "Rendszer által hitelesített: **Igen**"
+
+**5. FONTOS: Töltsd le a hitelesített nyilatkozatot!**
+- Kattints a **"Letöltés"** gombra
+- **Mentsd a gépedre!** - a beküldés után már NEM tudod letölteni!
+
+**6. Levél véglegesítése és beküldése**
+- "Tovább a véglegesítéshez" → "Küldés"
+
+**7. Hitelesített nyilatkozat csatolása az EPTK-n**
+- Menj vissza a www.palyazat.gov.hu EPTK felületre
+- Töltsd fel a **hitelesített** (letöltött) nyilatkozatot a véglegesített kérelemhez
+- Nyújtsd be a kérelmet a kitöltő program utasításai szerint
+
+### Együttes képviselet esetén
+Ha a céget **többen képviselik együttesen**, akkor mindegyik képviselőnek **külön-külön** kell:
+1. Belépni az ePapír-ba a saját Ügyfélkapu+-ával
+2. Hitelesíteni a nyilatkozatot
+3. Beküldeni
+4. Letölteni a saját hitelesített példányát
+5. Minden hitelesített példányt csatolni az EPTK-n
+
+### Letölthető útmutató
+Az eredeti teljes útmutató (12 oldal): [ePapír útmutató PDF](/docs/utmutato-az-epapir-igenybevetelehez3-verzio.pdf)
+
+---
+
 ## Egyéb hasznos linkek
 
 | Link | Leírás |
