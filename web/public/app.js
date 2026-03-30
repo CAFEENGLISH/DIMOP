@@ -7,6 +7,8 @@ const $$ = (s) => document.querySelectorAll(s);
 let chatHistory = [];
 let chatOpen = false;
 let streaming = false;
+let currentAbortController = null;
+let chatAttachments = [];
 
 // --- Init ---
 document.addEventListener('DOMContentLoaded', async () => {
@@ -410,6 +412,8 @@ function initChat() {
   const close = $('#chatClose');
   const form = $('#chatForm');
   const input = $('#chatInput');
+  const attachBtn = $('#chatAttachBtn');
+  const fileInput = $('#chatFileInput');
 
   bubble.addEventListener('click', () => {
     chatOpen = !chatOpen;
@@ -424,34 +428,185 @@ function initChat() {
     bubble.style.display = 'flex';
   });
 
+  // Textarea auto-grow
+  input.addEventListener('input', () => {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 96) + 'px';
+  });
+
+  // Enter to send, Shift+Enter for newline
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      form.dispatchEvent(new Event('submit', { cancelable: true }));
+    }
+  });
+
+  // Form submit - send or stop
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+    if (streaming) {
+      if (currentAbortController) currentAbortController.abort();
+      return;
+    }
     const text = input.value.trim();
-    if (!text || streaming) return;
+    if (!text && chatAttachments.length === 0) return;
     input.value = '';
-    sendMessage(text);
+    input.style.height = 'auto';
+    const atts = [...chatAttachments];
+    chatAttachments = [];
+    renderAttachments();
+    sendMessage(text, atts);
+  });
+
+  // Paste handler for images
+  input.addEventListener('paste', (e) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (const item of items) {
+      if (item.type.startsWith('image/')) {
+        e.preventDefault();
+        handleImageFile(item.getAsFile());
+      }
+    }
+  });
+
+  // Attach button
+  attachBtn.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', (e) => {
+    for (const file of e.target.files) {
+      if (file.type === 'application/pdf') {
+        handlePdfFile(file);
+      } else if (file.type.startsWith('image/')) {
+        handleImageFile(file);
+      }
+    }
+    fileInput.value = '';
   });
 
   // Quick questions
   $$('.quick-q').forEach(btn => {
     btn.addEventListener('click', () => {
       const q = btn.dataset.q;
-      sendMessage(q);
-      // Remove quick questions after first use
+      sendMessage(q, []);
       const qqs = $('.quick-questions');
       if (qqs) qqs.remove();
     });
   });
+
+  // Init pdf.js worker
+  if (typeof pdfjsLib !== 'undefined') {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+  }
 }
 
-async function sendMessage(text) {
+// --- Attachment Handling ---
+function handleImageFile(file) {
+  if (file.size > 5 * 1024 * 1024) {
+    alert('A kép túl nagy (max 5MB)!');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = () => {
+    const dataUrl = reader.result;
+    const [header, base64] = dataUrl.split(',');
+    const mediaType = header.match(/data:(.*?);/)?.[1] || 'image/png';
+    chatAttachments.push({ type: 'image', mediaType, base64, name: file.name, dataUrl });
+    renderAttachments();
+  };
+  reader.readAsDataURL(file);
+}
+
+async function handlePdfFile(file) {
+  if (typeof pdfjsLib === 'undefined') {
+    alert('PDF feldolgozás nem elérhető.');
+    return;
+  }
+  try {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let text = '';
+    for (let i = 1; i <= Math.min(pdf.numPages, 20); i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      text += content.items.map(item => item.str).join(' ') + '\n';
+    }
+    chatAttachments.push({ type: 'pdf_text', text: text.slice(0, 50000), name: file.name });
+    renderAttachments();
+  } catch (err) {
+    alert('PDF feldolgozási hiba: ' + err.message);
+  }
+}
+
+function renderAttachments() {
+  const container = $('#chatAttachments');
+  container.innerHTML = '';
+  chatAttachments.forEach((att, i) => {
+    const el = document.createElement('div');
+    el.className = 'chat-att-preview';
+    if (att.type === 'image') {
+      el.innerHTML = `<img src="${att.dataUrl}" alt="${escapeHtml(att.name)}"><span class="att-pdf-icon" style="display:none"></span><button class="chat-att-remove" data-idx="${i}">&times;</button>`;
+    } else {
+      el.innerHTML = `<span class="att-pdf-icon">📄</span><span class="chat-att-name">${escapeHtml(att.name)}</span><button class="chat-att-remove" data-idx="${i}">&times;</button>`;
+    }
+    container.appendChild(el);
+  });
+  container.querySelectorAll('.chat-att-remove').forEach(btn => {
+    btn.addEventListener('click', () => {
+      chatAttachments.splice(parseInt(btn.dataset.idx), 1);
+      renderAttachments();
+    });
+  });
+}
+
+function buildMessageContent(text, attachments) {
+  if (!attachments || !attachments.length) return text || '';
+  const content = [];
+  for (const att of attachments) {
+    if (att.type === 'image') {
+      content.push({ type: 'image', source: { type: 'base64', media_type: att.mediaType, data: att.base64 } });
+    }
+    if (att.type === 'pdf_text') {
+      content.push({ type: 'text', text: `[PDF tartalom: ${att.name}]\n${att.text}` });
+    }
+  }
+  if (text) content.push({ type: 'text', text });
+  return content;
+}
+
+// --- Stop/Send Button Helpers ---
+const SEND_SVG = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
+const STOP_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>';
+
+function setButtonStop(btn) {
+  btn.classList.add('stop-mode');
+  btn.innerHTML = STOP_SVG;
+  btn.disabled = false;
+  btn.setAttribute('aria-label', 'Leállítás');
+}
+function setButtonSend(btn) {
+  btn.classList.remove('stop-mode');
+  btn.innerHTML = SEND_SVG;
+  btn.setAttribute('aria-label', 'Küldés');
+}
+
+// --- Send Message ---
+async function sendMessage(text, attachments) {
   const messages = $('#chatMessages');
   const input = $('#chatInput');
   const sendBtn = $('#chatSend');
 
-  // Add user message
-  appendMessage('user', text);
-  chatHistory.push({ role: 'user', content: text });
+  // Build display text for user bubble
+  let displayText = text || '';
+  if (attachments && attachments.length) {
+    const labels = attachments.map(a => a.type === 'image' ? `[Kép: ${a.name}]` : `[PDF: ${a.name}]`).join(' ');
+    displayText = (displayText ? displayText + ' ' : '') + labels;
+  }
+  appendMessage('user', displayText);
+
+  // Build content for API
+  const msgContent = buildMessageContent(text, attachments);
+  chatHistory.push({ role: 'user', content: msgContent });
 
   // Show typing indicator
   const typingEl = document.createElement('div');
@@ -461,14 +616,19 @@ async function sendMessage(text) {
   messages.scrollTop = messages.scrollHeight;
 
   streaming = true;
-  sendBtn.disabled = true;
+  currentAbortController = new AbortController();
+  setButtonStop(sendBtn);
   input.disabled = true;
+
+  let fullText = '';
+  let contentEl = null;
 
   try {
     const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ messages: chatHistory }),
+      signal: currentAbortController.signal,
     });
 
     if (!res.ok) {
@@ -476,19 +636,15 @@ async function sendMessage(text) {
       throw new Error(err.error || 'Szerverhiba');
     }
 
-    // Remove typing indicator
     typingEl.remove();
 
-    // Create assistant message element
     const msgEl = document.createElement('div');
     msgEl.classList.add('chat-msg', 'assistant');
-    const contentEl = document.createElement('div');
+    contentEl = document.createElement('div');
     contentEl.classList.add('chat-msg-content');
     msgEl.appendChild(contentEl);
     messages.appendChild(msgEl);
 
-    // Stream response
-    let fullText = '';
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
 
@@ -521,11 +677,22 @@ async function sendMessage(text) {
     chatHistory.push({ role: 'assistant', content: fullText });
 
   } catch (err) {
-    typingEl.remove();
-    appendMessage('assistant', `*Hiba: ${err.message}*`);
+    if (typingEl.parentNode) typingEl.remove();
+    if (err.name === 'AbortError') {
+      // Keep partial response
+      if (fullText) {
+        chatHistory.push({ role: 'assistant', content: fullText });
+        if (contentEl) {
+          contentEl.innerHTML = marked.parse(fullText + '\n\n*— leállítva —*');
+        }
+      }
+    } else {
+      appendMessage('assistant', `*Hiba: ${err.message}*`);
+    }
   } finally {
     streaming = false;
-    sendBtn.disabled = false;
+    currentAbortController = null;
+    setButtonSend(sendBtn);
     input.disabled = false;
     input.focus();
   }

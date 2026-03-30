@@ -14,7 +14,7 @@ const ROOT = resolve(__dirname, '..');
 const app = express();
 const PORT = process.env.PORT || 3456;
 
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 app.use(express.static(join(__dirname, 'public')));
 
 // --- Full knowledge (all documents) ---
