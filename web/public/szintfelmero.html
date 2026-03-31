@@ -36,6 +36,25 @@
     .sf-nav { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
     .sf-nav a { background: var(--blue-light); color: var(--blue); border-radius: 20px; padding: 6px 14px; font-size: 12px; text-decoration: none; transition: all .15s; }
     .sf-nav a:hover { background: var(--blue); color: #fff; }
+    .sf-scoring { background: #fff; border: 2px solid var(--blue); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+    .sf-scoring h2 { font-size: 18px; font-weight: 700; color: var(--blue-dark); margin: 0 0 12px; }
+    .sf-scoring p { font-size: 13px; color: var(--gray-700); line-height: 1.6; margin-bottom: 8px; }
+    .sf-levels { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin: 16px 0; }
+    .sf-level { border-radius: 8px; padding: 12px 16px; text-align: center; }
+    .sf-level-vlow { background: #fee2e2; border: 2px solid #dc2626; }
+    .sf-level-low { background: #fef3c7; border: 2px solid #d97706; }
+    .sf-level-high { background: #d1fae5; border: 2px solid #059669; }
+    .sf-level-vhigh { background: #dbeafe; border: 2px solid #2563eb; }
+    .sf-level strong { display: block; font-size: 15px; }
+    .sf-level span { font-size: 22px; font-weight: 800; }
+    .sf-level small { display: block; font-size: 11px; margin-top: 4px; color: var(--gray-600); }
+    .sf-criteria-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 16px; }
+    .sf-criteria-table th { background: var(--blue); color: #fff; padding: 6px 10px; text-align: left; font-size: 11px; }
+    .sf-criteria-table td { padding: 5px 10px; border-bottom: 1px solid var(--gray-200); }
+    .sf-criteria-table tr:hover td { background: var(--blue-light); }
+    .sf-criteria-table .num { text-align: center; font-weight: 700; color: var(--blue); width: 30px; }
+    .sf-toggle-btn { background: var(--blue-light); color: var(--blue); border: 1px solid var(--accent); border-radius: 8px; padding: 8px 16px; font-size: 13px; cursor: pointer; margin-top: 12px; }
+    .sf-toggle-btn:hover { background: var(--blue); color: #fff; }
   </style>
 </head>
 <body>
@@ -64,6 +83,66 @@
 
     <div class="sf-tip">
       <strong>Tipp:</strong> A kérdésekre adott válaszok alapján derül ki a vállalkozásod digitális intenzitási szintje (0-23 pont). A pályázathoz <strong>nagyon alacsony</strong> (0-5 pont) szint szükséges belépési feltételként. A fejlesztéssel min. <strong>alacsony</strong> (6-11 pont) szintre kell eljutni.
+    </div>
+
+    <!-- Scoring system -->
+    <div class="sf-scoring">
+      <h2>Hogyan számol a rendszer?</h2>
+      <p><strong>23 kritérium, mindegyik 0 vagy 1 pont.</strong> Ha teljesíted a feltételt → 1 pont. Ha nem → 0. Az összpontszám (0-23) határozza meg a digitális szintet:</p>
+
+      <div class="sf-levels">
+        <div class="sf-level sf-level-vlow">
+          <strong>Nagyon alacsony</strong>
+          <span>0–5 pont</span>
+          <small>Belépési feltétel a pályázathoz</small>
+        </div>
+        <div class="sf-level sf-level-low">
+          <strong>Alacsony</strong>
+          <span>6–11 pont</span>
+          <small>Kötelező cél (el kell érni!)</small>
+        </div>
+        <div class="sf-level sf-level-high">
+          <strong>Magas</strong>
+          <span>12–17 pont</span>
+          <small>Önkéntes cél (+4 pont értékeléskor)</small>
+        </div>
+        <div class="sf-level sf-level-vhigh">
+          <strong>Nagyon magas</strong>
+          <span>18–23 pont</span>
+          <small></small>
+        </div>
+      </div>
+
+      <button class="sf-toggle-btn" id="toggleCriteria">23 kritérium részletei ▼</button>
+
+      <table class="sf-criteria-table" id="criteriaTable" style="display:none">
+        <thead><tr><th>#</th><th>Kritérium</th><th>Mikor kapsz 1 pontot?</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td>Internet 30+ Mbps</td><td>Van helyhez kötött net és >= 30 Mbps</td></tr>
+          <tr><td class="num">2</td><td>Alkalmazottak 50%+ nettel</td><td>Alkalmazottak >50%-a kap üzleti internet-hozzáférést</td></tr>
+          <tr><td class="num">3</td><td>Távoli hozzáférés</td><td>Van remote access emailhez/doksikhoz/alkalmazásokhoz</td></tr>
+          <tr><td class="num">4</td><td>Online megbeszélés</td><td>Min. 4 online meeting 12 hónapon belül</td></tr>
+          <tr><td class="num">5</td><td>IKT-képzés</td><td>Biztosított képzést az alkalmazottaknak</td></tr>
+          <tr><td class="num">6</td><td>IKT-szakember</td><td>Alkalmaz IT-st vagy külsős IT támogatást vesz igénybe</td></tr>
+          <tr><td class="num">7</td><td>IKT-biztonsági tájékoztatás</td><td>Bármilyen módon felkészíti az alkalmazottakat</td></tr>
+          <tr><td class="num">8</td><td>Min. 3 biztonsági intézkedés</td><td>A 12 felsoroltból legalább 3-at alkalmaz</td></tr>
+          <tr><td class="num">9</td><td>IKT-biztonsági dokumentum</td><td>Van IBSZ vagy hasonló dokumentum</td></tr>
+          <tr><td class="num">10</td><td>Saját weboldal</td><td>Van saját honlap</td></tr>
+          <tr><td class="num">11</td><td>Közösségi média</td><td>Használ bármilyen social mediát</td></tr>
+          <tr><td class="num">12</td><td>2+ közösségi média</td><td>2 vagy több típust használ (FB+Insta stb.)</td></tr>
+          <tr><td class="num">13</td><td>Felhőszolgáltatás</td><td>Fizet bármilyen cloud szolgáltatásért</td></tr>
+          <tr><td class="num">14</td><td>Fejlett felhő</td><td>Fejlett cloud (nem csak email/fájltárolás)</td></tr>
+          <tr><td class="num">15</td><td>ERP</td><td>Van vállalatirányítási rendszer</td></tr>
+          <tr><td class="num">16</td><td>CRM</td><td>Van ügyfélkezelő rendszer</td></tr>
+          <tr><td class="num">17</td><td>Adatanalitika</td><td>Végez adatelemzést (belső/külső)</td></tr>
+          <tr><td class="num">18</td><td>MI (mesterséges intelligencia)</td><td>Használ AI-t üzleti célra</td></tr>
+          <tr><td class="num">19</td><td>Robot</td><td>Használ ipari/szolgáltató robotot</td></tr>
+          <tr><td class="num">20</td><td>IoT</td><td>Használ IoT eszközöket</td></tr>
+          <tr><td class="num">21</td><td>E-számla</td><td>Küld automatikus feldolgozásra alkalmas e-számlát</td></tr>
+          <tr><td class="num">22</td><td>Webes értékesítés</td><td>Árbevétel >1% webből és >10% B2C</td></tr>
+          <tr><td class="num">23</td><td>Elektronikus értékesítés</td><td>Árbevétel >=1% web+app+EDI-ből</td></tr>
+        </tbody>
+      </table>
     </div>
 
     <div class="sf-nav" id="chapterNav"></div>
@@ -189,7 +268,16 @@
     });
   }
 
-  document.addEventListener('DOMContentLoaded', render);
+  document.addEventListener('DOMContentLoaded', () => {
+    render();
+    const toggleBtn = document.getElementById('toggleCriteria');
+    const table = document.getElementById('criteriaTable');
+    toggleBtn.addEventListener('click', () => {
+      const open = table.style.display !== 'none';
+      table.style.display = open ? 'none' : 'table';
+      toggleBtn.textContent = open ? '23 kritérium részletei ▼' : '23 kritérium elrejtése ▲';
+    });
+  });
   </script>
 </body>
 </html>
