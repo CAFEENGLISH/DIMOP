@@ -165,7 +165,7 @@ function buildCalculatorHTML() {
 
     <!-- Goals -->
     <h3>Fejlesztési célok</h3>
-    <p class="calc-hint" style="margin-bottom:12px">ℹ️ Az 1-2. cél átalány — nem jár külön költség, de bejelölhető ha vállalod.</p>
+    <p class="calc-hint" style="margin-bottom:12px">ℹ️ Az 1-2. cél átalány — a költségük már beépítve a többi cél egységáraiba.</p>
     <div class="calc-goals" id="calcGoals">
       ${buildGoalsHTML()}
     </div>
@@ -274,7 +274,7 @@ function buildGoalsHTML() {
           <span class="calc-goal-name">${goal.name}</span>
         </label>
         <span class="calc-goal-tag">
-          ${isFlat ? '<span class="tag tag-gray">Átalány (0 Ft)</span>' : ''}
+          ${isFlat ? '<span class="tag tag-gray">Átalány (beépítve)</span>' : ''}
           ${disabled ? '<span class="tag tag-red">Nem támogatott</span>' : ''}
           ${goal.maxPct ? `<span class="tag tag-yellow">Max ${goal.maxPct}%</span>` : ''}
           ${goal.bonusPoints ? `<span class="tag tag-blue">+${goal.bonusPoints.points} pont</span>` : ''}
