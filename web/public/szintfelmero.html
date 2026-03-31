@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DIMOP Plusz - Digitális szintfelmérő kérdések</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>">
+  <style>
+    .sf-intro { background: var(--blue-light); border-radius: 12px; padding: 20px 24px; margin-bottom: 24px; }
+    .sf-intro p { margin: 0; font-size: 14px; color: var(--gray-700); line-height: 1.6; }
+    .sf-intro a { color: var(--accent); }
+    .sf-chapter { margin-top: 32px; }
+    .sf-chapter-title { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; color: #fff; background: var(--blue); padding: 12px 20px; border-radius: 10px; margin-bottom: 16px; cursor: pointer; user-select: none; }
+    .sf-chapter-title:hover { background: var(--blue-dark); }
+    .sf-chapter-title .sf-badge { background: rgba(255,255,255,.2); padding: 2px 10px; border-radius: 10px; font-size: 12px; margin-left: auto; }
+    .sf-chapter-title .sf-arrow { transition: transform .2s; }
+    .sf-chapter-title.open .sf-arrow { transform: rotate(90deg); }
+    .sf-questions { display: none; }
+    .sf-questions.open { display: block; }
+    .sf-q { background: #fff; border: 1px solid var(--gray-200); border-radius: 10px; padding: 16px 20px; margin-bottom: 12px; }
+    .sf-q-num { display: inline-block; background: var(--blue); color: #fff; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-size: 13px; font-weight: 700; margin-right: 10px; }
+    .sf-q-title { font-size: 14px; font-weight: 600; color: var(--gray-900); line-height: 1.5; margin-bottom: 10px; }
+    .sf-q-type { font-size: 11px; color: var(--gray-500); margin-bottom: 8px; font-style: italic; }
+    .sf-q-options { list-style: none; padding: 0; margin: 0; }
+    .sf-q-options li { font-size: 13px; color: var(--gray-700); padding: 4px 0 4px 24px; position: relative; line-height: 1.5; }
+    .sf-q-options li::before { content: '☐'; position: absolute; left: 0; color: var(--gray-400); }
+    .sf-q-options.numeric li::before { content: '→'; color: var(--accent); }
+    .sf-summary { background: var(--gray-100); border-radius: 12px; padding: 20px 24px; margin-top: 32px; }
+    .sf-summary h2 { font-size: 18px; font-weight: 700; color: var(--blue-dark); margin-bottom: 12px; }
+    .sf-summary table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .sf-summary th { background: var(--blue); color: #fff; padding: 8px 12px; text-align: left; }
+    .sf-summary td { padding: 8px 12px; border-bottom: 1px solid var(--gray-200); }
+    .sf-summary tr:hover td { background: var(--blue-light); }
+    .sf-tip { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 0 8px 8px 0; margin-bottom: 16px; font-size: 13px; color: #92400e; }
+    .sf-nav { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+    .sf-nav a { background: var(--blue-light); color: var(--blue); border-radius: 20px; padding: 6px 14px; font-size: 12px; text-decoration: none; transition: all .15s; }
+    .sf-nav a:hover { background: var(--blue); color: #fff; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-left">
+        <a href="/" style="color:#fff;text-decoration:none;font-size:24px;margin-right:12px" title="Vissza a tudásbázisra">&#8249;</a>
+        <div class="logo">DIMOP<span>+</span></div>
+        <div class="header-text">
+          <h1>Digitális szintfelmérő</h1>
+          <p>26 kérdés &mdash; 7 fejezet &mdash; kkvdigital.dkf.hu</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <a href="https://kkvdigital.dkf.hu" target="_blank" class="badge badge-green" style="text-decoration:none">Kitöltés &rarr;</a>
+        <a href="https://kkvdigital.dkf.hu/assets/pdf/Minta_kerdoiv.pdf" target="_blank" class="badge" style="text-decoration:none">Minta PDF</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="calc-page">
+    <div class="sf-intro">
+      <p><strong>Mi ez?</strong> A pályázat benyújtásához kötelezően kitöltendő 26 kérdéses digitalizációs szintfelmérő. A kitöltés a <a href="https://kkvdigital.dkf.hu" target="_blank">kkvdigital.dkf.hu</a> oldalon történik. Itt előre átnézheted a kérdéseket, hogy felkészülj a kitöltésre!</p>
+      <p style="margin-top:8px"><strong>Fontos:</strong> A felmérés elvégzésének időpontja <strong>max. 60 nappal</strong> a pályázat benyújtása előtt lehet. A kitöltés közben bármikor kiléphetsz - a rendszer menti a válaszokat.</p>
+    </div>
+
+    <div class="sf-tip">
+      <strong>Tipp:</strong> A kérdésekre adott válaszok alapján derül ki a vállalkozásod digitális intenzitási szintje (0-23 pont). A pályázathoz <strong>nagyon alacsony</strong> (0-5 pont) szint szükséges belépési feltételként. A fejlesztéssel min. <strong>alacsony</strong> (6-11 pont) szintre kell eljutni.
+    </div>
+
+    <div class="sf-nav" id="chapterNav"></div>
+
+    <div id="chapters"></div>
+
+    <div class="sf-summary">
+      <h2>Összefoglaló</h2>
+      <table>
+        <thead><tr><th>Fejezet</th><th>Kérdések</th><th>Db</th></tr></thead>
+        <tbody>
+          <tr><td>1. Internethasználat</td><td>1–5</td><td>5</td></tr>
+          <tr><td>2. Internetes jelenlét</td><td>6–8</td><td>3</td></tr>
+          <tr><td>3. IKT-készségek</td><td>9–10</td><td>2</td></tr>
+          <tr><td>4. IKT-biztonság</td><td>11–13</td><td>3</td></tr>
+          <tr><td>5. Üzleti szoftverek/megoldások</td><td>14–16</td><td>3</td></tr>
+          <tr><td>6. Technológiahasználat</td><td>17–23</td><td>7</td></tr>
+          <tr><td>7. E-kereskedelem</td><td>24–26</td><td>3</td></tr>
+          <tr><td><strong>ÖSSZESEN</strong></td><td><strong>1–26</strong></td><td><strong>26</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="text-align:center;margin:32px 0">
+      <a href="https://kkvdigital.dkf.hu/regisztracio" target="_blank" style="display:inline-block;background:var(--blue);color:#fff;padding:14px 32px;border-radius:8px;font-size:16px;font-weight:700;text-decoration:none">Regisztráció és kitöltés &rarr;</a>
+    </div>
+  </main>
+
+  <script>
+  const CHAPTERS = [
+    { title: '1. Internethasználat', id: 'ch1', questions: [
+      { num: 1, title: 'Van a vállalkozásnak helyhez kötött internetkapcsolata? Ha igen, kérjük, jelölje az előfizetői szerződés szerinti garantált maximális letöltési sebességet!', type: 'Egyszeres választás', options: ['kevesebb, mint 10 Mbps','10-29 Mbps','30-99 Mbps','100-249 Mbps','250-499 Mbps','500-999 Mbps','legalább 1 Gbps','A vállalkozás nem rendelkezik helyhez kötött internetkapcsolattal'] },
+      { num: 2, title: 'Kérjük, adja meg az üzleti célú internet-hozzáféréssel rendelkező alkalmazottak arányát!', type: 'Numerikus érték (0–100) %', options: ['Százalékos érték megadása (0-100%)'], numeric: true },
+      { num: 3, title: 'Kérjük, adja meg a mobilinternet-kapcsolatot lehetővé tévő hordozható eszközökkel ellátott alkalmazottak arányát!', type: 'Numerikus érték (0–100) %', options: ['Százalékos érték megadása (0-100%)'], numeric: true },
+      { num: 4, title: 'Van a vállalkozásnak olyan alkalmazottja, aki rendelkezik távoli hozzáféréssel az alábbiakhoz?', type: 'Többszörös választás', options: ['A vállalkozás e-mail rendszeréhez','A vállalkozás dokumentumaihoz (pl. fájlokhoz, táblázatokhoz, előadások anyagaihoz)','A vállalkozás üzleti alkalmazásaihoz, szoftverekhez (pl. könyvelői alkalmazás, CRM)','Nincs ilyen alkalmazott'] },
+      { num: 5, title: 'Tartott a vállalkozás az elmúlt 12 hónapban legalább négy online (távoli) megbeszélést vagy értekezletet?', type: 'Egyszeres választás', options: ['Igen','Nem'] },
+    ]},
+    { title: '2. Internetes jelenlét', id: 'ch2', questions: [
+      { num: 6, title: 'Rendelkezik a vállalkozás saját weboldallal? Ha igen, jelölje be annak jellemzőit!', type: 'Többszörös választás', options: ['A weboldal az interneten bárki által a nap 24 órájában elérhető','Saját domain-nel rendelkezik','A vállalkozás aktuális alapinformációit tartalmazza','Termék- és szolgáltatásinformációkat, árlistát tartalmaz','Az ügyfelek részére biztosított a testreszabás lehetősége','A megrendelések online követhetősége biztosított','Személyre szóló tartalom a visszatérő ügyfelek részére','A vállalkozás nem rendelkezik honlappal/weboldallal'] },
+      { num: 7, title: 'Használja a vállalkozás az alábbi közösségi médiához tartozó eszközök valamelyikét?', type: 'Többszörös választás', options: ['Közösségi hálózatok (pl. Facebook, LinkedIn)','Blog vagy mikroblog (pl. saját blog, X/Twitter)','Multimédiás tartalommegosztó (pl. Youtube, Instagram, Pinterest)','A fentiek közül egyik sem'] },
+      { num: 8, title: 'Helyezett el a vállalkozás fizetős hirdetést az interneten az elmúlt 12 hónapban legalább nettó 50.000 Ft értékben?', type: 'Egyszeres választás', options: ['Igen','Nem'] },
+    ]},
+    { title: '3. IKT-készségek', id: 'ch3', questions: [
+      { num: 9, title: 'Biztosított a vállalkozás IKT-készségekhez kapcsolódó képzést vagy továbbképzést az alkalmazottai számára az elmúlt 12 hónapban?', type: 'Egyszeres választás', options: ['Igen','Nem'] },
+      { num: 10, title: 'Milyen formában alkalmaz IKT-szakembert vagy vesz igénybe IKT-támogatást?', type: 'Többszörös választás', options: ['Saját alkalmazottjával látja el az IKT-feladatokat','Külső vállalkozás szolgáltatását veszi igénybe','Nem alkalmaz IKT-szakembert és nem vesz igénybe külső szolgáltatót'] },
+    ]},
+    { title: '4. IKT-biztonság', id: 'ch4', questions: [
+      { num: 11, title: 'A vállalkozás milyen módszerrel készíti fel alkalmazottait az IKT-biztonsággal kapcsolatos kötelezettségeikre?', type: 'Többszörös választás', options: ['Önkéntes képzések vagy belső információk révén','Kötelező képzés vagy tananyag áttekintése révén','Szerződés (pl. munkaszerződés) révén','MKIK Kiberbiztonság védhálója programban történő regisztráció révén','A fentiek közül egyik sem'] },
+      { num: 12, title: 'Alkalmazza a vállalkozás az alábbi biztonsági intézkedések valamelyikét?', type: 'Többszörös választás', options: ['Erős jelszóval történő hitelesítés (min. 8 karakter, vegyes)','Biometrikus hitelesítés (ujjlenyomat, arc, hang)','Kétfaktoros hitelesítés (2FA)','Titkosítási technikák (adatok, dokumentumok, e-mail)','Biztonsági mentés külön helyre (felhőbe is)','Hálózati hozzáférés ellenőrzése','VPN alkalmazása','IKT-biztonsági megfigyelő rendszer (IDS/IPS)','Naplófájlok megőrzése incidenselemzéshez','IKT-kockázatelemzés','IKT-biztonsági vizsgálatok (behatolásteszt stb.)','A fentiek közül egyiket sem alkalmazza'] },
+      { num: 13, title: 'Rendelkezik a vállalkozás IKT-biztonsági dokumentummal (IBSZ)?', type: 'Egyszeres választás', options: ['Igen','Nem'] },
+    ]},
+    { title: '5. Üzleti szoftverek/megoldások', id: 'ch5', questions: [
+      { num: 14, title: 'Használ a vállalkozás vállalati erőforrás-tervezési (ERP) megoldást?', type: 'Egyszeres választás', options: ['Igen','Nem'] },
+      { num: 15, title: 'Használ a vállalkozás ügyfélkapcsolat-kezelő (CRM) megoldást?', type: 'Egyszeres választás', options: ['Igen','Nem'] },
+      { num: 16, title: 'Küldött a vállalkozás automatikus feldolgozásra alkalmas elektronikus számlát?', type: 'Egyszeres választás', options: ['Igen','Nem'] },
+    ]},
+    { title: '6. Technológiahasználat', id: 'ch6', questions: [
+      { num: 17, title: 'Használ a vállalkozás fizetős felhőalapú szolgáltatást? Ha igen, melyiket?', type: 'Többszörös választás', options: ['E-mail','Irodai szoftver','Fájlok tárolása','Infrastruktúra/kapacitás (IaaS)','Pénzügyi/számviteli szoftver','ERP','CRM','Döntéstámogató/adatbányász','Workflow megoldások','Biztonsági szoftver','Adatbázis tárhely','Platform szolgáltatás (PaaS)','A fentiek közül egyiket sem'] },
+      { num: 18, title: 'Végez a vállalkozás adatanalitikát?', type: 'Egyszeres választás', options: ['Igen','Nem'] },
+      { num: 19, title: 'Ha igen, milyen adatforrásokból?', type: 'Többszörös választás', options: ['Forgalmi adatok (értékesítés, pénzügy)','Fogyasztókra vonatkozó információk','Közösségi média adatok','Weben elérhető adatok','Hordozható eszközök helymeghatározási adatai','Okos eszközök, szenzorok adatai','Kormányzati nyílt adatok','Műholdas adatok','Egyéb forrás','Nem végez adatanalitikát'] },
+      { num: 20, title: 'Használ a vállalkozás mesterséges intelligenciára épülő technológiákat üzleti célból?', type: 'Többszörös választás', options: ['Szövegelemzés/szövegbányászat','Beszédfelismerés','Természetesnyelv-generálás (fordítás, chatbot)','Képfelismerés/képfeldolgozás','Gépi tanulás adatelemzéshez','Folyamatautomatizálás (RPA)','Autonóm robotok, önjáró járművek','A fentiek közül egyiket sem'] },
+      { num: 21, title: 'Használ a vállalkozás robotot? Ha igen, milyen típusút?', type: 'Többszörös választás', options: ['Ipari robotok (hegesztés, lézervágás stb.)','Szolgáltató robotok (tisztító, szállító stb.)','A fentiek közül egyiket sem'] },
+      { num: 22, title: 'Használ a vállalkozás IoT-alapú eszközöket vagy rendszereket?', type: 'Egyszeres választás', options: ['Igen','Nem'] },
+      { num: 23, title: 'Ha igen, milyen célra?', type: 'Többszörös választás', options: ['Energiafogyasztás kezelése','Helyiségek biztonsága','Termelési folyamat','Logisztika kezelése','Állagfüggő karbantartás','Ügyfélszolgálat','Egyéb','Nem használ'] },
+    ]},
+    { title: '7. E-kereskedelem', id: 'ch7', questions: [
+      { num: 24, title: 'Az előző üzleti évben a nettó árbevétel hány %-a származott weboldalon/appon keresztüli értékesítésből?', type: 'Egyszeres választás (sávos)', options: ['0 - 1%','1,01 - 10%','10,01 - 20%','20,01 - 30%','30,01 - 40%','40,01 - 50%','50,01 - 60%','60,01 - 70%','70,01 - 80%','80,01 - 90%','90,01 - 100%','Nem értékesít weboldalon/appon keresztül'] },
+      { num: 25, title: 'A webes értékesítésből származó árbevétel hány %-a jött egyéni fogyasztóktól (B2C)?', type: 'Egyszeres választás (sávos)', options: ['0 - 1%','1,01 - 10%','10,01 - 20%','20,01 - 30%','30,01 - 40%','40,01 - 50%','50,01 - 60%','60,01 - 70%','70,01 - 80%','80,01 - 90%','90,01 - 100%','Nem értékesít weboldalon/appon vagy nem B2C'] },
+      { num: 26, title: 'A nettó árbevétel hány %-a származott weboldalon, appon és EDI rendszeren keresztüli értékesítésből?', type: 'Egyszeres választás (sávos)', options: ['0 - 0,99%','1 - 9,99%','10 - 19,99%','20 - 29,99%','30 - 39,99%','40 - 49,99%','50 - 59,99%','60 - 69,99%','70 - 79,99%','80 - 89,99%','90 - 100%','Nem értékesít ezen csatornákon keresztül'] },
+    ]},
+  ];
+
+  function render() {
+    const nav = document.getElementById('chapterNav');
+    const container = document.getElementById('chapters');
+
+    CHAPTERS.forEach((ch, ci) => {
+      // Nav link
+      const navLink = document.createElement('a');
+      navLink.href = '#' + ch.id;
+      navLink.textContent = ch.title;
+      nav.appendChild(navLink);
+
+      // Chapter
+      const section = document.createElement('div');
+      section.className = 'sf-chapter';
+      section.id = ch.id;
+
+      const titleEl = document.createElement('div');
+      titleEl.className = 'sf-chapter-title';
+      titleEl.innerHTML = `<span class="sf-arrow">&#9654;</span> ${ch.title} <span class="sf-badge">${ch.questions.length} kérdés</span>`;
+
+      const questionsEl = document.createElement('div');
+      questionsEl.className = 'sf-questions';
+
+      ch.questions.forEach(q => {
+        const qEl = document.createElement('div');
+        qEl.className = 'sf-q';
+        qEl.innerHTML = `
+          <div class="sf-q-title"><span class="sf-q-num">${q.num}</span>${q.title}</div>
+          <div class="sf-q-type">${q.type}</div>
+          <ul class="sf-q-options${q.numeric ? ' numeric' : ''}">
+            ${q.options.map(o => `<li>${o}</li>`).join('')}
+          </ul>
+        `;
+        questionsEl.appendChild(qEl);
+      });
+
+      titleEl.addEventListener('click', () => {
+        titleEl.classList.toggle('open');
+        questionsEl.classList.toggle('open');
+      });
+
+      // First chapter open by default
+      if (ci === 0) {
+        titleEl.classList.add('open');
+        questionsEl.classList.add('open');
+      }
+
+      section.appendChild(titleEl);
+      section.appendChild(questionsEl);
+      container.appendChild(section);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', render);
+  </script>
+</body>
+</html>
