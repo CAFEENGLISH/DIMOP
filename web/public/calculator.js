@@ -165,15 +165,7 @@ function buildCalculatorHTML() {
 
     <!-- Goals -->
     <h3>Fejlesztési célok</h3>
-    <p class="calc-hint" style="margin-bottom:12px">ℹ️ Az 1-2. cél (internet, alkalmazotti hozzáférés) átalánya már beépítve az egységköltségekbe.</p>
-    <p class="calc-hint" style="margin-bottom:12px;background:#fff3cd;border-left:4px solid #f59e0b;padding:8px 12px;border-radius:0 6px 6px 0">
-      <strong>MKIK validáció:</strong> Az alábbi összetevőket <strong>együtt kell kijelölni</strong> az MKIK rendszerben:<br>
-      • <strong>3. cél:</strong> Domain + SaaS irodai csomag + IT-üzemeltetés<br>
-      • <strong>8. cél:</strong> Végpontvédelmi licenc + Biztonsági mentés<br>
-      • <strong>10. cél:</strong> Weboldal kialakítás + Karbantartás + Webtárhely + SSL<br>
-      • <strong>13. cél:</strong> Virtuális szerver + Felhő storage + Bevezetés, testre szabás<br>
-      <small style="color:#92400e">A kalkulátorban ezek automatikusan kötelezőek (nem kapcsolhatók ki).</small>
-    </p>
+    <p class="calc-hint" style="margin-bottom:12px">ℹ️ Az 1-2. cél átalány — nem jár külön költség, de bejelölhető ha vállalod.</p>
     <div class="calc-goals" id="calcGoals">
       ${buildGoalsHTML()}
     </div>
@@ -271,7 +263,6 @@ function buildGoalsHTML() {
   let html = '';
   for (const [id, goal] of Object.entries(GOALS)) {
     const num = parseInt(id);
-    if (goal.flat) continue; // 1-2. cél átalány, nem jelenik meg
     const disabled = !goal.supported;
     const isFlat = goal.flat;
 
@@ -283,13 +274,13 @@ function buildGoalsHTML() {
           <span class="calc-goal-name">${goal.name}</span>
         </label>
         <span class="calc-goal-tag">
-          ${isFlat ? '<span class="tag tag-gray">Átalány</span>' : ''}
+          ${isFlat ? '<span class="tag tag-gray">Átalány (0 Ft)</span>' : ''}
           ${disabled ? '<span class="tag tag-red">Nem támogatott</span>' : ''}
           ${goal.maxPct ? `<span class="tag tag-yellow">Max ${goal.maxPct}%</span>` : ''}
           ${goal.bonusPoints ? `<span class="tag tag-blue">+${goal.bonusPoints.points} pont</span>` : ''}
           ${goal.excludes ? `<span class="tag tag-orange">Kizárja: ${goal.excludes.join(', ')}.</span>` : ''}
         </span>
-        <span class="calc-goal-total" data-goal-total="${num}">0 Ft</span>
+        <span class="calc-goal-total" data-goal-total="${num}">${isFlat ? 'Átalány' : '0 Ft'}</span>
       </div>
       ${!isFlat && !disabled && goal.components ? `
         <div class="calc-components" data-components="${num}">
@@ -508,11 +499,17 @@ function recalculate() {
   for (const [goalId, goal] of Object.entries(GOALS)) {
     const num = parseInt(goalId);
     const cb = document.querySelector(`.calc-goal-check[data-goal="${num}"]`);
-    if (!cb || !cb.checked || !goal.components) {
+    if (!cb || !cb.checked) {
       const totalEl = document.querySelector(`[data-goal-total="${num}"]`);
-      if (totalEl) totalEl.textContent = '0 Ft';
+      if (totalEl) totalEl.textContent = goal.flat ? 'Átalány' : '0 Ft';
       continue;
     }
+    if (goal.flat) {
+      const totalEl = document.querySelector(`[data-goal-total="${num}"]`);
+      if (totalEl) totalEl.textContent = '✅ Vállalva';
+      continue;
+    }
+    if (!goal.components) continue;
 
     if (!goal.flat && goal.supported) selectedGoalCount++;
 
