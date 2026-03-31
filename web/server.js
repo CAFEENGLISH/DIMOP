@@ -168,10 +168,15 @@ ${fullKnowledgeText}`;
     res.write('data: [DONE]\n\n');
     res.end();
   } catch (err) {
+    const msg = (err.message || '').toLowerCase();
+    let errorMsg = 'Szerverhiba, próbáld újra.';
+    if (msg.includes('overloaded')) errorMsg = 'Az AI szerver jelenleg túlterhelt. Kérlek próbáld újra pár másodperc múlva.';
+    else if (msg.includes('rate_limit')) errorMsg = 'Túl sok kérés, kérlek várj egy kicsit.';
+    else if (msg.includes('invalid_api_key') || msg.includes('authentication')) errorMsg = 'API kulcs hiba.';
     if (!res.headersSent) {
-      res.status(500).json({ error: 'AI hiba: ' + err.message });
+      res.status(500).json({ error: errorMsg });
     } else {
-      res.write(`data: ${JSON.stringify({ error: err.message })}\n\n`);
+      res.write(`data: ${JSON.stringify({ error: errorMsg })}\n\n`);
       res.end();
     }
   }

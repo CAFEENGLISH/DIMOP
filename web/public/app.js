@@ -667,7 +667,10 @@ async function sendMessage(text, attachments) {
               messages.scrollTop = messages.scrollHeight;
             }
             if (parsed.error) {
-              contentEl.innerHTML = `<em style="color:var(--red)">Hiba: ${parsed.error}</em>`;
+              let errMsg = parsed.error;
+              if (errMsg.includes('overloaded') || errMsg.includes('Overloaded')) errMsg = 'Az AI szerver jelenleg túlterhelt. Kérlek próbáld újra pár másodperc múlva.';
+              else if (errMsg.includes('{')) errMsg = 'Szerverhiba, próbáld újra.';
+              contentEl.innerHTML = `<em style="color:var(--red)">⚠️ ${errMsg}</em>`;
             }
           } catch {}
         }
