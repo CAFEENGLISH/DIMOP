@@ -166,6 +166,14 @@ function buildCalculatorHTML() {
     <!-- Goals -->
     <h3>Fejlesztési célok</h3>
     <p class="calc-hint" style="margin-bottom:12px">ℹ️ Az 1-2. cél (internet, alkalmazotti hozzáférés) átalánya már beépítve az egységköltségekbe.</p>
+    <p class="calc-hint" style="margin-bottom:12px;background:#fff3cd;border-left:4px solid #f59e0b;padding:8px 12px;border-radius:0 6px 6px 0">
+      <strong>MKIK validáció:</strong> Az alábbi összetevőket <strong>együtt kell kijelölni</strong> az MKIK rendszerben:<br>
+      • <strong>3. cél:</strong> Domain + SaaS irodai csomag + IT-üzemeltetés<br>
+      • <strong>8. cél:</strong> Végpontvédelmi licenc + Biztonsági mentés<br>
+      • <strong>10. cél:</strong> Weboldal kialakítás + Karbantartás + Webtárhely + SSL<br>
+      • <strong>13. cél:</strong> Virtuális szerver + Felhő storage + Bevezetés, testre szabás<br>
+      <small style="color:#92400e">A kalkulátorban ezek automatikusan kötelezőek (nem kapcsolhatók ki).</small>
+    </p>
     <div class="calc-goals" id="calcGoals">
       ${buildGoalsHTML()}
     </div>
@@ -604,6 +612,30 @@ function recalculate() {
     }
     if (devicesTotal > 0 && devicePct >= 15 && devicePct <= 30) {
       warnings.push({ type: 'ok', text: `Eszközarány: ${devicePct.toFixed(1)}% (15-30% OK)` });
+    }
+  }
+
+  // MKIK kötelező összetevő-csoport ellenőrzés
+  const mkikGroups = {
+    3: { name: 'Távoli hozzáférés', comps: ['SaaS irodai csomag', 'Domain regisztráció', 'Havidíjas IT-üzemeltetés (alapszint)'] },
+    8: { name: 'IKT-biztonsági intézkedések', comps: ['Végpontvédelmi licenc', 'Biztonsági mentés'] },
+    10: { name: 'Saját weboldal/honlap', comps: ['Saját weboldal kialakítása', 'Karbantartás/frissítés', 'Webtárhely', 'SSL tanúsítvány'] },
+    13: { name: 'Felhőszolgáltatás', comps: ['Virtuális szerver (IaaS)', 'Adattárolás és mentés (felhő storage)', 'Bevezetés, testre szabás'] },
+  };
+  for (const [gid, group] of Object.entries(mkikGroups)) {
+    const goalCb = document.querySelector(`.calc-goal-check[data-goal="${gid}"]`);
+    if (!goalCb || !goalCb.checked) continue;
+    const goal = GOALS[gid];
+    if (!goal?.components) continue;
+    const missing = [];
+    goal.components.forEach((comp, ci) => {
+      if (group.comps.includes(comp.name)) {
+        const cc = document.querySelector(`.calc-comp-check[data-goal="${gid}"][data-comp="${ci}"]`);
+        if (!cc || !cc.checked) missing.push(comp.name);
+      }
+    });
+    if (missing.length > 0) {
+      warnings.push({ type: 'error', text: `${gid}. ${group.name}: az MKIK rendszerben együtt kötelező: ${missing.join(', ')}!` });
     }
   }
 

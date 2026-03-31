@@ -151,6 +151,19 @@ Az előleggel **12 hónapon belül** legalább **60%-ban** el kell számolni!
 
 > **Fontos korlátozások:** A 3. (távoli hozzáférés) és 6. (IKT-szakember) fejl. célok **együtt NEM választhatók**. A 11. és 12. (közösségi média) fejl. célok szintén **együtt NEM választhatók**.
 
+### Kötelező összetevő-csoportok (MKIK rendszer validáció)
+
+Az alábbi összetevőket **együtt kell kijelölni** — ha az egyiket választod, mindegyiket ki kell jelölnöd a csoportból:
+
+| Fejl. cél | Kötelező összetevők (együtt!) |
+|-----------|------------------------------|
+| **3. Távoli hozzáférés** | Domain regisztráció + SaaS irodai csomag + Havidíjas IT-üzemeltetés (alapszint) |
+| **8. IKT-biztonsági intézkedések** | Végpontvédelmi licenc + Biztonsági mentés |
+| **10. Saját weboldal** | Saját weboldal kialakítása + Karbantartás/frissítés + Webtárhely + SSL tanúsítvány |
+| **13. Felhőszolgáltatás** | Virtuális szerver (IaaS) + Adattárolás és mentés (felhő storage) + Bevezetés, testre szabás |
+
+> **Forrás:** Az MKIK vallalkozzdigitalisan.mkik.hu árkalkuláció rendszere validálja ezeket a csoportokat mentéskor. Ha hiányzik egy kötelező társösszetevő, a rendszer nem engedi menteni.
+
 ---
 
 ## Pályázat összefoglaló
