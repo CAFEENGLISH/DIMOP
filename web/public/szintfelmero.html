@@ -89,16 +89,69 @@
 
   <main class="calc-page">
     <div class="sf-content">
-      <div class="sf-intro">
-        <p><strong>Ez egy gyakorló teszt!</strong> Válaszolj a 23 kérdésre és valós időben látod a pontszámod. Az éles kitöltés a <a href="https://kkvdigital.dkf.hu" target="_blank">kkvdigital.dkf.hu</a> oldalon történik.</p>
-        <p>A válaszaid localStorage-ba mentődnek, bármikor visszatérhetsz.</p>
+      <!-- Pontozási rendszer -->
+      <div style="background:#fff;border:2px solid var(--blue);border-radius:12px;padding:24px;margin-bottom:24px">
+        <h2 style="font-size:20px;font-weight:800;color:var(--blue-dark);margin:0 0 8px">DIMOP digitalizációs szintfelmérő – pontozási rendszer</h2>
+
+        <h3 style="font-size:15px;margin:16px 0 6px;color:var(--gray-900)">Max pontszám és szempontok</h3>
+        <p style="font-size:14px;color:var(--gray-700);line-height:1.6;margin:0 0 12px">A digitális intenzitás megállapítása összesen <strong>23 szempont</strong> alapján történik, minden szempont <strong>1-1 pontot</strong> ér. A maximálisan elérhető pontszám: <strong>23 pont</strong>. A legalább alapszintű digitális intenzitás eléréséhez minimum <strong>6 pontot</strong> kell teljesíteni.</p>
+
+        <h3 style="font-size:15px;margin:16px 0 8px;color:var(--gray-900)">A 4 minősítési szint</h3>
+        <div class="sf-levels">
+          <div class="sf-lvl sf-lvl-vlow"><strong>0–5 pont</strong>Nagyon alacsony<br><small>Pályázhat! (belépési feltétel)</small></div>
+          <div class="sf-lvl sf-lvl-low"><strong>6–11 pont</strong>Alacsony<br><small>Kötelező cél</small></div>
+          <div class="sf-lvl sf-lvl-high"><strong>12–17 pont</strong>Magas<br><small>Önkéntes (+4 értékelési pont)</small></div>
+          <div class="sf-lvl sf-lvl-vhigh"><strong>18–23 pont</strong>Nagyon magas</div>
+        </div>
+        <p style="font-size:12px;color:var(--gray-500);margin:4px 0 0;text-align:center">A „nagyon alacsony" az egyetlen kategória, ami nem éri el az alapszintet – ez a pályázathoz szükséges küszöb.</p>
+
+        <h3 style="font-size:15px;margin:20px 0 8px;color:var(--gray-900)">Elvárások szintenként (mit kell vállalni a projekt végére)</h3>
+        <table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:12px">
+          <thead><tr><th style="background:var(--blue);color:#fff;padding:6px 10px;text-align:left">Kiindulási szint</th><th style="background:var(--blue);color:#fff;padding:6px 10px;text-align:left">Elvárás a projekt végére</th></tr></thead>
+          <tbody>
+            <tr><td style="padding:6px 10px;border-bottom:1px solid var(--gray-200);font-weight:600;color:#dc2626">Nagyon alacsony (0–5)</td><td style="padding:6px 10px;border-bottom:1px solid var(--gray-200)">El kell érni legalább a <strong>6 pontos alacsony szintet</strong></td></tr>
+            <tr><td style="padding:6px 10px;border-bottom:1px solid var(--gray-200)">Alacsony (6–11)</td><td style="padding:6px 10px;border-bottom:1px solid var(--gray-200)">Legalább +1 pont</td></tr>
+            <tr><td style="padding:6px 10px;border-bottom:1px solid var(--gray-200)">Magas (12–17)</td><td style="padding:6px 10px;border-bottom:1px solid var(--gray-200)">Legalább +1 pont</td></tr>
+            <tr><td style="padding:6px 10px;">Nagyon magas (18–23)</td><td style="padding:6px 10px">Legalább +1 pont</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="font-size:15px;margin:20px 0 8px;color:var(--gray-900)">A 23 vizsgált szempont (kategóriánként)</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;font-size:12px">
+          <div style="background:var(--blue-light);border-radius:8px;padding:10px 14px">
+            <strong style="color:var(--blue);display:block;margin-bottom:4px">Infrastruktúra / kapcsolat</strong>
+            30+ Mbps internet · alkalmazottak 50%+ internet · távoli hozzáférés · online megbeszélések
+          </div>
+          <div style="background:var(--blue-light);border-radius:8px;padding:10px 14px">
+            <strong style="color:var(--blue);display:block;margin-bottom:4px">IKT szakértelem / biztonság</strong>
+            IKT-képzés · IKT-szakember · biztonsági tájékoztatás · 3+ biztonsági intézkedés · biztonsági dokumentumok
+          </div>
+          <div style="background:var(--blue-light);border-radius:8px;padding:10px 14px">
+            <strong style="color:var(--blue);display:block;margin-bottom:4px">Online jelenlét</strong>
+            saját weboldal · bármilyen közösségi média · 2+ féle közösségi média
+          </div>
+          <div style="background:var(--blue-light);border-radius:8px;padding:10px 14px">
+            <strong style="color:var(--blue);display:block;margin-bottom:4px">Felhő / szoftver</strong>
+            fizetős felhőszolgáltatás · fejlett felhő · ERP · CRM
+          </div>
+          <div style="background:var(--blue-light);border-radius:8px;padding:10px 14px">
+            <strong style="color:var(--blue);display:block;margin-bottom:4px">Haladó technológia</strong>
+            adatanalitika · MI-használat · robot · IoT
+          </div>
+          <div style="background:var(--blue-light);border-radius:8px;padding:10px 14px">
+            <strong style="color:var(--blue);display:block;margin-bottom:4px">Értékesítés</strong>
+            automatizált e-számla · webes értékesítés · elektronikus értékesítés
+          </div>
+        </div>
+
+        <div style="background:#fffbeb;border-left:4px solid #f59e0b;padding:10px 14px;border-radius:0 8px 8px 0;margin-top:16px;font-size:13px;color:#92400e">
+          <strong>DIMOP 1.2.6/B-26:</strong> A program kifejezetten a <strong>nagyon alacsony</strong> digitális intenzitású (0–5 pont) mikro- és kisvállalkozásokat célozza. A projekt végére legalább <strong>alacsony</strong> (6+ pont) szintet kell elérni.
+        </div>
       </div>
 
-      <div class="sf-levels">
-        <div class="sf-lvl sf-lvl-vlow"><strong>0–5</strong>Nagyon alacsony<br><small>(pályázhat!)</small></div>
-        <div class="sf-lvl sf-lvl-low"><strong>6–11</strong>Alacsony<br><small>(kötelező cél)</small></div>
-        <div class="sf-lvl sf-lvl-high"><strong>12–17</strong>Magas<br><small>(+4 pont)</small></div>
-        <div class="sf-lvl sf-lvl-vhigh"><strong>18–23</strong>Nagyon magas</div>
+      <!-- Gyakorló teszt info -->
+      <div class="sf-intro">
+        <p><strong>Próbáld ki!</strong> Válaszolj a 23 kérdésre és valós időben látod a pontszámod a jobb felső sarokban. Az éles kitöltés a <a href="https://kkvdigital.dkf.hu" target="_blank">kkvdigital.dkf.hu</a> oldalon történik. A válaszaid mentődnek.</p>
       </div>
 
       <div id="questions"></div>
