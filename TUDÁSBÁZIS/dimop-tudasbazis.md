@@ -540,6 +540,96 @@ Az eredeti teljes útmutató (12 oldal): [ePapír útmutató PDF](/docs/utmutato
 
 ---
 
+## EPTK kitöltési útmutató (pályázati adatlap)
+
+### Monitoring mutatók
+
+1. **"Új monitoring mutató rögzítése"** gombra kattintva
+2. Legördülőből: **"Magas digitális intenzitást elérő vállalkozások"** — ez az egyetlen opció
+3. **Cél dátum** = a projekt tervezett fizikai befejezésének dátuma
+4. **Cél kumulált = 0** ← KÖTELEZŐEN 0 értéket kell rögzíteni!
+
+> **Fontos:** A "Magas" elnevezés megtévesztő — nem azt jelenti hogy magas szintet kell elérni. Ez az indikátor neve, és mindenkinél 0-t kell beírni.
+
+### Mérföldkövek
+
+- **Mérföldkő sorszáma:** 1 (automatikus)
+- **Elérés tervezett dátuma:** projekt fizikai befejezésének várható időpontja
+- **Megvalósítani tervezett eredmények:** automatikus szöveg: *"A projekt fizikai befejezéséig a vállalkozás digitális intenzitási szintjének emelkedése történik meg a betervezett fejlesztési célok, eszközök által."*
+- **Felhasználni tervezett támogatás összege:** a teljes igényelt támogatás (= Források III. sor összege)
+
+### Fejlesztendő tevékenység (TEÁOR)
+
+A dropdown listából a vállalkozás **bejegyzett TEÁOR kódját** kell kiválasztani. Kizárt kódok: TEÁOR'25 01.11-09.90, 12.00, 19.10-20, 24.10 és 30.1 (mezőgazdaság, dohány, kőolaj, vas/acél, hajó).
+
+### Források
+
+- **III. Támogatás:** min. 3,000,000 Ft – max. 12,000,000 Ft, max. 90%
+- **V. Nem finanszírozott tevékenység:** ha van ilyen a költségvetésben, itt is rögzíteni kell az összeget
+- **Fontos:** a Források adatlapot a költségsorok rögzítése ELŐTT kell kitölteni!
+
+### Költségek rögzítése
+
+#### Informatikai fejlesztés (1 db költségsor!)
+
+| Mező | Érték |
+|------|-------|
+| Költségelem | **Informatikai fejlesztés** |
+| Tevékenység neve | automatikus |
+| Finanszírozási mód | **Utófinanszírozás** |
+| Állami támogatás kategória | **4.4. Általános csekély összegű (de minimis) támogatás (EU) 2023/2831** |
+| Beszerzés jellege | **Beszerzés** |
+| Nettó egységár | A "Fejlesztési célok, eszközök részletezése" űrlap "Összeg – nettó (összesen)" értéke |
+| ÁFA | Az ÁFA levonási jognak megfelelően |
+| Mennyiség | **1** |
+| Támogatási % | **max. 90%** |
+| Részletezés | *"A Fejlesztési célok, eszközök részletezése űrlapon szereplő adatokkal összhangban kerültek rögzítésre a költségek."* |
+
+> **Fontos:** Egyetlen 1 db költségvetési sor kell, amiben az ÖSSZES fejlesztési cél és eszköz költsége egy összegben szerepel!
+
+#### Nem finanszírozott tevékenység (ha van)
+
+Ha a projektben vannak "Nem támogatott" fejlesztési célok (pl. 14., 17., 18., 19., 20., 23.) amiket saját forrásból valósít meg:
+
+| Mező | Érték |
+|------|-------|
+| Költségelem | **Nem elszámolható költség** |
+| Finanszírozási mód | **Utófinanszírozás** |
+| Állami támogatás kategória | **Nem állami támogatás** |
+| Beszerzés jellege | **Beszerzés** |
+| Elszámolható költség | **0 Ft** (kézzel átírni!) |
+| Támogatási % | **0%** |
+
+### Dokumentumok csatolása
+
+| Dokumentum | Megjegyzés |
+|------------|-----------|
+| Digitális intenzitási szint igazolás | kkvdigital.dkf.hu-ról, cégszerűen hitelesítve, max 60 napos |
+| Közösségi mutató igazolás | Automatikusan jön az előzővel együtt |
+| KKV nyilatkozat (5/a komplex VAGY 5/b egyszerűsített) | Sablon alapján kitöltve, cégszerűen aláírva |
+| KKV alátámasztó dokumentumok | Ha beszámoló közzétételre nem kötelezett (EV: adóbevallás) |
+| De minimis nyilatkozat (6. melléklet) | Sablon alapján, cégszerűen aláírva |
+| DFK (pdf) | Ha releváns (6M Ft felett kötelező) |
+
+### Stratégiák (mind "Igen")
+
+- Digitális Iránytű 2030
+- Digitális évtized 2030 szakpolitikai program
+- EU Duna régió Stratégia
+- Nemzeti Digitalizációs Stratégia 2022-2030
+- Nemzeti Intelligens Szakosodási Stratégia 2021-2027
+- Magyar MKKV Megerősítésének Stratégiája 2019-2030
+
+### Horizontális elvárások (mind "Igen")
+
+Minden horizontális elvárás nyilatkozatnál **"Igen"** a helyes válasz — ezek kötelező vállalások.
+
+### Bankszámla
+
+A pályázó vállalkozás **saját bankszámlaszámát** kell megadni. Csak erre utalható a támogatás.
+
+---
+
 ## Egyéb hasznos linkek
 
 | Link | Leírás |
