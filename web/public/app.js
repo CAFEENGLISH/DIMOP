@@ -691,7 +691,16 @@ async function sendMessage(text, attachments) {
         }
       }
     } else {
-      appendMessage('assistant', `*Hiba: ${err.message}*`);
+      const m = (err.message || '').toLowerCase();
+      let friendly = err.message;
+      if (m.includes('failed to fetch') || m.includes('networkerror') || m.includes('load failed')) {
+        friendly = 'Nincs internetkapcsolat, vagy a szerver nem érhető el. Kérlek ellenőrizd a hálózatot és próbáld újra.';
+      } else if (m.includes('credit') || m.includes('too low')) {
+        friendly = 'Az AI szolgáltatás kreditje elfogyott. Kérlek értesítsd az adminisztrátort.';
+      } else if (m.includes('overloaded')) {
+        friendly = 'Az AI szerver jelenleg túlterhelt. Kérlek próbáld újra pár másodperc múlva.';
+      }
+      appendMessage('assistant', `⚠️ ${friendly}`);
     }
   } finally {
     streaming = false;
