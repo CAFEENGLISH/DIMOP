@@ -34,9 +34,12 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: var
 .logo span { color: #ffd700; }
 .header-text h1 { font-size: 18px; font-weight: 600; }
 .header-text p { font-size: 13px; opacity: .8; }
-.header-right { display: flex; gap: 8px; }
+.header-right { display: flex; gap: 8px; align-items: center; }
 .badge { background: rgba(255,255,255,.15); color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; backdrop-filter: blur(4px); }
 .badge-green { background: rgba(25,135,84,.3); }
+.header-cta { display: inline-flex; align-items: center; gap: 6px; background: #f59e0b; color: #1f2937; padding: 7px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; text-decoration: none; transition: transform .15s, box-shadow .15s, background .15s; white-space: nowrap; }
+.header-cta:hover { background: #fbbf24; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.25); }
+.header-cta svg { width: 14px; height: 14px; }
 
 /* === Steps Bar === */
 .steps-bar { background: #fff; border-bottom: 1px solid var(--gray-200); padding: 16px 24px 0; position: sticky; top: var(--header-h); z-index: 50; box-shadow: 0 2px 4px rgba(0,0,0,.04); }
@@ -202,7 +205,12 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: var
 /* === Responsive === */
 @media (max-width: 1024px) {
   .content { padding: 24px 20px; }
-  .header-right { display: none; }
+  .header-right .badge { display: none; }
+  .header-cta { padding: 6px 11px; font-size: 12px; }
+}
+@media (max-width: 480px) {
+  .header-cta span { display: none; }
+  .header-cta { padding: 6px 9px; }
 }
 @media (max-width: 768px) {
   .steps-bar { padding: 12px 8px 0; }
