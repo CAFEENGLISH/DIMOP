@@ -199,7 +199,7 @@ Az alábbi összetevőket **együtt kell kijelölni** — ha az egyiket választ
 - Középvállalkozások, nagyvállalatok
 - Mezőgazdasági termelők (>50% árbevétel mezőgazdaságból)
 - Nehéz helyzetben lévő vállalkozások (2023.12.31. alapján)
-- Akik az elmúlt 3 évben hasonló tartalmú fejlesztésre kaptak támogatást (DIMOP, GINOP, OFA, Demján Sándor programok)
+- Akik a benyújtást megelőző 3 évben azonos szakmai tartalmú fejlesztésre már kaptak támogatást — **különösen, aki ezen a pályázaton egy korábbi körben már NYERT: DIMOP Plusz-1.2.6-24 (korábbi „A" kör) vagy DIMOP Plusz-1.2.6/B-26 (II. kör)**, illetve GINOP Plusz 1.2.4 / 1.4.x, OFA, Demján Sándor programok. (A felhívás 1.2. „Ki nem nyújthat be" pontja szerint.)
 
 ---
 
