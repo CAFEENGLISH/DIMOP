@@ -45,8 +45,15 @@ Anthropic Claude-ról **OpenAI `gpt-5.5`**-re.
 - Külső palyazat.gov.hu linkek (alapadatok, „Nyertes pályázatok" CTA) a C-26 konstrukcióra.
 - Összegek/intenzitás (3–12M Ft, 90%) és a kalkulátor-logika **változatlan**.
 
+### Homogén C oldal — NULLA „B" jelölés (kötelező)
+- A C oldal **semmilyen „B" hivatkozást nem tartalmazhat**: se `1.2.6/B-26` kód, se „B" címke,
+  se vissza-link a B oldalra. Egységes, tisztán „C" pályázati felület.
+- Ellenőrzés: a `web/public/c/` alatt egyetlen „B-26" / „/B-" előfordulás sem maradhat
+  (build előtti grep-ellenőrzés a tervben).
+
 ### Váltó-link (az egyetlen B-oldali módosítás — jóváhagyva)
-- Apró fejléc-link **mindkét** oldalon: B → „Budapesti (C) pályázat →", C → vissza a B-re.
+- A váltó-link **kizárólag a B oldalak fejlécében**: „Budapesti (C) pályázat →" (B → C irány).
+- A **C oldalon NINCS** link a B-re (a homogenitás miatt).
 - Ez a B fájlok egyetlen érintése; minden más B-tartalom változatlan.
 
 ## Build pipeline módosítások ([build.js](../../../build.js))
