@@ -420,15 +420,14 @@ A koncepcióban olyan **üzletileg releváns fejlesztések** kerülnek meghatár
 
 ---
 
-## Értékelési pontrendszer (max. 12 pont, min. 2 pont szükséges)
+## Értékelési pontrendszer (max. 14 pont, min. 2 pont szükséges)
 
 | # | Szempont | Pont |
 |---|---------|------|
 | 4 | Kibervédelmi intézkedés (8. fejl. cél) | 0 vagy 2 |
 | 5 | MI alkalmazás (13. fejl. cél MI összetevő, vagy 18. fejl. cél) | 0 vagy 2 |
-| 6 | Alacsony szint vállalása / Magas szint vállalása | 2 / 4 |
-> **C-26 megjegyzés:** a területi pontozás a hivatalos C-26 felhívás szerint pontosítandó; Budapest a kizárólagos megvalósítási terület.
-| 7 | Észak-Alföldi, Észak-Mo., Dél-Dunántúli, vagy Dél-Alföldi régió | 0 vagy 2 |
+| 6 | Digitális szint vállalás: alacsonyra nő / magasra nő | 2 / 4 |
+| 7 | Digitális érettség (bemeneti felmérő): 0–1 pont → 4 pont; 2–5 pont → 0 pont | 0 vagy 4 |
 | 8 | DFK megléte vagy vállalása (MVP 2.0 keretében) | 0 vagy 2 |
 
 ---
