@@ -9,6 +9,7 @@ const DOCS_SRC = join(__dirname, 'PÁLYÁZATI KIIRAS');
 const DOCS_DIST = join(DIST, 'docs');
 const PUBLIC = join(__dirname, 'web', 'public');
 const KB = join(__dirname, 'TUDÁSBÁZIS', 'dimop-tudasbazis.md');
+const KB_C = join(__dirname, 'TUDÁSBÁZIS', 'dimop-tudasbazis-c.md');
 
 async function build() {
   // Create dist directories
@@ -60,11 +61,17 @@ window.__DOCS__ = ${JSON.stringify(docs)};
   html = html.replace('</head>', `${injection}\n</head>`);
   writeFileSync(join(DIST, 'index.html'), html);
 
-  // 6b. Inject into C subpage index too (no-op if /c not present yet)
+  // 6b. Inject C knowledge + C-filtered docs into the C subpage index
   try {
     const cIndexPath = join(DIST, 'c', 'index.html');
+    const knowledgeC = readFileSync(KB_C, 'utf-8');
+    const docsC = docs.filter((d) => !/b-?26/i.test(d.name)); // drop B-specific felhívás from C page
+    const cInjection = `<script>
+window.__KNOWLEDGE__ = ${JSON.stringify(knowledgeC)};
+window.__DOCS__ = ${JSON.stringify(docsC)};
+</script>`;
     let cHtml = readFileSync(cIndexPath, 'utf-8');
-    cHtml = cHtml.replace('</head>', `${injection}\n</head>`);
+    cHtml = cHtml.replace('</head>', `${cInjection}\n</head>`);
     writeFileSync(cIndexPath, cHtml);
   } catch {}
 
