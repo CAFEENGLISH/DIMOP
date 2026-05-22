@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DIMOP Plusz-1.2.6/C-26 - Pályázati Tudásbázis (Budapest)</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-left">
+        <div class="logo">DIMOP<span>+</span></div>
+        <div class="header-text">
+          <h1>Pályázati Tudásbázis</h1>
+          <p>DIMOP Plusz-1.2.6/C-26 &mdash; Budapesti KKV-k digitális transzformációja</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <span class="badge">12M Ft</span>
+        <span class="badge badge-green">Vissza nem térítendő</span>
+        <a href="https://www.palyazat.gov.hu/eredmenyek/tamogatott-projektek?program=Sz%C3%A9chenyi+terv+plusz&amp;op=DIMOP_PLUSZ&amp;konstrukcio=DIMOP_PLUSZ-1.2.6%2FC-26" target="_blank" rel="noopener noreferrer" class="header-cta" title="Nyertes pályázatok megtekintése a palyazat.gov.hu-n">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 4h14v2c0 2.5-1.8 4.6-4.2 4.95C14.4 13 13.5 14.7 12 15.4V18h3v2H9v-2h3v-2.6c-1.5-.7-2.4-2.4-2.8-4.45C6.8 10.6 5 8.5 5 6V4zm2 2v.1c0 1.5.8 2.7 2 3.4-.1-.5-.1-1-.1-1.5V6H7zm10 0h-2v2c0 .5 0 1-.1 1.5 1.2-.7 2-1.9 2.1-3.4V6z"/></svg>
+          <span>Nyertes pályázatok</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Process Steps Bar -->
+  <div class="steps-bar" id="stepsBar">
+    <div class="steps-track">
+      <div class="step active" data-step="1">
+        <div class="step-num">1</div>
+        <div class="step-label">Regisztráció</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" data-step="2">
+        <div class="step-num">2</div>
+        <div class="step-label">DFK igénylés</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" data-step="3">
+        <div class="step-num">3</div>
+        <div class="step-label">Szintfelmérő</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" data-step="4">
+        <div class="step-num">4</div>
+        <div class="step-label">Árkalkuláció</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" data-step="5">
+        <div class="step-num">5</div>
+        <div class="step-label">Nyilatkozatok</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" data-step="6">
+        <div class="step-num">6</div>
+        <div class="step-label">Benyújtás</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" data-step="7">
+        <div class="step-num">7</div>
+        <div class="step-label">Megvalósítás</div>
+      </div>
+      <div class="step-line"></div>
+      <button class="ppt-btn" id="pptBtn" aria-label="Prezentáció indítása">
+        <span class="ppt-icon">▶</span>
+        <span class="ppt-label">Prezentáció</span>
+      </button>
+    </div>
+    <div class="step-detail" id="stepDetail">
+      <div class="step-detail-inner" id="stepDetailInner">
+        Kattints egy lépésre a részletekért!
+      </div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Menü bezárása">&times;</button>
+        <span>Tartalomjegyzék</span>
+      </div>
+      <ul id="navList"></ul>
+      <div class="sidebar-calc">
+        <a href="/c/calculator.html" class="sidebar-calc-btn">
+          <span class="calc-icon">🧮</span> Költségkalkulátor
+        </a>
+        <a href="/c/checklist.html" class="sidebar-calc-btn" style="background:#059669;margin-top:6px">
+          <span class="calc-icon">✅</span> Pályázati Checklist
+        </a>
+        <a href="/c/szintfelmero.html" class="sidebar-calc-btn" style="background:#7c3aed;margin-top:6px">
+          <span class="calc-icon">📋</span> Szintfelmérő kérdések
+        </a>
+        <a href="/c/supplier.html" class="sidebar-calc-btn" style="background:var(--green);margin-top:6px">
+          <span class="calc-icon">🏢</span> Beszállítóknak
+        </a>
+      </div>
+      <div class="sidebar-docs">
+        <h3>Dokumentumok</h3>
+        <div id="docsList"></div>
+      </div>
+    </nav>
+
+    <!-- Mobile menu button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menü megnyitása">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+
+    <!-- Main content -->
+    <main class="content" id="content">
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Tudásbázis betöltése...</p>
+      </div>
+      <article id="article"></article>
+    </main>
+  </div>
+
+  <!-- Chat bubble -->
+  <button class="chat-bubble" id="chatBubble" aria-label="AI Asszisztens megnyitása">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span class="chat-badge">AI</span>
+  </button>
+
+  <!-- Chat panel -->
+  <div class="chat-panel" id="chatPanel">
+    <div class="chat-header">
+      <div>
+        <strong>DIMOP AI Asszisztens</strong>
+        <small>Kérdezz bármit a pályázatról!</small>
+      </div>
+      <button class="chat-close" id="chatClose" aria-label="Chat bezárása">&times;</button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-msg assistant">
+        <div class="chat-msg-content">
+          Szia! A DIMOP Plusz pályázati asszisztens vagyok. Kérdezz bármit a pályázattal kapcsolatban!
+        </div>
+      </div>
+      <div class="quick-questions">
+        <button class="quick-q" data-q="Ki pályázhat erre a pályázatra?">Ki pályázhat?</button>
+        <button class="quick-q" data-q="Milyen dokumentumokat kell csatolni a pályázathoz?">Milyen dokumentumok kellenek?</button>
+        <button class="quick-q" data-q="Hogyan történik a finanszírozás 12M Ft esetén?">Finanszírozás</button>
+        <button class="quick-q" data-q="Mik a pályázat lépései időrendi sorrendben?">Lépések sorrendje</button>
+      </div>
+    </div>
+    <form class="chat-input" id="chatForm">
+      <div class="chat-attachments" id="chatAttachments"></div>
+      <div class="chat-input-row">
+        <button type="button" class="chat-attach-btn" id="chatAttachBtn" aria-label="Fájl csatolása" title="Kép vagy PDF csatolása">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+        </button>
+        <textarea id="chatInput" placeholder="Írd be a kérdésed..." rows="1" autocomplete="off"></textarea>
+        <button type="submit" id="chatSend" aria-label="Küldés">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <input type="file" id="chatFileInput" accept="image/*,.pdf" multiple hidden>
+    </form>
+  </div>
+
+  <!-- Slideshow -->
+  <div class="slideshow" id="slideshow">
+    <button class="slide-close" id="slideClose">&times;</button>
+    <div class="slide-counter" id="slideCounter"></div>
+    <button class="slide-nav slide-prev" id="slidePrev">&#8249;</button>
+    <button class="slide-nav slide-next" id="slideNext">&#8250;</button>
+    <div class="slide-content" id="slideContent"></div>
+  </div>
+
+  <!-- Overlay for mobile sidebar -->
+  <div class="overlay" id="overlay"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+  <script src="/c/app.js"></script>
+</body>
+</html>
