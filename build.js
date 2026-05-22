@@ -15,10 +15,21 @@ async function build() {
   mkdirSync(DIST, { recursive: true });
   mkdirSync(DOCS_DIST, { recursive: true });
 
-  // 1. Copy public files
-  for (const f of readdirSync(PUBLIC)) {
-    copyFileSync(join(PUBLIC, f), join(DIST, f));
-  }
+  // 1. Copy public files (rekurzívan, hogy a c/ al-oldal is bemásolódjon)
+  const copyRecursive = (src, dest) => {
+    for (const entry of readdirSync(src)) {
+      if (entry.startsWith('.')) continue;
+      const s = join(src, entry);
+      const d = join(dest, entry);
+      if (statSync(s).isDirectory()) {
+        mkdirSync(d, { recursive: true });
+        copyRecursive(s, d);
+      } else {
+        copyFileSync(s, d);
+      }
+    }
+  };
+  copyRecursive(PUBLIC, DIST);
 
   // 2. Copy documents
   const docs = [];
@@ -48,6 +59,14 @@ window.__DOCS__ = ${JSON.stringify(docs)};
 </script>`;
   html = html.replace('</head>', `${injection}\n</head>`);
   writeFileSync(join(DIST, 'index.html'), html);
+
+  // 6b. Inject into C subpage index too (no-op if /c not present yet)
+  try {
+    const cIndexPath = join(DIST, 'c', 'index.html');
+    let cHtml = readFileSync(cIndexPath, 'utf-8');
+    cHtml = cHtml.replace('</head>', `${injection}\n</head>`);
+    writeFileSync(cIndexPath, cHtml);
+  } catch {}
 
   console.log(`\nBuild complete!`);
   console.log(`  - ${docs.length} documents copied to dist/docs/`);
