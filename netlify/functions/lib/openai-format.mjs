@@ -10,6 +10,7 @@ export function toOpenAIContent(content) {
       };
     }
     if (block.type === 'text') return { type: 'text', text: block.text };
+    // Unknown/unsupported block types are intentionally dropped to an empty text block.
     return { type: 'text', text: '' };
   });
 }
@@ -43,7 +44,7 @@ ${knowledge}`;
 export function friendlyError(err) {
   const msg = (err?.message || '').toLowerCase();
   const code = (err?.code || err?.error?.code || '').toLowerCase();
-  const status = err?.status ?? err?.error?.status;
+  const status = err?.status; // OpenAI SDK exposes HTTP status directly on the error
   if (code.includes('insufficient_quota') || msg.includes('quota') || msg.includes('billing') || msg.includes('credit')) {
     return 'Az AI szolgáltatás kreditje elfogyott. Kérlek értesítsd az adminisztrátort.';
   }
@@ -53,7 +54,7 @@ export function friendlyError(err) {
   if (status === 429 || code.includes('rate_limit') || msg.includes('rate limit')) {
     return 'Túl sok kérés, kérlek várj egy kicsit.';
   }
-  if ((typeof status === 'number' && status >= 500) || msg.includes('overloaded')) {
+  if ((typeof status === 'number' && status >= 500) || msg.includes('overloaded')) { // 'overloaded' is defensive (covers proxied/legacy error text); OpenAI uses 5xx
     return 'Az AI szerver jelenleg túlterhelt. Kérlek próbáld újra pár másodperc múlva.';
   }
   return 'Szerverhiba, próbáld újra.';

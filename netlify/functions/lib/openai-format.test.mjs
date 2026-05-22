@@ -50,6 +50,10 @@ test('friendlyError: 429 → túl sok kérés', () => {
   assert.match(friendlyError({ status: 429 }), /Túl sok kérés/);
 });
 
+test('friendlyError: 500 → túlterhelt szerver', () => {
+  assert.match(friendlyError({ status: 500 }), /túlterhelt/);
+});
+
 test('friendlyError: ismeretlen → általános', () => {
   assert.match(friendlyError({}), /Szerverhiba/);
 });
