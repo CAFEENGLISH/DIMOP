@@ -137,9 +137,6 @@ app.post('/api/chat', chatLimiter, async (req, res) => {
   const systemPrompt = buildSystemPrompt(fullKnowledgeText, tender);
 
   const client = new OpenAI({ apiKey });
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection', 'keep-alive');
 
   try {
     const stream = await client.chat.completions.create({
@@ -151,6 +148,11 @@ app.post('/api/chat', chatLimiter, async (req, res) => {
         ...toOpenAIMessages(messages),
       ],
     });
+    // Set SSE headers only once the stream is established, so an early
+    // failure can still return a proper JSON error response below.
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
     for await (const chunk of stream) {
       const delta = chunk.choices?.[0]?.delta?.content;
       if (delta) res.write(`data: ${JSON.stringify({ text: delta })}\n\n`);
@@ -158,8 +160,12 @@ app.post('/api/chat', chatLimiter, async (req, res) => {
     res.write('data: [DONE]\n\n');
     res.end();
   } catch (err) {
-    res.write(`data: ${JSON.stringify({ error: friendlyError(err) })}\n\n`);
-    res.end();
+    if (!res.headersSent) {
+      res.status(500).json({ error: friendlyError(err) });
+    } else {
+      res.write(`data: ${JSON.stringify({ error: friendlyError(err) })}\n\n`);
+      res.end();
+    }
   }
 });
 

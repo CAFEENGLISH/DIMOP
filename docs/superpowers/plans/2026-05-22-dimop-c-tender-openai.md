@@ -434,7 +434,7 @@ git commit -m "feat: switch local dev server chat to OpenAI gpt-5.5"
 A `web/.env` fájlhoz fűzd hozzá (a meglévő ANTHROPIC sor maradhat, nem zavar):
 ```
 # OpenAI API kulcs az AI chathez (gpt-5.5)
-OPENAI_API_KEY=sk-proj-REDACTED
+OPENAI_API_KEY=sk-proj-...   # a valódi kulcsot a felhasználó adja meg, NEM kerül gitbe
 ```
 
 - [ ] **Step 2: Erősítsd meg, hogy NINCS verziókövetve**
