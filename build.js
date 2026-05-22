@@ -9,16 +9,28 @@ const DOCS_SRC = join(__dirname, 'PÁLYÁZATI KIIRAS');
 const DOCS_DIST = join(DIST, 'docs');
 const PUBLIC = join(__dirname, 'web', 'public');
 const KB = join(__dirname, 'TUDÁSBÁZIS', 'dimop-tudasbazis.md');
+const KB_C = join(__dirname, 'TUDÁSBÁZIS', 'dimop-tudasbazis-c.md');
 
 async function build() {
   // Create dist directories
   mkdirSync(DIST, { recursive: true });
   mkdirSync(DOCS_DIST, { recursive: true });
 
-  // 1. Copy public files
-  for (const f of readdirSync(PUBLIC)) {
-    copyFileSync(join(PUBLIC, f), join(DIST, f));
-  }
+  // 1. Copy public files (rekurzívan, hogy a c/ al-oldal is bemásolódjon)
+  const copyRecursive = (src, dest) => {
+    for (const entry of readdirSync(src)) {
+      if (entry.startsWith('.')) continue;
+      const s = join(src, entry);
+      const d = join(dest, entry);
+      if (statSync(s).isDirectory()) {
+        mkdirSync(d, { recursive: true });
+        copyRecursive(s, d);
+      } else {
+        copyFileSync(s, d);
+      }
+    }
+  };
+  copyRecursive(PUBLIC, DIST);
 
   // 2. Copy documents
   const docs = [];
@@ -48,6 +60,20 @@ window.__DOCS__ = ${JSON.stringify(docs)};
 </script>`;
   html = html.replace('</head>', `${injection}\n</head>`);
   writeFileSync(join(DIST, 'index.html'), html);
+
+  // 6b. Inject C knowledge + C-filtered docs into the C subpage index
+  try {
+    const cIndexPath = join(DIST, 'c', 'index.html');
+    const knowledgeC = readFileSync(KB_C, 'utf-8');
+    const docsC = docs.filter((d) => !/b-?26/i.test(d.name)); // drop B-specific felhívás from C page
+    const cInjection = `<script>
+window.__KNOWLEDGE__ = ${JSON.stringify(knowledgeC)};
+window.__DOCS__ = ${JSON.stringify(docsC)};
+</script>`;
+    let cHtml = readFileSync(cIndexPath, 'utf-8');
+    cHtml = cHtml.replace('</head>', `${cInjection}\n</head>`);
+    writeFileSync(cIndexPath, cHtml);
+  } catch {}
 
   console.log(`\nBuild complete!`);
   console.log(`  - ${docs.length} documents copied to dist/docs/`);

@@ -3,7 +3,8 @@ import express from 'express';
 import { fileURLToPath } from 'url';
 import { dirname, join, resolve } from 'path';
 import { readFileSync, readdirSync, statSync, watch } from 'fs';
-import Anthropic from '@anthropic-ai/sdk';
+import OpenAI from 'openai';
+import { toOpenAIMessages, buildSystemPrompt, friendlyError } from '../netlify/functions/lib/openai-format.mjs';
 import rateLimit from 'express-rate-limit';
 import { buildFullKnowledge } from './extract-knowledge.js';
 
@@ -121,63 +122,48 @@ const chatLimiter = rateLimit({
 });
 
 app.post('/api/chat', chatLimiter, async (req, res) => {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
     return res.status(503).json({
-      error: 'AI chat nincs konfigurálva. Add meg az ANTHROPIC_API_KEY-t a .env fájlban.',
+      error: 'AI chat nincs konfigurálva. Add meg az OPENAI_API_KEY-t a .env fájlban.',
     });
   }
 
-  const { messages } = req.body;
+  const { messages, tender } = req.body;
   if (!messages || !Array.isArray(messages)) {
     return res.status(400).json({ error: 'Hibás kérés.' });
   }
 
-  const systemPrompt = `Te a DIMOP Plusz-1.2.6/B-26 pályázati asszisztens vagy. A feladatod, hogy segítsd a felhasználókat a pályázattal kapcsolatos kérdésekben.
+  const systemPrompt = buildSystemPrompt(fullKnowledgeText, tender);
 
-SZABÁLYOK:
-- Válaszolj MINDIG magyarul
-- Csak az alábbi dokumentumok alapján válaszolj - ne találj ki információt
-- Ha nem tudod a választ, mondd el őszintén
-- Legyél tömör és pontos
-- Használj markdown formázást a válaszokban (táblázatok, listák, félkövér)
-- Ha összegekről kérdenek, mindig add meg a pontos számokat
-- Hivatkozz a forrás dokumentumra ha releváns (pl. "A felhívás 2.3.1. pontja szerint...")
-
-AZ ÖSSZES PÁLYÁZATI DOKUMENTUM TELJES SZÖVEGE:
-${fullKnowledgeText}`;
+  const client = new OpenAI({ apiKey });
 
   try {
-    const client = new Anthropic({ apiKey });
+    const stream = await client.chat.completions.create({
+      model: 'gpt-5.5',
+      max_completion_tokens: 2048,
+      stream: true,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        ...toOpenAIMessages(messages),
+      ],
+    });
+    // Set SSE headers only once the stream is established, so an early
+    // failure can still return a proper JSON error response below.
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
-
-    const stream = await client.messages.stream({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 2048,
-      system: systemPrompt,
-      messages: messages.map(m => ({ role: m.role, content: m.content })),
-    });
-
-    for await (const event of stream) {
-      if (event.type === 'content_block_delta' && event.delta?.text) {
-        res.write(`data: ${JSON.stringify({ text: event.delta.text })}\n\n`);
-      }
+    for await (const chunk of stream) {
+      const delta = chunk.choices?.[0]?.delta?.content;
+      if (delta) res.write(`data: ${JSON.stringify({ text: delta })}\n\n`);
     }
     res.write('data: [DONE]\n\n');
     res.end();
   } catch (err) {
-    const msg = (err.message || '').toLowerCase();
-    let errorMsg = 'Szerverhiba, próbáld újra.';
-    if (msg.includes('credit balance') || msg.includes('too low')) errorMsg = 'Az AI szolgáltatás kreditje elfogyott. Kérlek értesítsd az adminisztrátort.';
-    else if (msg.includes('overloaded')) errorMsg = 'Az AI szerver jelenleg túlterhelt. Kérlek próbáld újra pár másodperc múlva.';
-    else if (msg.includes('rate_limit')) errorMsg = 'Túl sok kérés, kérlek várj egy kicsit.';
-    else if (msg.includes('invalid_api_key') || msg.includes('authentication')) errorMsg = 'API kulcs hiba.';
     if (!res.headersSent) {
-      res.status(500).json({ error: errorMsg });
+      res.status(500).json({ error: friendlyError(err) });
     } else {
-      res.write(`data: ${JSON.stringify({ error: errorMsg })}\n\n`);
+      res.write(`data: ${JSON.stringify({ error: friendlyError(err) })}\n\n`);
       res.end();
     }
   }
@@ -189,7 +175,7 @@ async function start() {
   watchFolders();
   app.listen(PORT, () => {
     console.log(`  DIMOP Tudásbázis fut: http://localhost:${PORT}`);
-    console.log(`  AI Chat: ${process.env.ANTHROPIC_API_KEY ? 'AKTÍV' : 'INAKTÍV (nincs ANTHROPIC_API_KEY a .env-ben)'}\n`);
+    console.log(`  AI Chat: ${process.env.OPENAI_API_KEY ? 'AKTÍV' : 'INAKTÍV (nincs OPENAI_API_KEY a .env-ben)'}\n`);
   });
 }
 

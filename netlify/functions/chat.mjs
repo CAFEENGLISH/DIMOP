@@ -1,7 +1,8 @@
-import Anthropic from '@anthropic-ai/sdk';
+import OpenAI from 'openai';
 import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { toOpenAIMessages, buildSystemPrompt, friendlyError } from './lib/openai-format.mjs';
 
 let knowledgeCache = null;
 
@@ -9,13 +10,11 @@ function getFullKnowledge() {
   if (knowledgeCache) return knowledgeCache;
   try {
     const __dirname = dirname(fileURLToPath(import.meta.url));
-    // Try full-knowledge.json first (built by build.js)
     const fkPath = join(__dirname, '..', '..', 'dist', 'full-knowledge.json');
     const data = JSON.parse(readFileSync(fkPath, 'utf-8'));
     knowledgeCache = data.fullText;
   } catch {
     try {
-      // Fallback to just the markdown
       const __dirname = dirname(fileURLToPath(import.meta.url));
       const kbPath = join(__dirname, '..', '..', 'TUDÁSBÁZIS', 'dimop-tudasbazis.md');
       knowledgeCache = readFileSync(kbPath, 'utf-8');
@@ -27,7 +26,7 @@ function getFullKnowledge() {
 }
 
 export default async (req) => {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
     return new Response(JSON.stringify({ error: 'AI chat nincs konfigurálva.' }), {
       status: 503,
@@ -52,7 +51,7 @@ export default async (req) => {
     });
   }
 
-  const { messages } = body;
+  const { messages, tender } = body;
   if (!messages || !Array.isArray(messages)) {
     return new Response(JSON.stringify({ error: 'Hibás kérés.' }), {
       status: 400,
@@ -61,22 +60,10 @@ export default async (req) => {
   }
 
   const knowledge = getFullKnowledge();
-  const systemPrompt = `Te a DIMOP Plusz-1.2.6/B-26 pályázati asszisztens vagy. A feladatod, hogy segítsd a felhasználókat a pályázattal kapcsolatos kérdésekben.
-
-SZABÁLYOK:
-- Válaszolj MINDIG magyarul
-- Csak az alábbi dokumentumok alapján válaszolj - ne találj ki információt
-- Ha nem tudod a választ, mondd el őszintén
-- Legyél tömör és pontos
-- Használj markdown formázást a válaszokban (táblázatok, listák, félkövér)
-- Ha összegekről kérdenek, mindig add meg a pontos számokat
-- Hivatkozz a forrás dokumentumra ha releváns (pl. "A felhívás 2.3.1. pontja szerint...")
-
-AZ ÖSSZES PÁLYÁZATI DOKUMENTUM TELJES SZÖVEGE:
-${knowledge}`;
+  const systemPrompt = buildSystemPrompt(knowledge, tender);
 
   try {
-    const client = new Anthropic({ apiKey });
+    const client = new OpenAI({ apiKey });
 
     const { readable, writable } = new TransformStream();
     const writer = writable.getWriter();
@@ -84,26 +71,25 @@ ${knowledge}`;
 
     (async () => {
       try {
-        const stream = await client.messages.stream({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 2048,
-          system: systemPrompt,
-          messages: messages.map(m => ({ role: m.role, content: m.content })),
+        const stream = await client.chat.completions.create({
+          model: 'gpt-5.5',
+          max_completion_tokens: 2048,
+          stream: true,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            ...toOpenAIMessages(messages),
+          ],
         });
 
-        for await (const event of stream) {
-          if (event.type === 'content_block_delta' && event.delta?.text) {
-            await writer.write(encoder.encode(`data: ${JSON.stringify({ text: event.delta.text })}\n\n`));
+        for await (const chunk of stream) {
+          const delta = chunk.choices?.[0]?.delta?.content;
+          if (delta) {
+            await writer.write(encoder.encode(`data: ${JSON.stringify({ text: delta })}\n\n`));
           }
         }
         await writer.write(encoder.encode('data: [DONE]\n\n'));
       } catch (err) {
-        const msg = (err.message || '').toLowerCase();
-        let errorMsg = 'Szerverhiba, próbáld újra.';
-        if (msg.includes('credit balance') || msg.includes('too low')) errorMsg = 'Az AI szolgáltatás kreditje elfogyott. Kérlek értesítsd az adminisztrátort.';
-        else if (msg.includes('overloaded')) errorMsg = 'Az AI szerver jelenleg túlterhelt. Kérlek próbáld újra pár másodperc múlva.';
-        else if (msg.includes('rate_limit')) errorMsg = 'Túl sok kérés, kérlek várj egy kicsit.';
-        else if (msg.includes('invalid_api_key') || msg.includes('authentication')) errorMsg = 'API kulcs hiba.';
+        const errorMsg = friendlyError(err);
         await writer.write(encoder.encode(`data: ${JSON.stringify({ error: errorMsg })}\n\n`));
       } finally {
         await writer.close();
