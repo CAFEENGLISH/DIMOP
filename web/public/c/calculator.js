@@ -214,8 +214,7 @@ function buildCalculatorHTML() {
         <span class="calc-score-name">Területi dimenzió <button class="calc-map-btn" onclick="openRegionMap()">Térkép</button></span>
         <span class="calc-score-how">
           <select id="calcRegion" class="calc-select-sm">
-            <option value="other" selected>Budapest / Közép-Magyarország (0 pont, C-26 célterület)</option>
-            <option value="priority">Egyéb régió (nem jogosult a C-26-ra)</option>
+            <option value="other" selected>Budapest / Közép-Magyarország (a C-26 célterülete)</option>
           </select>
         </span>
         <span class="calc-score-val" id="scoreRegion">0p</span>
