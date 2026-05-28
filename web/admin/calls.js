@@ -1,0 +1,169 @@
+// Telefon-kampány admin oldal — vanilla JS module
+const API = '/api/admin/calls';
+
+const state = {
+  contacts: [],
+  states: {},
+  filter: 'all',
+  search: '',
+};
+
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+// === Toast ===
+function toast(msg, type = '') {
+  const el = $('#toast');
+  el.textContent = msg;
+  el.className = `ck-toast is-visible ${type ? 'is-' + type : ''}`;
+  setTimeout(() => { el.className = 'ck-toast'; }, 2400);
+}
+
+// === Tel format ===
+function formatTel(raw) {
+  return raw || '';
+}
+function telHref(raw) {
+  return 'tel:' + (raw || '').replace(/\s/g, '');
+}
+
+// === Filter logic ===
+function applyFilter(c, st) {
+  const s = state.search.toLowerCase().trim();
+  if (s) {
+    const hay = `${c.cegnev} ${c.kontakt} ${st?.megjegyzes || ''}`.toLowerCase();
+    if (!hay.includes(s)) return false;
+  }
+  switch (state.filter) {
+    case 'all': return true;
+    case 'uncalled': return !st || !st.sikerult;
+    case 'interested-loss': return st?.sikerult === 'yes' && st?.erdeklodik_vesztes === 'yes';
+    case 'not-interested-loss': return st?.sikerult === 'yes' && st?.erdeklodik_vesztes === 'no';
+    case 'no-reach': return st?.sikerult === 'no';
+  }
+  return true;
+}
+
+// === Render row ===
+function renderRow(c) {
+  const st = state.states[c.adoszam] || {};
+  const rowClass =
+    st.sikerult === 'yes' && st.erdeklodik_vesztes === 'yes' ? 'ck-row--called-y' :
+    st.sikerult === 'yes' && st.erdeklodik_vesztes === 'no' ? 'ck-row--called-n' :
+    st.sikerult === 'no' ? 'ck-row--no-reach' :
+    '';
+  const erdeklodikDisabled = st.sikerult !== 'yes';
+  return `
+    <tr class="${rowClass}" data-adoszam="${c.adoszam}">
+      <td class="ck-col-num" data-label="#">${c.no}</td>
+      <td class="ck-col-cegnev" data-label="Cégnév">
+        <div class="ck-cegnev">${escapeHtml(c.cegnev)}</div>
+        <div class="ck-kontakt ${c.kontakt ? '' : 'ck-kontakt--empty'}">${escapeHtml(c.kontakt)}</div>
+      </td>
+      <td class="ck-col-tel" data-label="Telefon">
+        <span class="ck-tel-wrap">
+          <a class="ck-tel" href="${telHref(c.tel)}">${formatTel(c.tel)}</a>
+          <button class="ck-copy" data-tel="${escapeHtml(c.tel)}" title="Másolás">📋</button>
+        </span>
+      </td>
+      <td class="ck-col-sikerult" data-label="Sikerült?">
+        <span class="ck-yn">
+          <button class="ck-yn-btn ${st.sikerult === 'yes' ? 'is-y-active' : ''}" data-field="sikerult" data-value="yes">Y</button>
+          <button class="ck-yn-btn ${st.sikerult === 'no' ? 'is-n-active' : ''}" data-field="sikerult" data-value="no">N</button>
+        </span>
+      </td>
+      <td class="ck-col-erdeklodik" data-label="Vesztés esetén?">
+        <span class="ck-yn">
+          <button class="ck-yn-btn ${st.erdeklodik_vesztes === 'yes' ? 'is-y-active' : ''}" data-field="erdeklodik_vesztes" data-value="yes" ${erdeklodikDisabled ? 'disabled' : ''}>Y</button>
+          <button class="ck-yn-btn ${st.erdeklodik_vesztes === 'no' ? 'is-n-active' : ''}" data-field="erdeklodik_vesztes" data-value="no" ${erdeklodikDisabled ? 'disabled' : ''}>N</button>
+        </span>
+      </td>
+      <td class="ck-col-megj" data-label="Megjegyzés">
+        <div class="ck-megj" contenteditable="true" data-field="megjegyzes">${escapeHtml(st.megjegyzes || '')}</div>
+      </td>
+    </tr>`;
+}
+
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+// === Render full ===
+function render() {
+  const tbody = $('#callsTbody');
+  const visible = state.contacts.filter((c) => applyFilter(c, state.states[c.adoszam]));
+  tbody.innerHTML = visible.length
+    ? visible.map(renderRow).join('')
+    : `<tr><td colspan="6" class="ck-loading">Nincs találat a szűrőre.</td></tr>`;
+  renderStats();
+  renderFilterCounts();
+}
+
+function renderStats() {
+  const total = state.contacts.length;
+  const called = state.contacts.filter((c) => state.states[c.adoszam]?.sikerult).length;
+  const yesLoss = state.contacts.filter((c) => state.states[c.adoszam]?.erdeklodik_vesztes === 'yes').length;
+  const noLoss = state.contacts.filter((c) => state.states[c.adoszam]?.erdeklodik_vesztes === 'no').length;
+  const pct = total ? Math.round((called / total) * 100) : 0;
+
+  $('#stats').innerHTML = `
+    <div class="ck-stat-card">
+      <div class="ck-stat-num">${total}</div>
+      <div class="ck-stat-label">Partner összesen</div>
+    </div>
+    <div class="ck-stat-card is-orange">
+      <div class="ck-stat-num">${called}/${total}</div>
+      <div class="ck-stat-label">Hívva</div>
+      <div class="ck-stat-sub">${pct}%</div>
+    </div>
+    <div class="ck-stat-card is-green">
+      <div class="ck-stat-num">${yesLoss}</div>
+      <div class="ck-stat-label">Vesztés esetén is érdeklődik</div>
+    </div>
+    <div class="ck-stat-card is-red">
+      <div class="ck-stat-num">${noLoss}</div>
+      <div class="ck-stat-label">Vesztés esetén nem érdeklődik</div>
+    </div>
+  `;
+}
+
+function renderFilterCounts() {
+  $('#count-all').textContent = state.contacts.length;
+  $('#count-uncalled').textContent = state.contacts.filter((c) => !state.states[c.adoszam]?.sikerult).length;
+  $('#count-interested-loss').textContent = state.contacts.filter((c) => state.states[c.adoszam]?.erdeklodik_vesztes === 'yes').length;
+  $('#count-not-interested-loss').textContent = state.contacts.filter((c) => state.states[c.adoszam]?.erdeklodik_vesztes === 'no').length;
+  $('#count-no-reach').textContent = state.contacts.filter((c) => state.states[c.adoszam]?.sikerult === 'no').length;
+}
+
+// === Data fetch ===
+async function loadAll() {
+  try {
+    const [cRes, sRes] = await Promise.all([
+      fetch(`${API}/contacts`),
+      fetch(`${API}/state`),
+    ]);
+    const { contacts } = await cRes.json();
+    const { states } = await sRes.json();
+    const prevCount = state.contacts.length;
+    state.contacts = contacts;
+    state.states = states;
+    render();
+    updateLastUpdated();
+    if (prevCount && contacts.length > prevCount) {
+      toast(`+${contacts.length - prevCount} új partner érkezett`, 'success');
+    }
+  } catch (err) {
+    toast('Adatbetöltés hiba: ' + err.message, 'error');
+  }
+}
+
+function updateLastUpdated() {
+  const d = new Date();
+  const hh = String(d.getHours()).padStart(2, '0');
+  const mm = String(d.getMinutes()).padStart(2, '0');
+  const ss = String(d.getSeconds()).padStart(2, '0');
+  $('#lastUpdated').textContent = `Frissítve: ${hh}:${mm}:${ss}`;
+}
+
+// === Init ===
+loadAll();
