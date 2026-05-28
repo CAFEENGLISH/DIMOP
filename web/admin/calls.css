@@ -142,7 +142,7 @@ body {
 /* === Table === */
 .ck-table-wrap {
   padding: 0 32px 64px;
-  overflow-x: auto;
+  /* NEM lehet overflow-x: auto — eltöri a sticky th-et a body scroll-on. */
 }
 .ck-table {
   width: 100%;
@@ -151,8 +151,13 @@ body {
   background: #fff;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  overflow: hidden;
+  /* NEM lehet overflow: hidden — eltöri a sticky th-et. */
 }
+/* Border-radius az overflow nélkül: a 4 sarkot manuálisan kerekítjük. */
+.ck-table thead tr:first-child th:first-child { border-top-left-radius: var(--radius); }
+.ck-table thead tr:first-child th:last-child { border-top-right-radius: var(--radius); }
+.ck-table tbody tr:last-child td:first-child { border-bottom-left-radius: var(--radius); }
+.ck-table tbody tr:last-child td:last-child { border-bottom-right-radius: var(--radius); }
 .ck-table th {
   background: var(--blue-dark);
   color: #fff;
@@ -163,7 +168,9 @@ body {
   letter-spacing: .5px;
   font-weight: 700;
   position: sticky;
-  top: 0;
+  top: 92px;
+  z-index: 40;
+  box-shadow: 0 2px 4px rgba(0,0,0,.15);
 }
 .ck-table td {
   padding: 12px 14px;
