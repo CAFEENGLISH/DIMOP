@@ -165,5 +165,53 @@ function updateLastUpdated() {
   $('#lastUpdated').textContent = `Frissítve: ${hh}:${mm}:${ss}`;
 }
 
+// === Update API call ===
+async function updateField(adoszam, field, value) {
+  const prev = state.states[adoszam] ? { ...state.states[adoszam] } : null;
+  // Optimistic update
+  state.states[adoszam] = { ...(state.states[adoszam] || {}), [field]: value };
+  // Ha sikerult-et N-re vagy null-ra állítottuk, az erdeklodik_vesztes-t is reset
+  if (field === 'sikerult' && value !== 'yes') {
+    state.states[adoszam].erdeklodik_vesztes = null;
+  }
+  render();
+  try {
+    const r = await fetch(`${API}/update`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ adoszam, field, value }),
+    });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    // ha sikerult mező volt + reset → küldjük az erdeklodik_vesztes null-t is
+    if (field === 'sikerult' && value !== 'yes' && prev?.erdeklodik_vesztes) {
+      await fetch(`${API}/update`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ adoszam, field: 'erdeklodik_vesztes', value: null }),
+      });
+    }
+  } catch (err) {
+    // Revert
+    if (prev) state.states[adoszam] = prev;
+    else delete state.states[adoszam];
+    render();
+    toast('Mentés hiba: ' + err.message, 'error');
+  }
+}
+
+// === Click delegation: Y/N buttons ===
+document.addEventListener('click', (e) => {
+  const ynBtn = e.target.closest('.ck-yn-btn');
+  if (ynBtn && !ynBtn.disabled) {
+    const tr = ynBtn.closest('tr');
+    const adoszam = tr.dataset.adoszam;
+    const field = ynBtn.dataset.field;
+    const value = ynBtn.dataset.value;
+    const current = state.states[adoszam]?.[field];
+    // Toggle: ha már aktív → reset null-ra; egyébként set
+    updateField(adoszam, field, current === value ? null : value);
+  }
+});
+
 // === Init ===
 loadAll();
