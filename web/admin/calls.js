@@ -213,5 +213,35 @@ document.addEventListener('click', (e) => {
   }
 });
 
+// === Debounce util ===
+const debounceMap = new Map();
+function debounce(key, fn, ms = 500) {
+  clearTimeout(debounceMap.get(key));
+  debounceMap.set(key, setTimeout(fn, ms));
+}
+
+// === Megjegyzés input ===
+document.addEventListener('input', (e) => {
+  const megj = e.target.closest('.ck-megj');
+  if (!megj) return;
+  const tr = megj.closest('tr');
+  const adoszam = tr.dataset.adoszam;
+  const value = megj.textContent || '';
+  debounce(`megj-${adoszam}`, () => {
+    fetch(`${API}/update`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ adoszam, field: 'megjegyzes', value }),
+    }).then((r) => {
+      if (!r.ok) toast('Megjegyzés mentés hiba', 'error');
+      else {
+        // Update in-memory state without re-render (megőrzi a kurzor pozíciót)
+        state.states[adoszam] = { ...(state.states[adoszam] || {}), megjegyzes: value };
+        updateLastUpdated();
+      }
+    }).catch((err) => toast('Hálózati hiba: ' + err.message, 'error'));
+  }, 500);
+});
+
 // === Init ===
 loadAll();
