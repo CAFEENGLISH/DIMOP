@@ -164,6 +164,36 @@ app.get('/api/admin/calls/state', async (_req, res) => {
   }
 });
 
+app.post('/api/admin/calls/update', async (req, res) => {
+  const { adoszam, field, value } = req.body || {};
+  if (!adoszam || !field) {
+    return res.status(400).json({ error: 'Hiányzó adoszam vagy field.' });
+  }
+  const ALLOWED = ['sikerult', 'erdeklodik_vesztes', 'megjegyzes'];
+  if (!ALLOWED.includes(field)) {
+    return res.status(400).json({ error: `Tiltott field: ${field}` });
+  }
+  try {
+    const { readFile, writeFile, rename, mkdir } = await import('fs/promises');
+    const { dirname } = await import('path');
+    let states = {};
+    try { states = JSON.parse(await readFile(STATE_PATH, 'utf-8')); } catch {}
+    states[adoszam] = {
+      ...(states[adoszam] || {}),
+      [field]: value,
+      last_updated: new Date().toISOString(),
+    };
+    await mkdir(dirname(STATE_PATH), { recursive: true });
+    const tmp = STATE_PATH + '.tmp';
+    await writeFile(tmp, JSON.stringify(states, null, 2), 'utf-8');
+    await rename(tmp, STATE_PATH);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('State update hiba:', err.message);
+    res.status(500).json({ error: 'Nem sikerült menteni.' });
+  }
+});
+
 // --- AI Chat ---
 const chatLimiter = rateLimit({
   windowMs: 60 * 1000,

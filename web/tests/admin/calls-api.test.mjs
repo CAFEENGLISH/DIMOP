@@ -31,3 +31,34 @@ test('GET /api/admin/calls/state returns { states: {} } when no file', async () 
   assert.ok('states' in body);
   assert.deepStrictEqual(body.states, {});
 });
+
+test('POST /api/admin/calls/update writes state and GET returns it', async () => {
+  const updatePayload = { adoszam: '12345678-9-12', field: 'sikerult', value: 'yes' };
+  const r = await fetch(`${BASE}/api/admin/calls/update`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(updatePayload),
+  });
+  assert.strictEqual(r.status, 200);
+  const body = await r.json();
+  assert.strictEqual(body.ok, true);
+
+  // Now GET state returns it
+  const r2 = await fetch(`${BASE}/api/admin/calls/state`);
+  const { states } = await r2.json();
+  assert.ok(states['12345678-9-12'], 'state written');
+  assert.strictEqual(states['12345678-9-12'].sikerult, 'yes');
+  assert.ok(states['12345678-9-12'].last_updated, 'timestamp set');
+});
+
+test('POST /api/admin/calls/update — multiple fields on same adoszam merge', async () => {
+  await fetch(`${BASE}/api/admin/calls/update`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ adoszam: '12345678-9-12', field: 'megjegyzes', value: 'Friss tartalom' }),
+  });
+  const r = await fetch(`${BASE}/api/admin/calls/state`);
+  const { states } = await r.json();
+  assert.strictEqual(states['12345678-9-12'].sikerult, 'yes', 'previous field preserved');
+  assert.strictEqual(states['12345678-9-12'].megjegyzes, 'Friss tartalom', 'new field merged');
+});
