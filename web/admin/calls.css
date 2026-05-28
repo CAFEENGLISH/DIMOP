@@ -1,0 +1,307 @@
+/* Telefon-kampány — admin tool
+   A meglévő /style.css változóira hivatkozik közvetlenül. */
+
+:root {
+  --blue: #003399;
+  --blue-light: #e8eef8;
+  --blue-dark: #001a4d;
+  --accent: #0066cc;
+  --green: #198754;
+  --orange: #e67e22;
+  --red: #dc3545;
+  --gray-50: #f8f9fa;
+  --gray-100: #f1f3f5;
+  --gray-200: #e9ecef;
+  --gray-300: #dee2e6;
+  --gray-500: #868e96;
+  --gray-700: #495057;
+  --gray-900: #212529;
+  --radius: 8px;
+  --shadow: 0 2px 8px rgba(0,0,0,.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,.15);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: var(--gray-900);
+  background: var(--gray-50);
+  line-height: 1.55;
+  padding: 0;
+}
+
+/* === Header === */
+.ck-header {
+  background: linear-gradient(135deg, var(--blue-dark), var(--blue));
+  color: #fff;
+  padding: 18px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow-lg);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.ck-header h1 { font-size: 22px; font-weight: 700; }
+.ck-subtitle { font-size: 13px; opacity: .8; margin-top: 2px; }
+.ck-header-right { display: flex; gap: 12px; align-items: center; }
+.ck-meta { font-size: 12px; opacity: .7; }
+.ck-refresh {
+  background: rgba(255,255,255,.15);
+  border: 0;
+  color: #fff;
+  font-size: 18px;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background .15s, transform .15s;
+}
+.ck-refresh:hover { background: rgba(255,255,255,.25); }
+.ck-refresh:active { transform: scale(.95); }
+.ck-refresh.spinning { animation: spin 1s linear infinite; }
+@keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+
+/* === Stats === */
+.ck-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 24px 32px;
+}
+.ck-stat-card {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--blue);
+}
+.ck-stat-card.is-green { border-left-color: var(--green); }
+.ck-stat-card.is-orange { border-left-color: var(--orange); }
+.ck-stat-card.is-red { border-left-color: var(--red); }
+.ck-stat-num { font-size: 32px; font-weight: 800; color: var(--gray-900); line-height: 1; }
+.ck-stat-label { font-size: 13px; color: var(--gray-500); margin-top: 6px; }
+.ck-stat-sub { font-size: 11px; color: var(--gray-500); margin-top: 4px; }
+
+/* === Filterbar === */
+.ck-filterbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 0 32px 16px;
+  align-items: center;
+  justify-content: space-between;
+}
+.ck-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.ck-pill {
+  border: 1px solid var(--gray-300);
+  background: #fff;
+  color: var(--gray-700);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.ck-pill:hover { background: var(--blue-light); border-color: var(--blue); }
+.ck-pill--active {
+  background: var(--blue);
+  color: #fff;
+  border-color: var(--blue);
+}
+.ck-count {
+  background: rgba(255,255,255,.25);
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.ck-pill:not(.ck-pill--active) .ck-count {
+  background: var(--gray-200);
+  color: var(--gray-700);
+}
+.ck-search input {
+  border: 1px solid var(--gray-300);
+  background: #fff;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  min-width: 320px;
+}
+.ck-search input:focus {
+  outline: 0;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(0,51,153,.15);
+}
+
+/* === Table === */
+.ck-table-wrap {
+  padding: 0 32px 64px;
+  overflow-x: auto;
+}
+.ck-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.ck-table th {
+  background: var(--blue-dark);
+  color: #fff;
+  text-align: left;
+  padding: 12px 14px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  font-weight: 700;
+  position: sticky;
+  top: 0;
+}
+.ck-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--gray-200);
+  vertical-align: top;
+  font-size: 14px;
+}
+.ck-table tbody tr {
+  border-left: 4px solid transparent;
+  transition: background .15s;
+}
+.ck-table tbody tr:hover { background: var(--blue-light); }
+.ck-row--called-y { background: #f0fdf4; border-left-color: var(--green); }
+.ck-row--called-n { background: #fef3f2; border-left-color: var(--gray-300); }
+.ck-row--no-reach { background: #fefce8; border-left-color: var(--orange); }
+.ck-col-num { width: 48px; font-weight: 700; color: var(--gray-500); }
+.ck-col-cegnev { min-width: 240px; }
+.ck-col-tel { width: 180px; }
+.ck-col-sikerult, .ck-col-erdeklodik { width: 110px; }
+.ck-col-megj { min-width: 280px; }
+.ck-cegnev { font-weight: 600; color: var(--gray-900); }
+.ck-kontakt { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
+.ck-kontakt--empty::before { content: '—'; color: var(--gray-300); }
+
+/* === Tel + copy === */
+.ck-tel-wrap { display: inline-flex; align-items: center; gap: 6px; }
+.ck-tel { color: var(--accent); text-decoration: none; font-weight: 500; }
+.ck-tel:hover { text-decoration: underline; }
+.ck-copy {
+  background: var(--gray-100);
+  border: 0;
+  padding: 4px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background .15s;
+}
+.ck-copy:hover { background: var(--gray-200); }
+.ck-copy.is-copied { background: var(--green); color: #fff; animation: pop .4s; }
+@keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+
+/* === Y/N pills === */
+.ck-yn { display: inline-flex; gap: 4px; }
+.ck-yn-btn {
+  border: 1px solid var(--gray-300);
+  background: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.ck-yn-btn:hover:not(:disabled) { background: var(--gray-100); }
+.ck-yn-btn.is-y-active { background: var(--green); color: #fff; border-color: var(--green); }
+.ck-yn-btn.is-n-active { background: var(--red); color: #fff; border-color: var(--red); }
+.ck-yn-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+/* === Megjegyzés === */
+.ck-megj {
+  min-height: 32px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--gray-50);
+  font-size: 13px;
+  cursor: text;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+.ck-megj:focus {
+  outline: 0;
+  background: #fff;
+  box-shadow: 0 0 0 2px var(--blue-light);
+}
+.ck-megj:empty::before {
+  content: 'Kattints a szerkesztéshez…';
+  color: var(--gray-300);
+  font-style: italic;
+}
+
+/* === Loading === */
+.ck-loading {
+  padding: 60px;
+  text-align: center;
+  color: var(--gray-500);
+  font-style: italic;
+}
+
+/* === Toast === */
+.ck-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--gray-900);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  font-size: 14px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity .25s, transform .25s;
+  pointer-events: none;
+  z-index: 100;
+  max-width: 360px;
+}
+.ck-toast.is-visible { opacity: 1; transform: translateY(0); }
+.ck-toast.is-success { background: var(--green); }
+.ck-toast.is-error { background: var(--red); }
+
+/* === Mobile === */
+@media (max-width: 768px) {
+  .ck-header { padding: 14px 18px; }
+  .ck-header h1 { font-size: 18px; }
+  .ck-stats { grid-template-columns: repeat(2, 1fr); padding: 16px; gap: 10px; }
+  .ck-filterbar { padding: 0 16px 12px; flex-direction: column; align-items: stretch; }
+  .ck-search input { min-width: 0; width: 100%; }
+  .ck-table-wrap { padding: 0; }
+  .ck-table { border-radius: 0; }
+  .ck-table th { display: none; }
+  .ck-table, .ck-table tbody, .ck-table tr, .ck-table td {
+    display: block;
+    width: 100%;
+  }
+  .ck-table tr {
+    padding: 14px;
+    border-bottom: 8px solid var(--gray-100);
+  }
+  .ck-table td {
+    border: 0;
+    padding: 6px 0;
+  }
+  .ck-table td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--gray-500);
+    margin-bottom: 4px;
+  }
+}
