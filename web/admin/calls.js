@@ -261,5 +261,32 @@ document.addEventListener('click', async (e) => {
   }
 });
 
+// === Filter pills ===
+document.addEventListener('click', (e) => {
+  const pill = e.target.closest('.ck-pill');
+  if (!pill) return;
+  $$('.ck-pill').forEach((p) => p.classList.remove('ck-pill--active'));
+  pill.classList.add('ck-pill--active');
+  state.filter = pill.dataset.filter;
+  render();
+});
+
+// === Search ===
+$('#searchInput').addEventListener('input', (e) => {
+  state.search = e.target.value;
+  debounce('search', () => render(), 150);
+});
+
+// === Manual refresh ===
+$('#refreshBtn').addEventListener('click', async () => {
+  const btn = $('#refreshBtn');
+  btn.classList.add('spinning');
+  await loadAll();
+  setTimeout(() => btn.classList.remove('spinning'), 400);
+});
+
+// === Auto-poll 30s ===
+setInterval(loadAll, 30000);
+
 // === Init ===
 loadAll();
