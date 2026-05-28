@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import { dirname, join, resolve } from 'path';
 import { readFileSync, readdirSync, statSync, watch } from 'fs';
 import OpenAI from 'openai';
+import xlsx from 'xlsx';
 import { toOpenAIMessages, buildSystemPrompt, friendlyError } from '../netlify/functions/lib/openai-format.mjs';
 import rateLimit from 'express-rate-limit';
 import { buildFullKnowledge } from './extract-knowledge.js';
@@ -111,6 +112,40 @@ app.get('/docs/:filename', (req, res) => {
     res.sendFile(filePath);
   } catch {
     res.status(404).json({ error: 'Fájl nem található.' });
+  }
+});
+
+// --- Admin: Telefon-kampány ---
+const XLSX_PATH = join(ROOT, 'BEÉRKEZETT AJÁNLATKÉRÉSEK', 'Beerkezett_ajanlatkeresek_DIMOP_2026.xlsx');
+
+// Static mount (NOT in /public, never built into dist)
+app.use('/admin', express.static(join(__dirname, 'admin')));
+
+app.get('/api/admin/calls/contacts', async (_req, res) => {
+  try {
+    const wb = xlsx.readFile(XLSX_PATH);
+    const ws = wb.Sheets['Beérkezett ajánlatkérések'];
+    const rows = xlsx.utils.sheet_to_json(ws, { header: 1, defval: '' });
+    // Row 0=title, 1=caption, 2=empty, 3=header, 4+ = data
+    const contacts = rows
+      .slice(4)
+      .filter((r) => typeof r[0] === 'number')
+      .map((r) => ({
+        no: r[0],
+        datum: String(r[1] || ''),
+        azon: String(r[2] || ''),
+        cegnev: String(r[3] || ''),
+        adoszam: String(r[4] || ''),
+        tel: String(r[5] || ''),
+        email: String(r[6] || ''),
+        kontakt: String(r[7] || ''),
+        igenyek: String(r[9] || ''),
+        tetelszam: Number(r[10] || 0),
+      }));
+    res.json({ contacts });
+  } catch (err) {
+    console.error('Contacts API hiba:', err.message);
+    res.status(500).json({ error: 'Nem sikerült beolvasni az xlsx-et.' });
   }
 });
 
