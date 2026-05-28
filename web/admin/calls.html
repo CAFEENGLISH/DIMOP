@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📞 Telefon-kampány — DIMOP Plusz 1.2.6/C-26</title>
+  <link rel="stylesheet" href="/admin/calls.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📞</text></svg>">
+</head>
+<body>
+  <header class="ck-header">
+    <div class="ck-header-left">
+      <h1>📞 Telefon-kampány</h1>
+      <p class="ck-subtitle">DIMOP Plusz-1.2.6/C-26 partnerek</p>
+    </div>
+    <div class="ck-header-right">
+      <span id="lastUpdated" class="ck-meta">—</span>
+      <button id="refreshBtn" class="ck-refresh" title="Frissítés">🔄</button>
+    </div>
+  </header>
+
+  <section class="ck-stats" id="stats">
+    <!-- 4 db stat-card JS-ből generálva -->
+  </section>
+
+  <section class="ck-filterbar">
+    <div class="ck-pills" id="filterPills">
+      <button class="ck-pill ck-pill--active" data-filter="all">Mindenki <span class="ck-count" id="count-all">0</span></button>
+      <button class="ck-pill" data-filter="uncalled">Még nem hívtam <span class="ck-count" id="count-uncalled">0</span></button>
+      <button class="ck-pill" data-filter="interested-loss">Vesztés esetén Y <span class="ck-count" id="count-interested-loss">0</span></button>
+      <button class="ck-pill" data-filter="not-interested-loss">Vesztés esetén N <span class="ck-count" id="count-not-interested-loss">0</span></button>
+      <button class="ck-pill" data-filter="no-reach">Nem sikerült elérni <span class="ck-count" id="count-no-reach">0</span></button>
+    </div>
+    <div class="ck-search">
+      <input type="text" id="searchInput" placeholder="🔍 keresés cégnévben, kontaktban, megjegyzésben…">
+    </div>
+  </section>
+
+  <main class="ck-table-wrap">
+    <table class="ck-table">
+      <thead>
+        <tr>
+          <th class="ck-col-num">#</th>
+          <th class="ck-col-cegnev">Cégnév + kontakt</th>
+          <th class="ck-col-tel">Telefon</th>
+          <th class="ck-col-sikerult">Sikerült?</th>
+          <th class="ck-col-erdeklodik">Vesztés esetén?</th>
+          <th class="ck-col-megj">Megjegyzés</th>
+        </tr>
+      </thead>
+      <tbody id="callsTbody">
+        <tr><td colspan="6" class="ck-loading">Betöltés…</td></tr>
+      </tbody>
+    </table>
+  </main>
+
+  <div id="toast" class="ck-toast"></div>
+
+  <script type="module" src="/admin/calls.js"></script>
+</body>
+</html>
