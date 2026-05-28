@@ -243,5 +243,23 @@ document.addEventListener('input', (e) => {
   }, 500);
 });
 
+// === Copy telefon ===
+document.addEventListener('click', async (e) => {
+  const btn = e.target.closest('.ck-copy');
+  if (!btn) return;
+  const tel = btn.dataset.tel;
+  try {
+    await navigator.clipboard.writeText(tel);
+    btn.classList.add('is-copied');
+    btn.textContent = '✓';
+    setTimeout(() => {
+      btn.classList.remove('is-copied');
+      btn.textContent = '📋';
+    }, 1200);
+  } catch (err) {
+    toast('Vágólap hiba: ' + err.message, 'error');
+  }
+});
+
 // === Init ===
 loadAll();
