@@ -62,3 +62,19 @@ test('POST /api/admin/calls/update — multiple fields on same adoszam merge', a
   assert.strictEqual(states['12345678-9-12'].sikerult, 'yes', 'previous field preserved');
   assert.strictEqual(states['12345678-9-12'].megjegyzes, 'Friss tartalom', 'new field merged');
 });
+
+import { existsSync } from 'fs';
+import { join } from 'path';
+import { fileURLToPath } from 'url';
+import { execSync } from 'child_process';
+
+test('Netlify build does NOT include /admin or /data folders', () => {
+  const ROOT = join(fileURLToPath(import.meta.url), '..', '..', '..', '..');
+  // Build
+  execSync('node build.js', { cwd: ROOT, stdio: 'pipe' });
+  const dist = join(ROOT, 'dist');
+  assert.ok(existsSync(dist), 'dist exists');
+  assert.ok(!existsSync(join(dist, 'admin')), 'dist/admin MUST NOT exist (would leak phone+notes to Netlify)');
+  assert.ok(!existsSync(join(dist, 'data')), 'dist/data MUST NOT exist');
+  assert.ok(!existsSync(join(dist, 'tests')), 'dist/tests MUST NOT exist');
+});
