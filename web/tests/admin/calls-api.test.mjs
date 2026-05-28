@@ -16,3 +16,18 @@ test('GET /api/admin/calls/contacts returns >= 20 contacts with required fields'
   assert.strictEqual(typeof c.no, 'number');
   assert.strictEqual(typeof c.cegnev, 'string');
 });
+
+test('GET /api/admin/calls/state returns { states: {} } when no file', async () => {
+  // töröljük a calls.json-t ha létezik (csak ebben a tesztben)
+  const { unlink } = await import('fs/promises');
+  const { join } = await import('path');
+  const { fileURLToPath } = await import('url');
+  const __dirname = join(fileURLToPath(import.meta.url), '..', '..', '..');
+  try { await unlink(join(__dirname, 'data', 'calls.json')); } catch {}
+
+  const r = await fetch(`${BASE}/api/admin/calls/state`);
+  assert.strictEqual(r.status, 200);
+  const body = await r.json();
+  assert.ok('states' in body);
+  assert.deepStrictEqual(body.states, {});
+});

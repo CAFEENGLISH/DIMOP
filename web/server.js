@@ -117,6 +117,7 @@ app.get('/docs/:filename', (req, res) => {
 
 // --- Admin: Telefon-kampány ---
 const XLSX_PATH = join(ROOT, 'BEÉRKEZETT AJÁNLATKÉRÉSEK', 'Beerkezett_ajanlatkeresek_DIMOP_2026.xlsx');
+const STATE_PATH = join(__dirname, 'data', 'calls.json');
 
 // Static mount (NOT in /public, never built into dist)
 app.use('/admin', express.static(join(__dirname, 'admin')));
@@ -146,6 +147,20 @@ app.get('/api/admin/calls/contacts', async (_req, res) => {
   } catch (err) {
     console.error('Contacts API hiba:', err.message);
     res.status(500).json({ error: 'Nem sikerült beolvasni az xlsx-et.' });
+  }
+});
+
+app.get('/api/admin/calls/state', async (_req, res) => {
+  try {
+    const { readFile } = await import('fs/promises');
+    const raw = await readFile(STATE_PATH, 'utf-8');
+    res.json({ states: JSON.parse(raw) });
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      return res.json({ states: {} });
+    }
+    console.error('State olvasás hiba:', err.message);
+    res.status(500).json({ error: 'Nem sikerült olvasni a calls.json-t.' });
   }
 });
 
