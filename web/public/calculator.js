@@ -126,6 +126,12 @@ function buildCalculatorHTML() {
     <h2 id="kalkulator">Költségkalkulátor</h2>
     <p class="calc-subtitle">Interaktív kalkulátor a DIMOP Plusz-1.2.6/B-26 pályázathoz. Válaszd ki a fejlesztési célokat és eszközöket!</p>
 
+    <!-- Visszatöltés-jelző (csak akkor látszik, ha korábbi kalkuláció lett betöltve) -->
+    <div id="calcRestoredBar" class="calc-restored-bar" style="display:none">
+      <span>↻ A böngésződ visszatöltötte a <strong>korábbi kalkulációdat</strong>. Ezért nem nulláról indul.</span>
+      <button type="button" id="calcRestoredReset" class="calc-btn">Új kalkuláció (ürítés)</button>
+    </div>
+
     <!-- Project Settings -->
     <div class="calc-settings">
       <div class="calc-setting">
@@ -158,6 +164,7 @@ function buildCalculatorHTML() {
       <select id="calcLoadSelect" class="calc-select" style="flex:1;max-width:350px"><option value="">— Válassz —</option></select>
       <button id="calcLoadBtn" class="calc-btn">Betöltés</button>
       <button id="calcDeleteBtn" class="calc-btn calc-btn-danger">Törlés</button>
+      <button id="calcResetBtn" class="calc-btn" style="margin-left:auto">🆕 Új kalkuláció (ürítés)</button>
     </div>
 
     <!-- Warnings -->
@@ -456,6 +463,8 @@ function bindCalculatorEvents() {
   document.getElementById('calcSaveBtn').addEventListener('click', saveCalcNamed);
   document.getElementById('calcLoadBtn').addEventListener('click', loadCalcNamed);
   document.getElementById('calcDeleteBtn').addEventListener('click', deleteCalcNamed);
+  document.getElementById('calcResetBtn').addEventListener('click', resetCalculator);
+  document.getElementById('calcRestoredReset').addEventListener('click', resetCalculator);
   refreshSavesList();
 
   // Restore autosave
@@ -878,8 +887,28 @@ function autoSave() {
 function restoreAutoSave() {
   try {
     const saved = localStorage.getItem(AUTOSAVE_KEY);
-    if (saved) applyCalcState(JSON.parse(saved));
+    if (!saved) return;
+    const state = JSON.parse(saved);
+    applyCalcState(state);
+    // Jelezzük a felhasználónak, ha nem üres kalkulációt töltöttünk vissza –
+    // így nem zavaró, hogy "magától" több millió Ft jelenik meg.
+    const hasContent = (state.goals && Object.keys(state.goals).length > 0) ||
+                       (state.devices && Object.keys(state.devices).length > 0);
+    setRestoredBar(hasContent);
   } catch {}
+}
+
+function setRestoredBar(visible) {
+  const bar = document.getElementById('calcRestoredBar');
+  if (bar) bar.style.display = visible ? 'flex' : 'none';
+}
+
+// Mindent visszaállít az alapértelmezett (üres) állapotra és törli az automatikus mentést.
+function resetCalculator() {
+  try { localStorage.removeItem(AUTOSAVE_KEY); } catch {}
+  // Teljes újraépítés a friss alapértékekkel (a visszatöltés-jelző is eltűnik,
+  // mert a restoreAutoSave már nem talál mentést).
+  initCalculator();
 }
 
 // --- Named saves ---

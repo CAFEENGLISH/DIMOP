@@ -263,6 +263,10 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: var
 .calc-btn-primary:hover { background: var(--blue-dark); }
 .calc-btn-danger { color: var(--red); border-color: var(--red); }
 .calc-btn-danger:hover { background: #fde8e8; }
+.calc-restored-bar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; background: #fef3cd; color: #856404; border: 1px solid #ffeaa7; padding: 10px 14px; border-radius: var(--radius); font-size: 13px; margin-bottom: 16px; }
+.calc-restored-bar span { flex: 1; min-width: 200px; }
+.calc-restored-bar .calc-btn { background: #fff; border-color: #e0c97f; color: #856404; white-space: nowrap; }
+.calc-restored-bar .calc-btn:hover { background: #fff8e1; }
 
 .calc-warnings { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
 .calc-warn { padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 500; }
