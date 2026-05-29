@@ -11,6 +11,64 @@ const state = {
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 
+// === Tétel-kategória map (a 23 DIMOP C-26 fejlesztési cél) ===
+// A backend (xlsx) csak a tétel NEVÉT tárolja, prefix nélkül. Itt visszacímkézzük.
+const ITEM_CATEGORIES = {
+  // HW
+  'Laptop': 'HW',
+  'Monitor': 'HW',
+  'Mobiltelefon': 'HW',
+  'Tablet': 'HW',
+  'Router': 'HW',
+  'Hálózati adattároló - NAS': 'HW',
+  'Multifunkciós nyomtató': 'HW',
+  // SW
+  'SaaS irodai csomag': 'SW',
+  'Online számlázó szoftver előfizetés': 'SW',
+  'weboldalhoz tartozó SSL tanúsítvány': 'SW',
+  'weboldalhoz tartozó webtárhely': 'SW',
+  'Saját weboldal kialakítása': 'SW',
+  'Domain regisztráció (irodai csomaghoz)': 'SW',
+  'Bérelhető webshop rendszer': 'SW',
+  'ERP szoftverlicenc / előfizetés (SaaS modell)': 'SW',
+  'Virtuális szerver (IaaS)': 'SW',
+  'Adattárolás és mentés (felhő storage)': 'SW',
+  'Végpontvédelmi licenc': 'SW',
+  'Videókonferencia platform': 'SW',
+  'MI szolgáltatás': 'SW',
+  // Szolg
+  'Adattárolás, mentés bevezetés': 'Szolg',
+  'Havidíjas IT- üzemeltetés (alapszint, irodai sw)': 'Szolg',
+  'Weboldal karbantartása, frissítése': 'Szolg',
+  'IKT-alapképzés': 'Szolg',
+  'IBSZ kidolgozása': 'Szolg',
+  'Incidenskezelési terv és oktatás': 'Szolg',
+  'ERP bevezetés, testre szabás': 'Szolg',
+  'Digitális aláírás szolgáltatás': 'Szolg',
+  'Videokonferencia bevezetés, üzemeltetés': 'Szolg',
+  'Biztonsági mentés (IKT biztonság)': 'Szolg',
+  'Közösségi média tartalomgyártás': 'Szolg',
+  'Online jelenlét és hirdetéskezelés képzés': 'Szolg',
+  'Online jelenlét és hirdetések': 'Szolg',
+};
+
+function categorizeItems(igenyekStr) {
+  const items = (igenyekStr || '').split('; ').map((s) => s.trim()).filter(Boolean);
+  const groups = { Szolg: [], SW: [], HW: 0, hwItems: [], unknown: [] };
+  for (const item of items) {
+    const cat = ITEM_CATEGORIES[item];
+    if (cat === 'HW') {
+      groups.HW++;
+      groups.hwItems.push(item);
+    } else if (cat === 'Szolg' || cat === 'SW') {
+      groups[cat].push(item);
+    } else {
+      groups.unknown.push(item);
+    }
+  }
+  return groups;
+}
+
 // === Toast ===
 function toast(msg, type = '') {
   const el = $('#toast');
@@ -64,6 +122,7 @@ function renderRow(c) {
         <span class="ck-tel-wrap">
           <a class="ck-tel" href="${telHref(c.tel)}">${formatTel(c.tel)}</a>
           <button class="ck-copy" data-tel="${escapeHtml(c.tel)}" title="Másolás">📋</button>
+          <button class="ck-items" data-adoszam="${escapeHtml(c.adoszam)}" title="Igények (${c.tetelszam} db)">📦</button>
         </span>
       </td>
       <td class="ck-col-sikerult" data-label="Sikerült?">
@@ -147,7 +206,18 @@ async function loadAll() {
     const prevCount = state.contacts.length;
     state.contacts = contacts;
     state.states = states;
-    render();
+    // Ha a user éppen szerkesztést végez (megjegyzés vagy keresés), NE rendereljünk újra
+    // a teljes tbody-t — különben elveszne a kurzor pozíciója. Csak a stat-okat frissítjük.
+    const focused = document.activeElement;
+    const isEditing =
+      focused &&
+      (focused.classList?.contains('ck-megj') || focused.id === 'searchInput');
+    if (isEditing) {
+      renderStats();
+      renderFilterCounts();
+    } else {
+      render();
+    }
     updateLastUpdated();
     if (prevCount && contacts.length > prevCount) {
       toast(`+${contacts.length - prevCount} új partner érkezett`, 'success');
@@ -283,6 +353,67 @@ $('#refreshBtn').addEventListener('click', async () => {
   btn.classList.add('spinning');
   await loadAll();
   setTimeout(() => btn.classList.remove('spinning'), 400);
+});
+
+// === Items modal ===
+function openItemsModal(adoszam) {
+  const c = state.contacts.find((c) => c.adoszam === adoszam);
+  if (!c) return;
+  const g = categorizeItems(c.igenyek);
+  const sectionList = (items) =>
+    items.length
+      ? `<ul>${items.map((i) => `<li>${escapeHtml(i)}</li>`).join('')}</ul>`
+      : `<div class="ck-modal-empty">—</div>`;
+  const unknownSection = g.unknown.length
+    ? `
+      <div class="ck-modal-section">
+        <h4>⚠️ Egyéb / kategorizálatlan <span class="ck-modal-count">${g.unknown.length}</span></h4>
+        <ul>${g.unknown.map((i) => `<li class="ck-modal-unknown">${escapeHtml(i)}</li>`).join('')}</ul>
+      </div>`
+    : '';
+  $('#modalTitle').textContent = `${c.cegnev} — ${c.tetelszam} tétel`;
+  $('#modalBody').innerHTML = `
+    <div class="ck-modal-section">
+      <h4>🔧 Szolgáltatás <span class="ck-modal-count">${g.Szolg.length}</span></h4>
+      ${sectionList(g.Szolg)}
+    </div>
+    <div class="ck-modal-section">
+      <h4>💾 Szoftver <span class="ck-modal-count">${g.SW.length}</span></h4>
+      ${sectionList(g.SW)}
+    </div>
+    <div class="ck-modal-section">
+      <h4>📱 Hardver</h4>
+      <div class="ck-modal-hw-summary"><span class="ck-modal-hw-num">${g.HW}</span>db</div>
+      ${g.HW ? `<div class="ck-modal-hw-detail">(${g.hwItems.join(', ')})</div>` : ''}
+    </div>
+    ${unknownSection}
+  `;
+  const modal = $('#itemsModal');
+  modal.classList.add('is-open');
+  modal.setAttribute('aria-hidden', 'false');
+}
+
+function closeItemsModal() {
+  const modal = $('#itemsModal');
+  modal.classList.remove('is-open');
+  modal.setAttribute('aria-hidden', 'true');
+}
+
+document.addEventListener('click', (e) => {
+  const itemsBtn = e.target.closest('.ck-items');
+  if (itemsBtn) {
+    openItemsModal(itemsBtn.dataset.adoszam);
+    return;
+  }
+  if (e.target.dataset?.close === '1') {
+    closeItemsModal();
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && $('#itemsModal').classList.contains('is-open')) {
+    closeItemsModal();
+  }
 });
 
 // === Auto-poll 30s ===
