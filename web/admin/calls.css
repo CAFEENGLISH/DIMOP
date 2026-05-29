@@ -212,6 +212,151 @@ body {
 .ck-copy.is-copied { background: var(--green); color: #fff; animation: pop .4s; }
 @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
 
+.ck-items {
+  background: var(--gray-100);
+  border: 0;
+  padding: 4px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background .15s, color .15s;
+}
+.ck-items:hover { background: var(--blue-light); color: var(--blue); }
+
+/* === Modal === */
+.ck-modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+.ck-modal.is-open { display: flex; }
+.ck-modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  animation: fadeIn .2s;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.ck-modal-content {
+  position: relative;
+  background: #fff;
+  border-radius: var(--radius);
+  width: 90%;
+  max-width: 560px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp .25s;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.ck-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid var(--gray-200);
+  padding: 18px 22px;
+}
+.ck-modal-header h3 {
+  font-size: 16px;
+  color: var(--blue);
+  font-weight: 700;
+}
+.ck-modal-close {
+  background: 0;
+  border: 0;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--gray-500);
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  transition: background .15s, color .15s;
+}
+.ck-modal-close:hover { background: var(--gray-100); color: var(--red); }
+.ck-modal-body {
+  padding: 18px 22px 22px;
+  overflow-y: auto;
+}
+.ck-modal-section {
+  margin-bottom: 16px;
+}
+.ck-modal-section:last-child { margin-bottom: 0; }
+.ck-modal-section h4 {
+  font-size: 13px;
+  color: var(--blue-dark);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--gray-200);
+  margin-bottom: 8px;
+}
+.ck-modal-section h4 .ck-modal-count {
+  background: var(--blue);
+  color: #fff;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-left: 8px;
+  font-weight: 700;
+}
+.ck-modal-section ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+.ck-modal-section li {
+  padding: 5px 0 5px 14px;
+  font-size: 13px;
+  color: var(--gray-700);
+  position: relative;
+  line-height: 1.5;
+}
+.ck-modal-section li::before {
+  content: '▸';
+  color: var(--accent);
+  position: absolute;
+  left: 0;
+  top: 5px;
+}
+.ck-modal-empty {
+  color: var(--gray-300);
+  font-style: italic;
+  padding: 4px 0;
+  font-size: 13px;
+}
+.ck-modal-hw-summary {
+  font-size: 16px;
+  color: var(--gray-900);
+  font-weight: 600;
+}
+.ck-modal-hw-summary .ck-modal-hw-num {
+  font-size: 24px;
+  color: var(--blue);
+  font-weight: 800;
+  margin-right: 6px;
+}
+.ck-modal-hw-detail {
+  font-size: 11px;
+  color: var(--gray-500);
+  margin-top: 4px;
+  font-style: italic;
+}
+.ck-modal-unknown {
+  border-left: 3px solid var(--orange);
+  padding-left: 10px !important;
+}
+.ck-modal-unknown::before { content: '?' !important; color: var(--orange) !important; }
+
 /* === Y/N pills === */
 .ck-yn { display: inline-flex; gap: 4px; }
 .ck-yn-btn {
