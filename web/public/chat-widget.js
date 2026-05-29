@@ -10,6 +10,11 @@
   if (window.__dimopChatWidget) return;
   window.__dimopChatWidget = true;
 
+  // Pályázat-választó: a <script src="/chat-widget.js" data-tender="c"> alapján
+  // dönti el, melyik pályázat (B = vidéki alapértelmezett, C = budapesti) tudásbázisából
+  // válaszoljon az AI. Üres érték esetén a backend a 'b' alapértelmezettet használja.
+  const TENDER = (document.currentScript && document.currentScript.dataset.tender) || '';
+
   const CHAT_HTML = `
   <!-- Chat bubble -->
   <button class="chat-bubble" id="chatBubble" aria-label="AI Asszisztens megnyitása">
@@ -290,10 +295,12 @@
     let contentEl = null;
 
     try {
+      const payload = { messages: chatHistory };
+      if (TENDER) payload.tender = TENDER;
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: chatHistory }),
+        body: JSON.stringify(payload),
         signal: currentAbortController.signal,
       });
 

@@ -15,7 +15,7 @@
 | **2** | https://vallalkozzdigitalisan.mkik.hu/ugyfelszolgalataink | **DFK igénylés** - MKIK ügyfélszolgálat hívása, Kérelmi nyilatkozat kitöltése → IT szakértő tervet készít a cégednek (díjmentes, de 12M Ft-nál **KÖTELEZŐ**) | MOST (időbe telik!) |
 | **3** | https://kkvdigital.dkf.hu | **Szintfelmérő kitöltése** - 26 kérdés → 2 db igazolás letöltése + cégszerű hitelesítés | Max. 60 nappal benyújtás előtt |
 | **4** | https://vallalkozzdigitalisan.mkik.hu/palyazati_arajanlatok.html | **Árkalkuláció készítése** - pályázat kiválasztása, szoftver részterületek megadása, akkreditált szállító kiválasztása → PDF letöltés | Benyújtás előtt (60 napig érvényes) |
-| **5** | https://www.palyazat.gov.hu | **Pályázat benyújtása** - EPTK belépés, online kitöltő, mellékletek csatolása | 2026.06.02 - 07.28 |
+| **5** | https://www.palyazat.gov.hu | **Pályázat benyújtása** - EPTK belépés, online kitöltő, mellékletek csatolása | 2026.06.16 - 08.11 |
 | **6** | https://epapir.gov.hu | **Hitelesítés** - ePapír szolgáltatás az aláíráshoz (ha nincs e-aláírásod) | Benyújtáskor |
 
 **A logika:** kkvdigital.dkf.hu = alap (regisztráció + felmérés) → vallalkozzdigitalisan.mkik.hu = "bolt" (DFK + szállító + árkalkuláció) → palyazat.gov.hu = benyújtás
@@ -54,7 +54,7 @@
 - [ ] KKV minősítés nyilatkozat (5a komplex vagy 5b egyszerűsített sablon)
 - [ ] De minimis nyilatkozat (6. melléklet sablon, cégszerűen aláírva)
 
-**7. Benyújtás (2026.06.02 - 2026.07.28)**
+**7. Benyújtás (2026.06.16 - 2026.08.11)**
 - [ ] www.palyazat.gov.hu → EPTK belépés
 - [ ] Online kitöltő kitöltése
 - [ ] Mellékletek csatolása: 2 db igazolás + árkalkuláció PDF + nyilatkozatok + DFK
@@ -177,7 +177,7 @@ Az alábbi összetevőket **együtt kell kijelölni** — ha az egyiket választ
 **Önerő:** Minimum 10%
 **Előleg:** Maximum 25%
 **Projekt időtartam:** Max. 24 hónap a megkezdéstől
-**Benyújtási időszak:** 2026.06.02 - 2026.07.28
+**Benyújtási időszak:** 2026.06.16 - 2026.08.11
 **Várható támogatott projektek:** 2 500 - 10 000 db
 **Terület:** KIZÁRÓLAG Budapest (a C-26 a budapesti megvalósítású projekteket támogatja)
 **Finanszírozás:** Európai Regionális Fejlesztési Alap + magyar költségvetés (Széchenyi Terv Plusz)
@@ -264,7 +264,7 @@ A **kkvdigital.dkf.hu** oldalon elérhető online digitalizációs szintfelmér�
 ### Miért kell?
 **Mindkét igazolás KÖTELEZŐ melléklete a pályázatnak!** Cégszerűen hitelesített, eredeti példány szükséges.
 
-> **KRITIKUS:** A felmérés elvégzésének időpontja **nem lehet korábbi, mint a pályázat benyújtását megelőző 60 nap!** Tehát ha 2026.06.02-án nyújtod be, legkorábban 2026.04.03-án töltsd ki.
+> **KRITIKUS:** A felmérés elvégzésének időpontja **nem lehet korábbi, mint a pályázat benyújtását megelőző 60 nap!** Tehát ha 2026.06.16-án nyújtod be, legkorábban 2026.04.17-én töltsd ki.
 
 ### Regisztráció
 **Link:** https://kkvdigital.dkf.hu/regisztracio
