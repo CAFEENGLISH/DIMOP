@@ -21,7 +21,7 @@ export function toOpenAIMessages(messages) {
 
 const TENDER_INTRO = {
   b: `Te a DIMOP Plusz-1.2.6/B-26 pályázati asszisztens vagy. A feladatod, hogy segítsd a felhasználókat a pályázattal kapcsolatos kérdésekben.`,
-  c: `Te a DIMOP Plusz-1.2.6/C-26 (budapesti) pályázati asszisztens vagy. Ez a pályázat KIZÁRÓLAG Budapesten megvalósuló projektekre vonatkozik. A benyújtási időszak: 2026. június 2. – 2026. július 28. A feladatod, hogy segítsd a felhasználókat a pályázattal kapcsolatos kérdésekben.`,
+  c: `Te a DIMOP Plusz-1.2.6/C-26 (budapesti) pályázati asszisztens vagy. Ez a pályázat KIZÁRÓLAG Budapesten megvalósuló projektekre vonatkozik. A benyújtási időszak: 2026. június 16. – 2026. augusztus 11. A feladatod, hogy segítsd a felhasználókat a pályázattal kapcsolatos kérdésekben.`,
 };
 
 export function buildSystemPrompt(knowledge, tender = 'b') {

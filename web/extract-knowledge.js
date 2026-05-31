@@ -7,7 +7,11 @@ import pdfParse from 'pdf-parse';
 
 const ROOT = resolve(import.meta.dirname, '..');
 const CACHE_FILE = join(import.meta.dirname, 'knowledge-cache.json');
-const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', 'web']);
+// 'docs' = internal planning/spec notes (docs/superpowers/...), NOT pályázati tartalom.
+// Kihagyjuk a tudásbázisból, hogy a régi tervekben szereplő (elavult) adatok – pl. korábbi
+// benyújtási dátumok – ne kerüljenek be az AI chat kontextusába. A valódi pályázati
+// dokumentumok a 'PÁLYÁZATI KIIRAS' mappából jönnek.
+const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', 'web', 'docs']);
 const MAX_TEXT_PER_FILE = 80_000; // Max chars per file to keep total under 200K tokens
 
 // --- Collect all relevant files recursively ---

@@ -1,5 +1,8 @@
 # DIMOP-PLUSZ 1.2.6/C-26 - Tudásbázis (Budapest)
 
+> **⚠️ AKTUÁLIS BENYÚJTÁSI HATÁRIDŐ (ez a mérvadó): 2026. június 16. – 2026. augusztus 11.**
+> A pályázat benyújtási időszakát időközben módosították. Ha a hivatalos felhívás PDF-jében régebbi dátum (pl. 2026.06.02. – 2026.07.28.) szerepel, az **elavult** — minden esetben a fenti, frissített határidő az érvényes.
+
 ---
 
 ## PÁLYÁZATI LÉPÉSEK - 12 000 000 Ft projekt
@@ -451,6 +454,34 @@ A koncepcióban olyan **üzletileg releváns fejlesztések** kerülnek meghatár
 3. Hitelesítés: minősített e-aláírás VAGY ePapír szolgáltatás (https://epapir.gov.hu/)
 4. Mellékletek csatolása
 5. Kérelem benyújtása
+
+---
+
+## Beérkezett értesítések és hiánypótlás megtekintése (benyújtás után)
+
+> **Hol látom a hatóságtól érkező leveleket és a hiánypótlási felszólítást?**
+> A benyújtás után minden hivatalos értesítés és a hiánypótlási (tisztázó kérdés) felszólítás **az EPTK pályázati e-ügyintézési felületen** jelenik meg — **NEM az e-mailben**.
+
+**Hol nézd meg:**
+- Lépj be az EPTK-ba: **https://eptk.fair.gov.hu** (vagy a www.palyazat.gov.hu oldalról a Pályázati e-ügyintézés (EPTK) felé).
+- A bejelentkezés **KAÜ / Ügyfélkapu** azonosítással történik (az egységes beléptető felületen keresztül).
+- Lépj be ugyanazzal a fiókkal, amivel a támogatási kérelmet benyújtottad, és keresd meg a benyújtott projektedet / támogatási kérelmedet.
+
+**Hol jelenik meg a felszólítás:**
+- Az EPTK-ba belépve a támogatási kérelemhez kapcsolódó **rendszerüzenetek (Üzenetek)** között találod a hiánypótlási felszólítást.
+- A felszólító dokumentum **csatolmányként** megnyitható és letölthető.
+
+**Az e-mail csak értesítő!**
+- A rendszer küld egy automatikus e-mailt (a projektazonosítóddal), hogy üzenet érkezett, de **magát a hivatalos felszólítást csak az EPTK-ba belépve lehet megtekinteni**. A hivatalos kézbesítési felület az EPTK, nem az e-mail.
+- Ha nem találod az e-mailt, nézd meg a spam/promóciók mappát is — de a biztos hely mindig az EPTK.
+
+**Átvétel és határidő (FONTOS):**
+- A hiánypótlás/tisztázó kérdés **átvétele** akkor jön létre, amikor belépsz a hiánypótlás funkcióba, **vagy** ha a rendszerüzenethez csatolt dokumentumot megnyitod/megtekinted — **ekkor automatikusan elindul a hiánypótlási határidő**.
+- A határidő a felszólításban megadott napokig tart; tartsd be pontosan, mert a határidőn túli (vagy elmaradt) hiánypótlás a kérelem elutasításához vezethet.
+
+**A választ hova add be:**
+- A hiánypótlásra adott választ és a pótolt dokumentumokat is **az EPTK erre szolgáló hiánypótlás / tisztázó kérdés funkciójában** kell benyújtani, ott is követhető nyomon.
+- ⚠️ Az EPTK **„e-Posta – Küldeményeim"** funkciója egy külön, kétirányú levelezőfelület — ez **kifejezetten NEM használható** hiánypótlásra vagy tartalmi kiegészítés beküldésére. A hiánypótlást mindig a dedikált hiánypótlás funkcióban intézd.
 
 ---
 
