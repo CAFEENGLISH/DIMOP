@@ -172,15 +172,43 @@
   }
 
   // --- Attachment Handling ---
-  // A képet feltöltés ELŐTT kicsinyítjük és JPEG-re tömörítjük (canvas).
-  // Ezzel a base64-payload tipikusan 100-400 KB-ra esik, így befér a Netlify
-  // függvény ~6 MB-os kéréslimitjébe, és a feldolgozás is gyorsabb (nincs timeout).
-  const MAX_IMAGE_DIM = 1600;   // px – a hosszabbik oldal max mérete
-  const JPEG_QUALITY = 0.82;
+  // A képet feltöltés ELŐTT canvas-on átméretezzük és JPEG-re tömörítjük.
+  // ADAPTÍV: 3000px-ig próbáljuk meghagyni a részletességet, de ha az így
+  // kapott payload nem férne be biztonságosan, fokozatosan kisebb méretre
+  // (végszükségben alacsonyabb minőségre) esünk, amíg belefér. Így mindig a
+  // lehető legnagyobb, MÉG feldolgozható képet küldjük.
+  const PREFERRED_MAX_DIM = 3000;        // px – a hosszabbik oldal kívánt max mérete
+  // Biztonságos base64-méret: jóval a Netlify-függvény ~6 MB-os kéréslimitje alatt,
+  // hogy a JSON-csomagolás és a beszélgetés-előzmény is elférjen mellette.
+  const SAFE_BASE64_BYTES = 4 * 1024 * 1024;
+  // Lefelé próbálkozó méretek és minőség-szintek (a sorrend számít: nagyról kicsire).
+  const DIM_STEPS = [3000, 2600, 2200, 1800, 1500, 1200, 1000, 800];
+  const QUALITY_STEPS = [0.82, 0.7, 0.6, 0.5];
+
+  // Egy adott méretre rendereli és JPEG-re tömöríti a képet, visszaadja a dataUrl-t.
+  function renderToJpeg(img, maxDim, quality) {
+    const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+    const width = Math.max(1, Math.round(img.width * scale));
+    const height = Math.max(1, Math.round(img.height * scale));
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    // Fehér háttér – a JPEG nem támogat átlátszóságot (PNG/áttetsző képeknél fontos).
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, width, height);
+    ctx.drawImage(img, 0, 0, width, height);
+    return { dataUrl: canvas.toDataURL('image/jpeg', quality), width, height };
+  }
+
+  // Egy base64-string közelítő byte-mérete.
+  function base64Bytes(b64) {
+    return Math.floor(b64.length * 3 / 4);
+  }
 
   function handleImageFile(file) {
-    if (file.size > 25 * 1024 * 1024) {
-      alert('A kép túl nagy (max 25MB)!');
+    if (file.size > 50 * 1024 * 1024) {
+      alert('A kép túl nagy (max 50MB)!');
       return;
     }
     const reader = new FileReader();
@@ -188,23 +216,31 @@
       const img = new Image();
       img.onload = () => {
         try {
-          let { width, height } = img;
-          const scale = Math.min(1, MAX_IMAGE_DIM / Math.max(width, height));
-          width = Math.round(width * scale);
-          height = Math.round(height * scale);
+          // 1) Először a kívánt (max 3000px) méreten próbáljuk, csökkenő minőséggel.
+          // 2) Ha még a legalacsonyabb minőség sem fér be, lépünk kisebb méretre.
+          // Mindig megjegyezzük az eddigi LEGNAGYOBB, még beférő változatot.
+          let best = null;
+          for (const dim of DIM_STEPS) {
+            let fitAtThisDim = null;
+            for (const q of QUALITY_STEPS) {
+              const out = renderToJpeg(img, dim, q);
+              const b64 = out.dataUrl.split(',')[1];
+              if (base64Bytes(b64) <= SAFE_BASE64_BYTES) {
+                fitAtThisDim = { ...out, base64: b64 };
+                break; // ezen a méreten ez a legjobb (legnagyobb) minőség, ami befér
+              }
+            }
+            if (fitAtThisDim) { best = fitAtThisDim; break; } // nagyobb méret előrébb áll → kész
+          }
 
-          const canvas = document.createElement('canvas');
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          // Fehér háttér – a JPEG nem támogat átlátszóságot (PNG/áttetsző képeknél fontos).
-          ctx.fillStyle = '#fff';
-          ctx.fillRect(0, 0, width, height);
-          ctx.drawImage(img, 0, 0, width, height);
+          if (!best) {
+            // Még 800px @ 0.5 minőség sem fért be (rendkívül szokatlan) – ez a legkisebb,
+            // amit elő tudunk állítani; ezt küldjük, mert ez a max feldolgozható.
+            const out = renderToJpeg(img, DIM_STEPS[DIM_STEPS.length - 1], QUALITY_STEPS[QUALITY_STEPS.length - 1]);
+            best = { ...out, base64: out.dataUrl.split(',')[1] };
+          }
 
-          const dataUrl = canvas.toDataURL('image/jpeg', JPEG_QUALITY);
-          const base64 = dataUrl.split(',')[1];
-          chatAttachments.push({ type: 'image', mediaType: 'image/jpeg', base64, name: file.name, dataUrl });
+          chatAttachments.push({ type: 'image', mediaType: 'image/jpeg', base64: best.base64, name: file.name, dataUrl: best.dataUrl });
           renderAttachments();
         } catch (e) {
           // Ha a canvas-feldolgozás bármiért elhasal, essünk vissza az eredeti képre.
