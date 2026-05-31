@@ -172,20 +172,56 @@
   }
 
   // --- Attachment Handling ---
+  // A képet feltöltés ELŐTT kicsinyítjük és JPEG-re tömörítjük (canvas).
+  // Ezzel a base64-payload tipikusan 100-400 KB-ra esik, így befér a Netlify
+  // függvény ~6 MB-os kéréslimitjébe, és a feldolgozás is gyorsabb (nincs timeout).
+  const MAX_IMAGE_DIM = 1600;   // px – a hosszabbik oldal max mérete
+  const JPEG_QUALITY = 0.82;
+
   function handleImageFile(file) {
-    if (file.size > 5 * 1024 * 1024) {
-      alert('A kép túl nagy (max 5MB)!');
+    if (file.size > 25 * 1024 * 1024) {
+      alert('A kép túl nagy (max 25MB)!');
       return;
     }
     const reader = new FileReader();
     reader.onload = () => {
-      const dataUrl = reader.result;
-      const [header, base64] = dataUrl.split(',');
-      const mediaType = header.match(/data:(.*?);/)?.[1] || 'image/png';
-      chatAttachments.push({ type: 'image', mediaType, base64, name: file.name, dataUrl });
-      renderAttachments();
+      const img = new Image();
+      img.onload = () => {
+        try {
+          let { width, height } = img;
+          const scale = Math.min(1, MAX_IMAGE_DIM / Math.max(width, height));
+          width = Math.round(width * scale);
+          height = Math.round(height * scale);
+
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          // Fehér háttér – a JPEG nem támogat átlátszóságot (PNG/áttetsző képeknél fontos).
+          ctx.fillStyle = '#fff';
+          ctx.fillRect(0, 0, width, height);
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const dataUrl = canvas.toDataURL('image/jpeg', JPEG_QUALITY);
+          const base64 = dataUrl.split(',')[1];
+          chatAttachments.push({ type: 'image', mediaType: 'image/jpeg', base64, name: file.name, dataUrl });
+          renderAttachments();
+        } catch (e) {
+          // Ha a canvas-feldolgozás bármiért elhasal, essünk vissza az eredeti képre.
+          fallbackRawImage(reader.result, file);
+        }
+      };
+      img.onerror = () => fallbackRawImage(reader.result, file);
+      img.src = reader.result;
     };
     reader.readAsDataURL(file);
+  }
+
+  function fallbackRawImage(dataUrl, file) {
+    const [header, base64] = dataUrl.split(',');
+    const mediaType = header.match(/data:(.*?);/)?.[1] || 'image/png';
+    chatAttachments.push({ type: 'image', mediaType, base64, name: file.name, dataUrl });
+    renderAttachments();
   }
 
   async function handlePdfFile(file) {
@@ -305,8 +341,18 @@
       });
 
       if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || 'Szerverhiba');
+        // A szerver hibakódot adott. Lehet JSON (a függvény saját hibája) vagy
+        // HTML (platform-szintű hiba, pl. 413 túl nagy kérés / 502 timeout) —
+        // ez utóbbit NE próbáljuk JSON-ként olvasni, mert "Unexpected token '<'"-t dobna.
+        const raw = await res.text();
+        let serverMsg = '';
+        try { serverMsg = JSON.parse(raw).error || ''; } catch {}
+        if (!serverMsg) {
+          if (res.status === 413) serverMsg = 'A csatolt fájl túl nagy. Kérlek tölts fel kisebb képet, vagy másold be szövegként.';
+          else if (res.status === 502 || res.status === 504) serverMsg = 'A válasz túl sokáig tartott (időtúllépés). Próbáld újra, lehetőleg kép nélkül vagy rövidebb kérdéssel.';
+          else serverMsg = `Szerverhiba (${res.status}). Kérlek próbáld újra.`;
+        }
+        throw new Error(serverMsg);
       }
 
       typingEl.remove();
@@ -372,6 +418,9 @@
           friendly = 'Az AI szolgáltatás kreditje elfogyott. Kérlek értesítsd az adminisztrátort.';
         } else if (m.includes('overloaded')) {
           friendly = 'Az AI szerver jelenleg túlterhelt. Kérlek próbáld újra pár másodperc múlva.';
+        } else if (m.includes('not valid json') || m.includes('unexpected token')) {
+          // Védőháló: ha valahol mégis HTML-t próbáltunk JSON-ként olvasni.
+          friendly = 'A szerver váratlan választ adott (lehet, hogy a csatolt kép túl nagy, vagy a szolgáltatás épp túlterhelt). Próbáld újra kisebb képpel vagy szövegként.';
         }
         appendMessage('assistant', `⚠️ ${friendly}`);
       }
